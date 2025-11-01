@@ -9,15 +9,6 @@ Supports:
 - JSONC/JSON to YAML conversion (auto-detected)
 """
 
-import sentry_sdk
-
-sentry_sdk.init(
-    "http://e6c256f236cd46bdba7c45dff4e1179c@homelab:9001/16",
-    traces_sample_rate=0.15,
-    attach_stacktrace=True,
-    send_default_pii=True
-)
-
 import yaml
 import json
 import sys

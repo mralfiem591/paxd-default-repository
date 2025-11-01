@@ -23,7 +23,6 @@
             "pip:requests",
             "pip:colorama",
             "pip:argparse",
-            "pip:sentry-sdk",
             "pip:pyyaml",
             "paxd:com.mralfiem591.paxd-sdk",
             "paxd:com.mralfiem591.paxd-imageview"

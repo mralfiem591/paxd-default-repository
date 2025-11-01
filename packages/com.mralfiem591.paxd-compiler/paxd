@@ -14,8 +14,7 @@
             "main.py"
         ],
         "depend": [
-            "pip:pyyaml",
-            "pip:sentry-sdk"
+            "pip:pyyaml"
         ],
         "firstrun": false,
         "updaterun": false,

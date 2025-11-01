@@ -4,15 +4,6 @@ ImageView - A simple command-line image viewer
 Fetches an image from a URL and displays it full-screen in the terminal
 """
 
-import sentry_sdk # type: ignore
-
-sentry_sdk.init(
-    "http://291661a584724b0ebbe95cdded58245c@homelab:9001/15",
-    traces_sample_rate=0.15,
-    attach_stacktrace=True,
-    send_default_pii=True
-)
-
 import sys
 from os import get_terminal_size
 import requests

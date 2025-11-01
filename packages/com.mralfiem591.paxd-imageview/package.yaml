@@ -21,7 +21,6 @@ install:
     - requests
     - Pillow
     - ascii_magic
-    - sentry-sdk
   firstrun: false
   updaterun: false
   main_executable: imageview.py

@@ -1,44 +1,4 @@
-import sentry_sdk # type: ignore (sentry-sdk is in paxd file dependencies)
 import os
-
-if not os.path.exists(os.path.join(os.path.dirname(__file__), ".SEND_PII")):
-    choice = input("Would you like to opt into sending extra optional crash and error information to our bug tracker? (Y/n): ").lower()
-    if choice == "n":
-        with open(os.path.join(os.path.dirname(__file__), ".SEND_PII"), "w") as f:
-            f.write("false\n")
-        print("You have opted out. Please note required crash and error data will still be sent, just not optional data.")
-    elif choice == "y":
-        with open(os.path.join(os.path.dirname(__file__), ".SEND_PII"), "w") as f:
-            f.write("true\n")
-        print("You have opted in to sending optional crash and error data. Thanks for making PaxD better for everyone!")
-    else:
-        print("Invalid choice. Please rerun PaxD to try again.")
-        exit(1)
-
-send_pii = True
-
-with open(os.path.join(os.path.dirname(__file__), ".SEND_PII"), "r") as f:
-    if "true" in f.read():
-        send_pii = True
-    elif "false" in f.read():
-        send_pii = False
-    else:
-        send_pii = None
-
-if send_pii == None:
-    print("ERROR: invalid .SEND_PII file! Removing...")
-    os.remove(os.path.join(os.path.dirname(__file__), ".SEND_PII"))
-    print("Please restart PaxD to regenerate!")
-    exit(1)
-        
-sentry_sdk.init(
-    "http://150122a4e26d4a04bc567c169db4604c@homelab:9001/1",
-    traces_sample_rate=0.15, # type: ignore
-    attach_stacktrace=True, # type: ignore
-    send_default_pii=send_pii # type: ignore
-)
-
-LOGS_VERBOSE = {}
 
 import atexit
 
@@ -165,6 +125,8 @@ def convert_to_lexicographic_position(n, max_range=lexicographic_max_default):
     else:
         # If n exceeds our range, raise a LexicographicConversionError
         raise LexicographicConversionError(f"Input {n} exceeds maximum range {max_range}")
+    
+LOGS_VERBOSE = {}
 
 def parse_jsonc(jsonc_text: str) -> dict:
     """Parse JSONC (JSON with comments) by removing comments."""
@@ -400,7 +362,7 @@ class PaxD:
     def _verbose_print(self, message, color=Fore.LIGHTBLACK_EX, mode=0):
         """Print message only in verbose mode with timestamp. (still log incase of exception, for Sentry, to provide more context)"""
         
-        if mode == 0:
+        if mode == 0 or mode == 1:
             # Normal mode
             import datetime
             timestamp = datetime.datetime.now().strftime("%H:%M:%S.%f")[:-3]
@@ -410,26 +372,8 @@ class PaxD:
             lexicographic_number = convert_to_lexicographic_position(current_count)
             
             LOGS_VERBOSE[f"({lexicographic_number}) {timestamp}"] = message # Also include the len of LOGS_VERBOSE so logs made at the exact same time are still valid and shown, instead of just the most recent one
-            sentry_sdk.set_context("verbose_log", LOGS_VERBOSE)
             if self.verbose:
                 print(f"{color}[{timestamp}] VERBOSE: {message}{Style.RESET_ALL}")
-        elif mode == 1:
-            # No-Sentry mode
-            if self.verbose:
-                import datetime
-                timestamp = datetime.datetime.now().strftime("%H:%M:%S.%f")[:-3]
-                print(f"{color}[{timestamp}] VERBOSE: {message}{Style.RESET_ALL}")
-        elif mode == 2:
-            # Sentry-Only mode
-            import datetime
-            timestamp = datetime.datetime.now().strftime("%H:%M:%S.%f")[:-3]
-            
-            # Get the lexicographic position BEFORE adding to the dict
-            current_count = len(LOGS_VERBOSE)
-            lexicographic_number = convert_to_lexicographic_position(current_count)
-            
-            LOGS_VERBOSE[f"({lexicographic_number}) {timestamp}"] = message # Also include the len of LOGS_VERBOSE so logs made at the exact same time are still valid and shown, instead of just the most recent one
-            sentry_sdk.set_context("verbose_log", LOGS_VERBOSE)
     
     def _verbose_timing_start(self, operation):
         """Start timing an operation in verbose mode."""
@@ -825,8 +769,6 @@ class PaxD:
                         os.remove(install_path)
                         self._verbose_print(f"Deleted invalid file: {install_path}")
                         print(f"Deleted invalid file {install_path}")
-                        # Also report an error to Sentry
-                        sentry_sdk.capture_message(f"Checksum mismatch for {install_path} (package {package_name}): {calculated_checksum} != {expected_checksum}", level="warning")
                 else:
                     self._verbose_print("No checksum verification required for this file")
 
@@ -1192,8 +1134,6 @@ class PaxD:
                             print(f"Deleted invalid file {file}")
                             # Remove from updated_files since it was deleted
                             updated_files.remove(file) if file in updated_files else None
-                        # Also report an error to Sentry
-                        sentry_sdk.capture_message(f"Checksum mismatch for {file} (package {package_name}): {calculated_checksum} != {expected_checksum}", level="warning")
                 else:
                     print(f"No checksum verification required for {file}")
             
@@ -2183,9 +2123,6 @@ def main():
     parser = create_argument_parser()
     args = parser.parse_args()
     
-    sentry_sdk.set_tag("paxd_version", PaxD().paxd_version)
-    sentry_sdk.set_tag("verbose", args.verbose if hasattr(args, 'verbose') else False)
-    
     # If no command is provided, show help
     if not args.command:
         parser.print_help()
@@ -2306,138 +2243,65 @@ def main():
     try:
         paxd._verbose_print(f"Executing command: {args.command}")
         if args.command == "install":
-            sentry_sdk.set_context("state", {
-                "command": "install",
-                "package_name": args.package_name,
-                "skip_checksum": args.skip_checksum
-            })
             paxd._verbose_print(f"Installing package: {args.package_name}, skip_checksum={args.skip_checksum}")
             paxd.install(args.package_name, user_requested=True, skip_checksum=args.skip_checksum)
         elif args.command == "uninstall":
-            sentry_sdk.set_context("state", {
-                "command": "uninstall",
-                "package_name": args.package_name
-            })
             paxd._verbose_print(f"Uninstalling package: {args.package_name}")
             paxd.uninstall(args.package_name)
         elif args.command == "update":
             force_flag = args.force if hasattr(args, 'force') else False
-            sentry_sdk.set_context("state", {
-                "command": "update",
-                "package_name": args.package_name,
-                "force": force_flag,
-                "skip_checksum": args.skip_checksum
-            })
             paxd._verbose_print(f"Updating package: {args.package_name}, force={force_flag}, skip_checksum={args.skip_checksum}")
             paxd.update(args.package_name, force=force_flag, skip_checksum=args.skip_checksum)
         elif args.command == "update-all":
-            sentry_sdk.set_context("state", {
-                "command": "update-all"
-            })
+            paxd._verbose_print("Updating all packages")
             paxd._verbose_print("Updating all packages")
             paxd.update_all()
         elif args.command == "info":
-            sentry_sdk.set_context("state", {
-                "command": "info",
-                "package_name": args.package_name,
-                "fullsize": args.fullsize
-            })
             paxd._verbose_print(f"Getting info for package: {args.package_name}")
             paxd.info(args.package_name, args.fullsize)
         elif args.command == "search":
-            sentry_sdk.set_context("state", {
-                "command": "search",
-                "search_term": args.search_term,
-                "limit": args.limit
-            })
             paxd._verbose_print(f"Searching for: {args.search_term}")
             # Note: search_term is used instead of package_name for search
             paxd.search(args.search_term)
         elif args.command == "repo-info":
-            sentry_sdk.set_context("state", {
-                "command": "repo-info"
-            })
             paxd._verbose_print("Getting repository info")
             paxd.show_repo_info()
         elif args.command == "reinstall":
             paxd._verbose_print(f"Reinstalling package: {args.package_name}")
-            sentry_sdk.set_context("state", {
-                "command": "reinstall",
-                "package_name": args.package_name
-            })
             if args.package_name == "com.mralfiem591.paxd":
                 print(f"{Fore.RED}Cannot reinstall PaxD itself using PaxD. Please uninstall manually.")
                 print(f"{Fore.YELLOW}Reinstalling PaxD itself requires manual uninstallation and reinstallation.")
                 print(f"{Fore.YELLOW}Please uninstall PaxD manually, then download and install the latest version from the PaxD repository.")
                 return
-            sentry_sdk.set_context("state", {
-                "command": "reinstall:uninstall",
-                "package_name": args.package_name
-            })
-            paxd.uninstall(args.package_name)
-            sentry_sdk.set_context("state", {
-                "command": "reinstall:install",
-                "package_name": args.package_name
-            })
             paxd.install(args.package_name, user_requested=True)
         elif args.command == "credit":
-            sentry_sdk.set_context("state", {
-                "command": "credit"
-            })
             paxd._verbose_print("Showing credits")
             paxd.credit()
         elif args.command == "packagedir":
-            sentry_sdk.set_context("state", {
-                "command": "packagedir",
-                "package_directory": os.path.join(os.path.expandvars(r"%LOCALAPPDATA%"), "PaxD")
-            })
             paxd._verbose_print("Opening package directory")
             packages = os.path.join(os.path.expandvars(r"%LOCALAPPDATA%"), "PaxD")
             os.system(f"explorer {packages}")
         elif args.command == "repo":
-            sentry_sdk.set_context("state", {
-                "command": "repo",
-                "repository_url": paxd._resolve_repository_url(paxd._read_repository_url())
-            })
             paxd._verbose_print("Opening repository in browser")
             os.system(f"start {paxd._resolve_repository_url(paxd._read_repository_url())}")
         elif args.command == "listall":
-            sentry_sdk.set_context("state", {
-                "command": "listall"
-            })
             paxd._verbose_print("Listing all installed packages")
             paxd.list_installed()
         elif args.command == "export":
-            sentry_sdk.set_context("state", {
-                "command": "export"
-            })
             paxd._verbose_print("Exporting installed packages")
             paxd.export()
         elif args.command == "import":
-            sentry_sdk.set_context("state", {
-                "command": "import"
-            })
             paxd._verbose_print("Importing packages from export.paxd")
             paxd.import_paxd()
         elif args.command == "message":
-            sentry_sdk.set_context("state", {
-                "command": "message"
-            })
+            paxd._verbose_print("Sending message to package")
             paxd._verbose_print("Sending message to package")
             paxd.message_package()
         elif args.command == "init":
-            sentry_sdk.set_context("state", {
-                "command": "init",
-                "confirmed": args.y
-            })
             if not args.y:
                 if input(Fore.RED + Style.BRIGHT + "Are you SURE you want to complete first time initialization? This should only ever be done ONCE! Type 'YES' in full capitals to continue.") != "YES":
                     print(f"{Fore.YELLOW}Initialization cancelled by user.")
                     return
-            sentry_sdk.set_context("state", {
-                "command": "init",
-                "confirmed": True
-            })
             paxd._verbose_print("Performing first time initialization via init command")
             # 1. Create bin directory
             if not os.path.exists(os.path.join(os.path.dirname(__file__), "bin")):
@@ -2514,19 +2378,11 @@ def main():
             print(f"\n{Fore.CYAN}Welcome to PaxD!{Style.RESET_ALL}\nIt is recommended you try out PaxD with our {Fore.YELLOW}paxd-test{Style.RESET_ALL} package - install it with {Fore.GREEN}`paxd install paxd-test`{Style.RESET_ALL}, and run paxd-test to see it in action!\n\nYou can uninstall it later with {Fore.RED}`paxd uninstall paxd-test`{Style.RESET_ALL}.\n")
             
         else:
-            sentry_sdk.set_context("state", {
-                "command": "unknown",
-                "input_command": args.command
-            })
             paxd._verbose_print(f"Unknown command: {args.command}")
             print(f"{Fore.RED}Unknown command: {args.command}")
             parser.print_help()
             
     except KeyboardInterrupt:
-        sentry_sdk.set_context("state", {
-            "command": "cancel",
-            "input_command": args.command
-        })
         paxd._verbose_print("Operation cancelled by user (KeyboardInterrupt)")
         print(f"\n{Fore.YELLOW}Operation cancelled by user.")
         sys.exit(1)

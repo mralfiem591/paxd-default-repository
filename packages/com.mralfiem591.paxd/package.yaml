@@ -27,7 +27,6 @@ install:
       - requests
       - colorama
       - argparse
-      - sentry-sdk
       - pyyaml
     paxd:
       - com.mralfiem591.paxd-sdk
