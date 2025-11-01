@@ -1,0 +1,28 @@
+# PaxD package configuration - converted from manifest
+# Original file: paxd
+
+name: PaxD ImageView
+author: mralfiem591
+version: 1.1.3
+description: A simple image viewer used by PaxD.
+license: MIT
+tags:
+- cli
+- image viewer
+- image renderer
+- windows
+- tool
+install:
+  files:
+  - imageview.py
+  - LICENSE
+  dependencies:
+    pip:
+    - requests
+    - Pillow
+    - ascii_magic
+    - sentry-sdk
+  firstrun: false
+  updaterun: false
+  main_executable: imageview.py
+  command_alias: paxd-imageview

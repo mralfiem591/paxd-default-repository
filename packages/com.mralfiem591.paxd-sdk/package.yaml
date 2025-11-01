@@ -1,0 +1,18 @@
+# PaxD package configuration - converted from manifest
+# Original file: paxd
+
+name: PaxD SDK
+author: mralfiem591
+version: 1.2.0
+description: The main SDK (Software Development Kit) for PaxD.
+license: MIT
+tags:
+- sdk
+- development
+- devkit
+install:
+  files:
+  - main.py
+  firstrun: false
+  updaterun: false
+  exclude_from_updates: []

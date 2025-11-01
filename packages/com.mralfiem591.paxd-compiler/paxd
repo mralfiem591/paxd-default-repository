@@ -1,0 +1,25 @@
+// PaxD compiler - the main compiler for the newer YAML based PaxD package format. Located in the default repository.
+
+{
+    "pkg_info": {
+        "pkg_name": "PaxD Compiler",
+        "pkg_author": "mralfiem591",
+        "pkg_version": "1.0.0",
+        "pkg_description": "The main command line tool for using the new YAML PaxD format.",
+        "pkg_license": "MIT",
+        "tags": ["cli", "compiler", "paxd"]
+    },
+    "install": {
+        "include": [
+            "main.py"
+        ],
+        "depend": [
+            "pip:pyyaml",
+            "pip:sentry-sdk"
+        ],
+        "firstrun": false,
+        "updaterun": false,
+        "mainfile": "main.py",
+        "alias": "paxd-compile"
+    }
+}

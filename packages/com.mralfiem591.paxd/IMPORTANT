@@ -1,0 +1,8 @@
+Many PaxD packages have been switching to a YAML-first system, and while this is good, the main PaxD package will be sticking to serving a PaxD file, now just compiled via a YAML file.
+
+This gets us the benifits of using a YAML file, without breaking other scripts and the main installer, of which are built for paxd files.
+
+This will make no difference to your daily usage.
+
+Thanks for taking the (probably short) amount of time to read this.
+    - mralfiem591 :)

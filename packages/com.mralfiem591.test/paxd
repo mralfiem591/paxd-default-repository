@@ -1,0 +1,25 @@
+// Test package - a test package to ensure PaxD works correctly.
+
+{
+    "pkg_info": {
+        "pkg_name": "Test Package",
+        "pkg_author": "mralfiem591",
+        "pkg_version": "1.0.0",
+        "pkg_description": "A test package to ensure PaxD works correctly.",
+        "pkg_license": "MIT",
+        "tags": ["test", "example", "cli", "windows"]
+    },
+    "install": {
+        "include": [
+            "test.py",
+            "LICENSE"
+        ],
+        "depend": [
+            "paxd:com.mralfiem591.paxd-sdk"
+        ],
+        "firstrun": false,
+        "updaterun": false,
+        "mainfile": "test.py",
+        "alias": "paxd-test"
+    }
+}

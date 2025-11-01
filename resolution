@@ -1,0 +1,31 @@
+{
+    "com.mralfiem591.paxd": [
+        "paxd",
+        "paxdinstaller",
+        "paxdmanager"
+    ],
+    "com.mralfiem591.test": [
+        "paxd-test"
+    ],
+    "com.mralfiem591.paxd-imageview": [
+        "paxd-imageview",
+        "imageview"
+    ],
+    "com.mralfiem591.paxd-sdk": [
+        "paxd-sdk",
+        "paxdsdk",
+        "paxd-development-kit",
+        "paxd-devkit"
+    ],
+    "com.mralfiem591.paxd-compiler": [
+        "paxd-compiler",
+        "paxdcompile",
+        "paxd-yaml-compiler",
+        "paxd-new-compiler"
+    ],
+    "com.mralfiem591.vulnerability": [
+        "paxd-vulnscan",
+        "paxd-vulnerability-scanner",
+        "paxd-vulnerability"
+    ]
+}

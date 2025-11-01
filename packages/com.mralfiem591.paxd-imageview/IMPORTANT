@@ -1,0 +1,17 @@
+Our switch to YAML-first
+
+paxd-imageview will be switching to a YAML-first install method. This means that your base "paxd" file will no longer be available. We will be serving a "package.yaml" instead.
+
+Why?
+It makes it easier for us to maintain, as we can read a YAML file easier than a JSONC file.
+
+Will this change anything for me?
+As long as you are on a newer version of PaxD, no. PaxD has been transitioning to YAML-first already, and already contains code ported over from paxd-compiler (com.mralfiem591.paxd).
+If you are on a version new enough to display this message during installation, you are on a version new enough to support YAML.
+If you are on an older version, paxd-imageview will now become unavailable for you to use. Please update to a later version to keep using PaxD, via `paxd update -f paxd`.
+
+Thanks for taking the time to read this.
+    - mralfiem591 :)
+
+
+There were 2 major RCE vulnerabilities discovered. These affect versions 1.1.2 and below. if you are on these versions, please update Imageview IMMEDIATELY. These attacks can happen remotely, without your knowledge.

@@ -1,0 +1,41 @@
+# PaxD YAML package
+
+name: PaxD
+author: mralfiem591
+version: 1.6.2
+description: The main command line tool for using PaxD.
+license: MIT
+tags:
+  - cli
+  - package manager
+  - installer
+  - windows
+  - tool
+  - gateway
+  - http
+  - repository
+
+install:
+  files:
+    - paxd.py
+    - run_pkg.py
+    - repository
+    - LICENSE
+  
+  dependencies:
+    pip:
+      - requests
+      - colorama
+      - argparse
+      - sentry-sdk
+      - pyyaml
+    paxd:
+      - com.mralfiem591.paxd-sdk
+      - com.mralfiem591.paxd-imageview
+  
+  firstrun: true
+  updaterun: true
+  exclude_from_updates:
+    - repository
+  main_executable: paxd.py
+  command_alias: paxd

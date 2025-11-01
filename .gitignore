@@ -1,0 +1,14 @@
+.vscode
+.htaccess
+index.html
+favicon.ico
+generate_package_docs.py
+hasher.py
+log_watcher.py
+paxd-installer.py
+fastxd.py
+repoasset/README.html
+packages/README.html
+favicon.ico
+repoasset/favicon.ico
+README.html

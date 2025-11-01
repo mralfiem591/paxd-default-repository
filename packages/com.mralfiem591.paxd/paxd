@@ -1,0 +1,36 @@
+// PaxD package - auto-generated from YAML source
+
+{
+    "pkg_info": {
+        "pkg_name": "PaxD",
+        "pkg_author": "mralfiem591",
+        "pkg_version": "1.6.2",
+        "pkg_description": "The main command line tool for using PaxD.",
+        "pkg_license": "MIT",
+        "tags": ["cli", "package manager", "installer", "windows", "tool", "gateway", "http", "repository"]
+    },
+    "install": {
+        "include": [
+            "paxd.py",
+            "run_pkg.py",
+            "repository",
+            "LICENSE"
+        ],
+        "depend": [
+            "pip:requests",
+            "pip:colorama",
+            "pip:argparse",
+            "pip:sentry-sdk",
+            "pip:pyyaml",
+            "paxd:com.mralfiem591.paxd-sdk",
+            "paxd:com.mralfiem591.paxd-imageview"
+        ],
+        "firstrun": true,
+        "updaterun": true,
+        "update-ex": [
+            "repository"
+        ],
+        "mainfile": "paxd.py",
+        "alias": "paxd"
+    }
+}

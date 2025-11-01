@@ -1,0 +1,13 @@
+{
+    "repo_info": {
+        "repo_name": "PaxD Default Repository",
+        "repo_author": "mralfiem591",
+        "repo_description": "The default repository for PaxD packages, and home to the official PaxD package.",
+        "repo_logo": "repoasset/logo.png"
+    },
+    "credit": {
+        "maintainer": "mralfiem591",
+        "backend": "Apache, mralfiem591",
+        "frontend": "HTML/CSS, POST, mralfiem591"
+    }
+}
