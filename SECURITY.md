@@ -2,4 +2,4 @@
 
 ## Reporting a Vulnerability
 
-Please open an issue to report a vulnerability, detailing any details about the vulnerability, and it should be added to the "vulnerabilities" file. This will then be automatically handled by the paxd-vulnerability module.
+To report a vulnerability, use GitHub's default features to privately report it to us. We will then patch it and add it to the vulnerabilities file, which will warn users of the vulnerability, and provide an easy way to update.
