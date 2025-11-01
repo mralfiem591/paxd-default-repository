@@ -101,11 +101,7 @@ Please ensure your contributions follow the existing patterns and maintain compa
 paxd-default-repository/
 ├── packages/              # All package files
 │   ├── com.mralfiem591.paxd/
-│   ├── com.mralfiem591.paxd-sdk/
-│   ├── com.mralfiem591.paxd-compiler/
-│   ├── com.mralfiem591.paxd-imageview/
-│   ├── com.mralfiem591.vulnerability/
-│   └── com.mralfiem591.test/
+│   ├── ... other packages
 ├── repoasset/            # Repository assets (logos, images)
 ├── paxd                  # Repository metadata
 ├── certified             # List of certified packages
