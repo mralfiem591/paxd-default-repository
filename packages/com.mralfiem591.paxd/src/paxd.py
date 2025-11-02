@@ -2295,7 +2295,6 @@ def main():
             paxd.import_paxd()
         elif args.command == "message":
             paxd._verbose_print("Sending message to package")
-            paxd._verbose_print("Sending message to package")
             paxd.message_package()
         elif args.command == "init":
             if not args.y:
