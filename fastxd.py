@@ -82,7 +82,7 @@ def _resolve_repository_url(repo_url):
     """Resolve repository URL by following redirects and return the final URL."""
     try:
         # Make a HEAD request to check for redirects without downloading content
-        response = requests.head(repo_url, headers={"User-Agent": "PaxdInstaller/1.0.0"}, allow_redirects=True, timeout=10)
+        response = requests.head(repo_url, headers={"User-Agent": "FastxD/1.0.0"}, allow_redirects=True, timeout=10)
 
         # If we were redirected, keep repeating the previous logic until we get to a point we arent redirected
         if response.url != repo_url:
@@ -185,3 +185,4 @@ print(f"Main file location: {main_file_path}")
 print(f"You can now use the package, with 'python {main_file_path}'. When you're done, press Enter to clean up.")
 
 input("Press Enter to continue and clean up the package...")
+# Allow atexit to handle cleanup
