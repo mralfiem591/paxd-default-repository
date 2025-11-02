@@ -96,8 +96,8 @@ Please ensure your contributions follow the existing patterns and maintain compa
 
 ## 🔗 Links
 
-- Repository: [github.com/mralfiem591/paxd-default-repository](https://github.com/mralfiem591/paxd-default-repository)
-- Repository (ready for use in repository file): `optimised::https://raw.githubusercontent.com/mralfiem591/paxd-default-repository/refs/heads/main`
+- Repository: [github.com/mralfiem591/paxd-default-repository](https://github.com/mralfiem591/paxd)
+- Repository (ready for use in repository file): `optimised::https://raw.githubusercontent.com/mralfiem591/paxd/refs/heads/main`
 - Author: [@mralfiem591](https://github.com/mralfiem591)
 
 ## 📊 Repository Structure
