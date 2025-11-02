@@ -22,7 +22,7 @@ class PaxDSDKLoader(importlib.abc.Loader):
         return None  # Use default module creation semantics
 
     def exec_module(self, module):
-        with open(SDK_PATH, 'r') as f:
+        with open(SDK_PATH, 'r', encoding='utf-8') as f:
             code = f.read()
         exec(compile(code, SDK_PATH, 'exec'), module.__dict__)
     
@@ -36,4 +36,5 @@ sys.meta_path.insert(0, PaxDSDKFinder())
 
 # Step 2: run the package, with adjusted sys.argv (remove the first argument, which is the run_pkg.py path)
 sys.argv = sys.argv[1:]
-exec(open(sys.argv[0], 'r').read())
+with open(sys.argv[0], 'r', encoding='utf-8') as f:
+    exec(f.read())
