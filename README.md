@@ -37,6 +37,7 @@ The main PaxD package requires the following dependencies:
 - colorama
 - argparse
 - pyyaml
+- ~sentry-sdk~ **NO LONGER NEEDED**
 
 ### Using This Repository
 
