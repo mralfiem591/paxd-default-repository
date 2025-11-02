@@ -11,3 +11,4 @@ repoasset/favicon.ico
 README.html
 vulnerability_issue_creator.py
 .env
+__pycache__/
