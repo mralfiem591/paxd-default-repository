@@ -80,6 +80,10 @@ You can scan for vulnerabilities by installing the `paxd-vulnscan` tool, via `pa
 
 Vulnerabilities will be tracked via GitHub Issues. A bot is set up to handle this, and you can easily view them via Issues on the topbar. They are tagged for ease of use, and will be automatically updated if anything happpens.
 
+## 🗺️ Roadmap
+
+You can find our roadmap in the [ROADMAP.md](ROADMAP.md) file. This roadmap is subject to change based on development progress and community feedback.
+
 ## 🏅 Certified & Official Packages
 
 Packages in this repository are marked as:
