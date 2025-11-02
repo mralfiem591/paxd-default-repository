@@ -5,9 +5,7 @@
 
 The official default repository for PaxD packages, and home to the official PaxD package.
 
-[Install PaxD!](https://github.com/mralfiem591/paxd-installer/releases/download/main/paxd-installer.py)
-
-**Or, download PaxD with the new and improved one-liner command:** `curl -L -o %TEMP%\paxd_installer.py https://github.com/mralfiem591/paxd-installer/releases/download/main/paxd-installer.py && python %TEMP%\paxd_installer.py`
+**Install PaxD!**: `curl -L -o %TEMP%\paxd_installer.py https://github.com/mralfiem591/paxd/releases/download/main/paxd-installer.py && python %TEMP%\paxd_installer.py`
 
 ## 📦 About
 
