@@ -68,7 +68,7 @@ class PaxDPackagePublisher:
         
         # Parse manifest
         try:
-            with open(manifest_file, 'r', encoding='utf-8') as f:
+            with open(manifest_file, 'r', encoding='utf-8', errors='replace') as f:
                 manifest = yaml.safe_load(f)
             
             results['package_info'] = manifest
@@ -76,6 +76,10 @@ class PaxDPackagePublisher:
             
         except yaml.YAMLError as e:
             results['errors'].append(f"Invalid YAML in manifest: {e}")
+            results['valid'] = False
+            return results
+        except UnicodeDecodeError as e:
+            results['errors'].append(f"Manifest file contains invalid characters: {e}")
             results['valid'] = False
             return results
         
@@ -118,6 +122,41 @@ class PaxDPackagePublisher:
         
         return results
 
+    def check_file_encodings(self, package_dir: Path) -> List[str]:
+        """
+        Check all files in the package directory for encoding issues.
+        
+        Returns:
+            List of files with encoding problems
+        """
+        problematic_files = []
+        
+        def check_file(file_path: Path):
+            """Check a single file for encoding issues."""
+            try:
+                # Try to read as text first
+                with open(file_path, 'r', encoding='utf-8') as f:
+                    f.read()
+            except UnicodeDecodeError:
+                # Check if it's a binary file or just bad encoding
+                try:
+                    with open(file_path, 'rb') as f:
+                        content = f.read()
+                        # Try to decode as utf-8
+                        content.decode('utf-8')
+                except UnicodeDecodeError:
+                    problematic_files.append(str(file_path.relative_to(package_dir)))
+            except Exception:
+                # Skip files we can't read for other reasons
+                pass
+        
+        # Check all files recursively
+        for item in package_dir.rglob('*'):
+            if item.is_file() and not item.name.startswith('.'):
+                check_file(item)
+        
+        return problematic_files
+
     def create_package_structure(self, package_dir: Path, target_dir: Path, package_info: Dict[str, Any]) -> bool:
         """
         Create the proper package structure in the target directory.
@@ -146,12 +185,16 @@ class PaxDPackagePublisher:
                     
                 target_item = target_package_dir / item.name
                 
-                if item.is_dir():
-                    if target_item.exists():
-                        shutil.rmtree(target_item)
-                    shutil.copytree(item, target_item)
-                else:
-                    shutil.copy2(item, target_item)
+                try:
+                    if item.is_dir():
+                        if target_item.exists():
+                            shutil.rmtree(target_item)
+                        shutil.copytree(item, target_item)
+                    else:
+                        shutil.copy2(item, target_item)
+                except (UnicodeDecodeError, UnicodeError) as e:
+                    print(f"  ⚠️  Warning: Skipping file with encoding issues: {item.name} ({e})")
+                    continue
             
             print(f"  ✅ Package structure created at: packages/{package_id}")
             return True
@@ -174,8 +217,13 @@ class PaxDPackagePublisher:
         print("🚀 Creating pull request...")
         
         try:
-            # Initialize git repo
+            # Initialize git repo with explicit encoding
             repo_path = temp_dir / "repo"
+            
+            # Set git config to handle encoding properly
+            os.environ['GIT_CONFIG_GLOBAL'] = '/dev/null'  # Avoid user git config interference
+            os.environ['LC_ALL'] = 'C.UTF-8'  # Set UTF-8 locale
+            
             repo = git.Repo.clone_from(
                 f"https://{self.github_token}@github.com/{self.repo_owner}/{self.repo_name}.git",
                 repo_path
@@ -263,6 +311,18 @@ class PaxDPackagePublisher:
             package_dir = Path.cwd()
         
         print(f"🎯 Publishing package from: {package_dir}")
+        
+        # Check for encoding issues first
+        print("🔍 Checking file encodings...")
+        problematic_files = self.check_file_encodings(package_dir)
+        
+        if problematic_files:
+            print(f"\n⚠️  Found {len(problematic_files)} files with encoding issues:")
+            for file_name in problematic_files:
+                print(f"  - {file_name}")
+            print(f"\n💡 These files contain non-UTF-8 characters or are binary files.")
+            print(f"   Consider converting text files to UTF-8 or excluding binary files.")
+            print(f"   Proceeding with caution - some files may be skipped.")
         
         # Validate package
         validation = self.validate_package_structure(package_dir)
@@ -380,6 +440,11 @@ Environment Variables:
         success = publisher.publish_package(args.dir)
         sys.exit(0 if success else 1)
         
+    except UnicodeDecodeError as e:
+        print(f"💥 Unicode/Encoding Error: {e}")
+        print(f"📄 This usually means there's a file with non-UTF-8 characters.")
+        print(f"🔧 Try saving all files with UTF-8 encoding and remove any binary files from the package.")
+        sys.exit(1)
     except Exception as e:
         print(f"💥 Unexpected error: {e}")
         sys.exit(1)
