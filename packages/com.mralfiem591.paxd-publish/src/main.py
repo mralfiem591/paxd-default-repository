@@ -274,7 +274,7 @@ class PaxDPackagePublisher:
                 return None
             
             # Commit changes
-            commit_message = f"Add package {package_id} v{package_info.get('version', 'unknown')}\n\nAutomatically published via paxd-publish"
+            commit_message = f"Add/update/change package {package_id} v{package_info.get('version', 'unknown')}\n\nAutomatically published via paxd-publish"
             repo.git.commit('-m', commit_message)
             
             # Push branch
@@ -282,7 +282,7 @@ class PaxDPackagePublisher:
             origin.push(branch_name)
             
             # Create PR
-            pr_title = f"Add package: {package_info.get('name', package_id)} v{package_info.get('version', 'unknown')}"
+            pr_title = f"Add/update/change package: {package_info.get('name', package_id)} v{package_info.get('version', 'unknown')}"
             
             # Build PR body with optional custom message
             pr_body_parts = []
