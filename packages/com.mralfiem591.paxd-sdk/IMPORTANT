@@ -1,14 +1,37 @@
-Our switch to YAML-first
+Major vulnerability fix
 
-paxd-sdk will be switching to a YAML-first install method. This means that your base "paxd" file will no longer be available. We will be serving a "package.yaml" instead.
+A major vulnerability was fixed in the PaxD SDK. This could allow for ACE (Arbitrary Code Execution) via package names with malicious characters. All package management functions now sanitize package names to prevent this issue.
 
-Why?
-It makes it easier for us to maintain, as we can read a YAML file easier than a JSONC file.
+This vulnerability is rated as EXTREME (8.1/10) due to the potential for severe damage if exploited.
 
-Will this change anything for me?
-As long as you are on a newer version of PaxD, no. PaxD has been transitioning to YAML-first already, and already contains code ported over from paxd-compiler (com.mralfiem591.paxd).
-If you are on a version new enough to display this message during installation, you are on a version new enough to support YAML.
-If you are on an older version, paxd-imageview will now become unavailable for you to use. Please update to a later version to keep using PaxD, via `paxd update -f paxd`.
+Please update to the latest version of the PaxD SDK to ensure your system's security.
 
-Thanks for taking the time to read this.
-    - mralfiem591 :)
+For example, an attacker could have a script with the following in it:
+
+```python
+SDK.Package.Install("com.mralfiem591.paxd-sdk && rm -rf /important/data")
+```
+This would execute the `rm -rf /important/data` command after installing the package, potentially deleting important data.
+
+This would execute the following exact command:
+
+```bash
+start cmd /c paxd install --skip-checksum com.mralfiem591.paxd-sdk && rm -rf /important/data
+```
+
+Please ensure you update to the latest version to mitigate this vulnerability.
+You can find more information on the GitHub issue being released soon for PAXD-2025-0003.
+
+All SDK endpoints for package management have been updated to sanitize package names by removing potentially dangerous characters such as `/`, `\`, `..`, `&`, `;`, and `|`, which should NEVER be in a package name.
+
+The following versions are affected:
+- PaxD SDK v1.0.0 to v1.0.4
+- PaxD SDK v1.1.0 to v1.1.4
+- PaxD SDK v1.2.0 to v1.2.1
+And any others below v1.2.1.
+
+Thank you for your attention to this important security update.
+
+NEVER download packages from unknown locations or sources outside of the official PaxD repository you do not trust.
+
+- mralfiem591, maintainer of PaxD and its SDK

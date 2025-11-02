@@ -36,16 +36,27 @@ PackageDir = os.path.join(os.path.expandvars('%LOCALAPPDATA%'), 'PaxD')
 class Package:
     @staticmethod
     def Install(package_name: str):
+        # Remove dangerous characters from package name
+        package_name = package_name.replace('/', '').replace('\\', '').replace('..', '').replace('&', '').replace(';', '').replace('|', '')
+        
         # Install a package by calling PaxD
         os.system(f"start cmd /c paxd install --skip-checksum {package_name}")
 
     @staticmethod
     def Uninstall(package_name: str):
+        # Remove dangerous characters from package name
+        package_name = package_name.replace('/', '').replace('\\', '').replace('..', '').replace('&', '').replace(';', '').replace('|', '')
+        
+        
         # Uninstall a package by calling PaxD
         os.system(f"start cmd /c paxd uninstall {package_name}")
         
     @staticmethod
     def Update(package_name: str):
+        # Remove dangerous characters from package name
+        package_name = package_name.replace('/', '').replace('\\', '').replace('..', '').replace('&', '').replace(';', '').replace('|', '')
+        
+        
         # Update a package by calling PaxD
         os.system(f"start cmd /c paxd update -f --skip-checksum {package_name}")
 
@@ -267,33 +278,7 @@ class Repository:
         return ""
 
 # Part 8: System integration
-class System:
-    @staticmethod
-    def RunCommand(command: str, capture_output: bool = False, external: bool = False):
-        """Run a system command with optional output capture."""
-        if external:
-            command = f'start cmd /c {command}'
-        
-        if capture_output:
-            import subprocess
-            try:
-                result = subprocess.run(command, shell=True, capture_output=True, universal_newlines=True)
-                return {
-                    'success': result.returncode == 0,
-                    'stdout': result.stdout,
-                    'stderr': result.stderr,
-                    'returncode': result.returncode
-                }
-            except Exception as e:
-                return {
-                    'success': False,
-                    'stdout': '',
-                    'stderr': str(e),
-                    'returncode': -1
-                }
-        else:
-            return os.system(command) == 0
-    
+class System:    
     @staticmethod
     def GetEnvironmentVar(var_name: str, default: str = "") -> str:
         """Get an environment variable."""
