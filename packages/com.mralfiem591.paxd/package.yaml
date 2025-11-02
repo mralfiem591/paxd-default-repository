@@ -2,7 +2,7 @@
 
 name: PaxD
 author: mralfiem591
-version: 1.6.2
+version: 1.6.3
 description: The main command line tool for using PaxD.
 license: MIT
 tags:
