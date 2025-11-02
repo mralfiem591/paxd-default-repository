@@ -19,8 +19,8 @@ from datetime import datetime
 
 try:
     import requests
-    from github import Github, Auth
-    import git
+    from github import Github, Auth # type: ignore # In yaml dependencies - will be auto installed
+    import git # type: ignore # In yaml dependencies - will be auto installed
 except ImportError as e:
     print(f"Error: Missing required dependency: {e}")
     print("Please install required packages:")
