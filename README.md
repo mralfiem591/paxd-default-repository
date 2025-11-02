@@ -5,7 +5,11 @@
 
 The official default repository for PaxD packages, and home to the official PaxD package.
 
-**Install PaxD!**: `curl -L -o %TEMP%\paxd_installer.py https://github.com/mralfiem591/paxd/releases/download/main/paxd-installer.py && python %TEMP%\paxd_installer.py`
+**Install PaxD!**: `curl -L -o %TEMP%\paxd_installer.py https://raw.githubusercontent.com/mralfiem591/paxd/refs/heads/main/paxd-installer.py && python %TEMP%\paxd_installer.py`
+
+Want to use PaxD, without fully installing it? **Try FastxD, the more temporary solution!**: `curl -L -o %TEMP%\fastxd.py https://raw.githubusercontent.com/mralfiem591/paxd/refs/heads/main/fastxd.py && python %TEMP%\fastxd.py`
+
+#### NOTE: both of these, and PaxD itself, **require Python 3.x or above!**
 
 ## 📦 About
 
