@@ -9,3 +9,5 @@ log_watcher.py
 favicon.ico
 repoasset/favicon.ico
 README.html
+vulnerability_issue_creator.py
+.env

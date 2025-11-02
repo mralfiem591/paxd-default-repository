@@ -4,13 +4,33 @@
             "id": "PAXD-2025-0001",
             "description": "A glitch in Paxd-Imageview can result in unauthorized access to run system commands.\nIf exploited, an attacker could potentially execute arbitrary commands on the host system, leading to a full system compromise.\n\nAn attacker can exploit this vulnerability by crafting a malicious image file with specific attributes that, when opened with Paxd-Imageview, triggers the vulnerability and allows the execution of arbitrary commands.",
             "severity": "Medium (6.1/10)",
-            "affected_versions": "1.1.2"
+            "affected_versions": "1.1.2",
+            "meta":{
+                "remote": true,
+                "title": "Paxd-Imageview Command Injection Vulnerability via Malicious Image File",
+                "complexity": "Medium",
+                "privelege": "Low",
+                "vector": "Remote",
+                "impact": "High",
+                "confidentiality": "High",
+                "integrity": "High"
+            }
         },
         {
             "id": "PAXD-2025-0002",
             "description": "A glitch in Paxd-Imageview can result in unauthorized access to run system commands.\nIf exploited, an attacker could potentially execute arbitrary commands on the host system, leading to a full system compromise.\n\nAn attacker can exploit this vulnerability by crafting a malicious URL with specific parameters that, when opened with Paxd-Imageview, triggers the vulnerability and allows the execution of arbitrary commands.",
             "severity": "Medium (6.3/10)",
-            "affected_versions": "1.1.2"
+            "affected_versions": "1.1.2",
+            "meta": {
+                "remote": true,
+                "title":"Paxd-Imageview Command Injection Vulnerability via Malicious URL",
+                "complexity": "Medium",
+                "privelege": "Low",
+                "vector": "Remote",
+                "impact": "High",
+                "confidentiality": "High",
+                "integrity": "High"
+            }
         }
     ]
 }
