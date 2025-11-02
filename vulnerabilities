@@ -23,12 +23,30 @@
             "affected_versions": "1.1.3",
             "meta": {
                 "remote": true,
-                "title":"Paxd-Imageview Command Injection Vulnerability via Malicious URL",
+                "title": "Paxd-Imageview Command Injection Vulnerability via Malicious URL",
                 "complexity": "Medium",
                 "privilege": "Low",
                 "vector": "Remote",
                 "impact": "Extreme",
                 "confidentiality": "High",
+                "integrity": "High"
+            }
+        }
+    ],
+    "com.mralfiem591.paxd-sdk": [
+        {
+            "id": "PAXD-2025-0003"
+            "description": "A major vulnerability was fixed in the PaxD SDK. This could allow for ACE (Arbitrary Code Execution) via package names with malicious characters. All package management functions now sanitize package names to prevent this issue.\n\nThis vulnerability is rated as EXTREME (8.1/10) due to the potential for severe damage if exploited.\n\nPlease update to the latest version of the PaxD SDK to ensure your system's security.\n\nFor example, an attacker could have a script with the following in it:\n\n```python\nSDK.Package.Install("com.mralfiem591.paxd-sdk && rm -rf /important/data")\n```\nThis would execute the `rm -rf /important/data` command after installing the package, potentially deleting important data.\n\nThis would execute the following exact command:\n\n```bash\nstart cmd /c paxd install --skip-checksum com.mralfiem591.paxd-sdk && rm -rf /important/data\n```\n\nPlease ensure you update to the latest version to mitigate this vulnerability.\nYou can find more information on the GitHub issue being released soon for PAXD-2025-0003.\n\nAll SDK endpoints for package management have been updated to sanitize package names by removing potentially dangerous characters such as `/`, `\`, `..`, `&`, `;`, and `|`, which should NEVER be in a package name.\n\nThe following versions are affected:\n- PaxD SDK v1.0.0 to v1.0.4\n- PaxD SDK v1.1.0 to v1.1.4\n- PaxD SDK v1.2.0 to v1.2.1\nAnd any others below v1.2.1.\n\nThank you for your attention to this important security update.\n\nNEVER download packages from unknown locations or sources outside of the official PaxD repository you do not trust.",
+            "severity": "Extreme (8.1/10)",
+            "affected_versions": "1.2.1",
+            "meta": {
+                "remote": false,
+                "title": "PaxD SDK ACE via install/uninstall/update commands",
+                "complexity": "Low",
+                "privilege": "Low",
+                "vector": "Local",
+                "impact": "Extreme",
+                "confidentiality": "Low",
                 "integrity": "High"
             }
         }
