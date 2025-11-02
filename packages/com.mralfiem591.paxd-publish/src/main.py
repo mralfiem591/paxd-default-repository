@@ -19,8 +19,8 @@ from datetime import datetime
 
 try:
     import requests
-    from github import Github, GithubException, Auth # type: ignore # In yaml dependencies
-    import git # type: ignore # In yaml dependencies
+    from github import Github, Auth
+    import git
 except ImportError as e:
     print(f"Error: Missing required dependency: {e}")
     print("Please install required packages:")
@@ -217,13 +217,14 @@ class PaxDPackagePublisher:
             print(f"  ❌ Error creating package structure: {e}")
             return False
 
-    def create_pull_request(self, package_info: Dict[str, Any], temp_dir: Path) -> Optional[str]:
+    def create_pull_request(self, package_info: Dict[str, Any], temp_dir: Path, custom_message: Optional[str] = None) -> Optional[str]:
         """
         Create a pull request with the package.
         
         Args:
             package_info: Package metadata
             temp_dir: Temporary directory containing the repo
+            custom_message: Optional custom message to include in the PR body
             
         Returns:
             URL of the created PR or None if failed
@@ -282,7 +283,16 @@ class PaxDPackagePublisher:
             
             # Create PR
             pr_title = f"Add package: {package_info.get('name', package_id)} v{package_info.get('version', 'unknown')}"
-            pr_body = f"""## Package Submission
+            
+            # Build PR body with optional custom message
+            pr_body_parts = []
+            
+            # Add custom message if provided
+            if custom_message:
+                pr_body_parts.append(f"## Changes & Updates\n\n{custom_message}\n")
+            
+            # Add standard package information
+            pr_body_parts.append(f"""## Package Submission
 
 **Package ID:** `{package_id}`
 **Name:** {package_info.get('name', 'Unknown')}
@@ -300,7 +310,9 @@ class PaxDPackagePublisher:
 {('- PaxD executable (`paxd`)' if Path('paxd').exists() else '')}
 
 ---
-*This PR was created automatically by paxd-publish*"""
+*This PR was created automatically by paxd-publish*""")
+            
+            pr_body = '\n'.join(pr_body_parts)
 
             pr = self.repo.create_pull(
                 title=pr_title,
@@ -316,12 +328,13 @@ class PaxDPackagePublisher:
             print(f"  ❌ Error creating pull request: {e}")
             return None
 
-    def publish_package(self, package_dir: Optional[Path] = None) -> bool:
+    def publish_package(self, package_dir: Optional[Path] = None, custom_message: Optional[str] = None) -> bool:
         """
         Main method to publish a package.
         
         Args:
             package_dir: Directory containing the package (defaults to current directory)
+            custom_message: Optional custom message to include in the PR body
             
         Returns:
             True if successful, False otherwise
@@ -375,7 +388,7 @@ class PaxDPackagePublisher:
             temp_path = Path(temp_dir)
             
             # Create PR
-            pr_url = self.create_pull_request(package_info, temp_path)
+            pr_url = self.create_pull_request(package_info, temp_path, custom_message)
             
             if pr_url:
                 print(f"\n🎉 Package published successfully!")
@@ -399,6 +412,9 @@ Examples:
   
   # Publish package from specific directory
   paxd-publish --dir ./my-package
+  
+  # Include a custom message about changes
+  paxd-publish --message "Fixed critical bug in authentication module"
   
   # Use custom repository
   paxd-publish --owner myuser --repo myrepo
@@ -428,6 +444,10 @@ Environment Variables:
         '--token',
         help='GitHub token (or set PAXD_GH_TOKEN env var)'
     )
+    parser.add_argument(
+        '--message',
+        help='Custom message to include in the pull request describing changes and updates'
+    )
     
     args = parser.parse_args()
     
@@ -456,7 +476,7 @@ Environment Variables:
             repo_name=args.repo
         )
         
-        success = publisher.publish_package(args.dir)
+        success = publisher.publish_package(args.dir, args.message)
         sys.exit(0 if success else 1)
         
     except UnicodeDecodeError as e:
