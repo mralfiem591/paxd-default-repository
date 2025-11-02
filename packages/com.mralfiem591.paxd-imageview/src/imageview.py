@@ -16,7 +16,7 @@ def download_image(url):
     """Download image from URL."""
     try:
         headers = {
-            'User-Agent': 'PaxdImgViewer/1.1.2'
+            'User-Agent': 'PaxdImgViewer/1.1.4'
         }
         response = requests.get(url, headers=headers, timeout=10)
         response.raise_for_status()
