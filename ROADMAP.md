@@ -12,7 +12,7 @@ Welcome to the roadmap of **PaxD**! This document outlines our vision, goals, an
 | Pulls from external sources | Enable packages to store their package src/ folder in another location, instead of the GitHub repository | 🔴 Delayed until further notice | P? |
 | Improved error handling | Enhance error messages and handling throughout the application for better user experience | 🟠 Planned | P2 |
 | paxd-vulnerability included by default | Integrate paxd-vulnerability scanner into the core PaxD package for improved security | 🟡 In Progress | P3 |
-| Manifest supports-fastxd flag | Allow packages to specify a `supports-fastxd` flag in their manifest to indicate compatibility with FastxD | 🟡 In Progress | P1 |
+| Manifest supports-fastxd flag | Allow packages to specify a `supports-fastxd` flag in their manifest to indicate compatibility with FastxD | 🟣 In Testing | P1 |
 | Setup script | Allow packages to have a setup script that runs on installation | 🟠 Planned | P2 |
 | Improved pip support | Improve support for pip and increase speed when installing or updating | 🟣 In Testing | P1 |
 
