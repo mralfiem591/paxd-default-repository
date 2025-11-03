@@ -5,8 +5,6 @@ import atexit
 # Store the current file path for use in cleanup function
 CURRENT_FILE_PATH = os.path.abspath(__file__)
 
-WARNING_SHOWN = False
-
 def cleanup():
     # Check if the bat file exists and contains run_pkg.py (which is a bug)
     bat_file_path = os.path.join(os.path.expandvars(r"%LOCALAPPDATA%"), "PaxD", "bin", "paxd.bat")
@@ -365,10 +363,6 @@ class PaxD:
             self.headers = {"User-Agent": f"PaxdClient/{self.paxd_version}", "Authorization": f"token {self.paxd_auth_token}"}
         else:
             self.headers = {"User-Agent": f"PaxdClient/{self.paxd_version}"}
-            global WARNING_SHOWN
-            if not WARNING_SHOWN:
-                print(f"{Fore.YELLOW}Warning: No authentication token found. You may encounter rate limiting. It is highly recommended to set one up, and set PAXD-GH-AUTH environment variable.{Style.RESET_ALL}")
-                WARNING_SHOWN = True
         self.verbose = verbose
     
     def _verbose_print(self, message, color=Fore.LIGHTBLACK_EX, mode=0):
@@ -2215,6 +2209,9 @@ def main():
         print(f"{Fore.RED}PaxD is a Windows only tool.")
         print(f"{Fore.RED}Please run PaxD on a Windows device!")
         exit(1)
+        
+    if not os.getenv("PAXD-GH-AUTH", None):
+        print(f"{Fore.YELLOW}Warning: No authentication token found. You may encounter rate limiting. It is highly recommended to set one up, and set PAXD-GH-AUTH environment variable.{Style.RESET_ALL}")
         
     # If repository is unoptimised, optimise it
     with open(os.path.join(os.path.dirname(__file__), "repository"), 'r+') as repo_file:
