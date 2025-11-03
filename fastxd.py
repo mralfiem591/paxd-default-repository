@@ -11,7 +11,9 @@ try:
 except NameError:
     script_path = os.path.abspath(sys.argv[0])
 
-repository = input("Enter the repository URL to use for FastxD: ").strip()
+repository = input("Enter the repository URL to use for FastxD (or leave empty for default repository): ").strip()
+if not repository:
+    repository = "https://raw.githubusercontent.com/mralfiem591/paxd/refs/heads/main"
 package = input("Enter the package name to install via FastxD: ").strip()
 
 def parse_jsonc(jsonc_text: str) -> dict:
@@ -141,6 +143,11 @@ if response_json["install"]["depend"]:
     print(f"WARN: Package '{package}' has dependencies which FastxD cannot install. You may experience errors if the following dependencies arent present:")
     for dep in response_json["install"]["depend"]:
         print(f"{dep.split(':')[1:]} ({dep.split(':')[0]})")
+
+# Check if this package supports FastxD
+if not response_json["install"].get("supports-fastxd", True):
+    print(f"ERROR: Package '{package}' does not support FastxD installation. Installation aborted.")
+    exit(1)
 
 # Get the main file URL from the paxd file
 try:
