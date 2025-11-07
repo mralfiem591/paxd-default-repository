@@ -122,7 +122,7 @@ try:
     response = requests.get(f"{repository}/packages/{package}/paxd", headers={"User-Agent": "FastxD/1.0.0"}, timeout=15)
     response.raise_for_status()
 except Exception as e:
-    print(f"ERROR: Could not fetch package '{package}' from repository '{repository}' ({e}). Does this package maybe use YAML? Installation aborted.")
+    print(f"ERROR: Could not fetch package '{package}' from repository '{repository}' ({e}). Does this package maybe use YAML? If so, it is not supported by FastxD. Installation aborted.")
     exit(1)
 
 # Debug: Check response content
