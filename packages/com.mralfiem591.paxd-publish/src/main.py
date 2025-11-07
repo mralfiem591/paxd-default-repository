@@ -29,7 +29,7 @@ except ImportError as e:
 
 
 class PaxDPackagePublisher:
-    def __init__(self, github_token: str, repo_owner: str = "mralfiem591", repo_name: str = "paxd"):
+    def __init__(self, github_token: str, user: str, repo_owner: str = "mralfiem591", repo_name: str = "paxd"):
         """Initialize the package publisher."""
         self.github_token = github_token
         self.repo_owner = repo_owner
@@ -39,6 +39,7 @@ class PaxDPackagePublisher:
         auth = Auth.Token(github_token)
         self.github = Github(auth=auth)
         self.repo = self.github.get_repo(f"{repo_owner}/{repo_name}")
+        self.user = user
 
     def validate_package_structure(self, package_dir: Path) -> Dict[str, Any]:
         """
@@ -246,8 +247,8 @@ class PaxDPackagePublisher:
             
             # Configure git user for this repository
             with repo.config_writer() as git_config:
-                git_config.set_value("user", "name", "paxd-publish")
-                git_config.set_value("user", "email", "paxd-publish@github.com")
+                git_config.set_value("user", "name", f"{self.user}-paxdpublish")
+                git_config.set_value("user", "email", f"{self.user}-paxdpublish@github.com")
             
             # Create new branch
             package_id = package_info['package_id']
@@ -274,7 +275,7 @@ class PaxDPackagePublisher:
                 return None
             
             # Commit changes
-            commit_message = f"Add/update/change package {package_id} v{package_info.get('version', 'unknown')}\n\nAutomatically published via paxd-publish"
+            commit_message = f"Add/update/change package {package_id} v{package_info.get('version', 'unknown')}\n\nAutomatically published via paxd-publish as {self.user}"
             repo.git.commit('-m', commit_message)
             
             # Push branch
@@ -310,7 +311,7 @@ class PaxDPackagePublisher:
 {('- PaxD executable (`paxd`)' if Path('paxd').exists() else '')}
 
 ---
-*This PR was created automatically by paxd-publish*""")
+*This PR was created automatically by paxd-publish as {self.user}*""")
             
             pr_body = '\n'.join(pr_body_parts)
 
@@ -448,15 +449,26 @@ Environment Variables:
         '--message',
         help='Custom message to include in the pull request describing changes and updates'
     )
+    parser.add_argument(
+        '--user',
+        help='The user who is publishing the changes. Used to attribute the package correctly.'
+    )
     
     args = parser.parse_args()
     
     # Get GitHub token
     github_token = args.token or os.getenv('PAXD_GH_TOKEN')
     if not github_token:
-        print("❌ Error: GitHub token is required.")
+        print("Error: GitHub token is required.")
         print("Set the PAXD_GH_TOKEN environment variable or use --token option.")
         print("Get a token from: https://github.com/settings/tokens")
+        sys.exit(1)
+        
+    user = args.user or os.getenv('PAXD_GH_USER') or None
+    if not user:
+        print("Error: I do not know who you are.")
+        print("Set the PAXD_GH_USER environment variable or use --user option.")
+        print("You can use any identifier, e.g., your GitHub username, email, etc, but it is recommended you use your GH username.")
         sys.exit(1)
     
     # Validate directory
@@ -473,7 +485,8 @@ Environment Variables:
         publisher = PaxDPackagePublisher(
             github_token=github_token,
             repo_owner=args.owner,
-            repo_name=args.repo
+            repo_name=args.repo,
+            user=user
         )
         
         success = publisher.publish_package(args.dir, args.message)
