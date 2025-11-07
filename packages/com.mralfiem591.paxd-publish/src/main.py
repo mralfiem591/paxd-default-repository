@@ -48,7 +48,7 @@ class PaxDPackagePublisher:
         Returns:
             Dict containing validation results and package metadata
         """
-        print("🔍 Validating package structure...")
+        print("  Validating package structure...")
         
         results = {
             'valid': True,
@@ -76,7 +76,7 @@ class PaxDPackagePublisher:
                 manifest = yaml.safe_load(f)
             
             results['package_info'] = manifest
-            print(f"  ✅ Found manifest: {manifest_file.name}")
+            print(f"    Found manifest: {manifest_file.name}")
             
         except yaml.YAMLError as e:
             results['errors'].append(f"Invalid YAML in manifest: {e}")
@@ -109,10 +109,10 @@ class PaxDPackagePublisher:
             else:
                 print(f"  📁 Found {len(src_files)} files in src/")
         
-        # Check for paxd executable (optional)
+        # Check for paxd manifest (optional)
         paxd_file = package_dir / 'paxd'
         if paxd_file.exists():
-            print(f"  ✅ Found paxd executable")
+            print(f"  ✅ Found paxd manifest")
         
         # Validate package name format
         author = manifest.get('author', '')
@@ -184,7 +184,7 @@ class PaxDPackagePublisher:
         Returns:
             True if successful, False otherwise
         """
-        print(f"📦 Creating package structure...")
+        print(f"  Creating package structure...")
         
         try:
             package_id = package_info['package_id']
@@ -208,14 +208,14 @@ class PaxDPackagePublisher:
                     else:
                         shutil.copy2(item, target_item)
                 except (UnicodeDecodeError, UnicodeError) as e:
-                    print(f"  ⚠️  Warning: Skipping file with encoding issues: {item.name} ({e})")
+                    print(f"     Warning: Skipping file with encoding issues: {item.name} ({e})")
                     continue
             
-            print(f"  ✅ Package structure created at: packages/{package_id}")
+            print(f"    Package structure created at: packages/{package_id}")
             return True
             
         except Exception as e:
-            print(f"  ❌ Error creating package structure: {e}")
+            print(f"    Error creating package structure: {e}")
             return False
 
     def create_pull_request(self, package_info: Dict[str, Any], temp_dir: Path, custom_message: Optional[str] = None) -> Optional[str]:
@@ -230,7 +230,7 @@ class PaxDPackagePublisher:
         Returns:
             URL of the created PR or None if failed
         """
-        print("🚀 Creating pull request...")
+        print("  Creating pull request...")
         
         try:
             # Initialize git repo with explicit encoding
@@ -271,7 +271,7 @@ class PaxDPackagePublisher:
             
             # Check if there are changes to commit
             if not repo.is_dirty() and not repo.index.diff("HEAD"):
-                print("  ⚠️  No changes detected - package may already exist")
+                print("No changes detected - package may already exist")
                 return None
             
             # Commit changes
@@ -322,11 +322,11 @@ class PaxDPackagePublisher:
                 base="main"
             )
             
-            print(f"  ✅ Pull request created: {pr.html_url}")
+            print(f"Pull request created: {pr.html_url}")
             return pr.html_url
             
         except Exception as e:
-            print(f"  ❌ Error creating pull request: {e}")
+            print(f"Error creating pull request: {e}")
             return None
 
     def publish_package(self, package_dir: Optional[Path] = None, custom_message: Optional[str] = None) -> bool:
@@ -343,42 +343,43 @@ class PaxDPackagePublisher:
         if package_dir is None:
             package_dir = Path.cwd()
         
-        print(f"🎯 Publishing package from: {package_dir}")
+        print(f"Publishing package from: {package_dir}")
         
         # Check for encoding issues first
-        print("🔍 Checking file encodings...")
+        print("Checking file encodings...")
         problematic_files = self.check_file_encodings(package_dir)
         
         if problematic_files:
-            print(f"\n⚠️  Found {len(problematic_files)} files with encoding issues:")
+            print(f"\nFound {len(problematic_files)} files with encoding issues:")
             for file_name in problematic_files:
                 print(f"  - {file_name}")
-            print(f"\n💡 These files contain non-UTF-8 characters or are binary files.")
-            print(f"   Consider converting text files to UTF-8 or excluding binary files.")
-            print(f"   Proceeding with caution - some files may be skipped.")
+            print("\nThese files contain non-UTF-8 characters or are binary files.")
+            print("   Consider converting text files to UTF-8 or excluding binary files.")
+            print("   Proceeding with caution - some files may be skipped.")
+            print("   NOTE: This can be ignored if these are binary files!")
         
         # Validate package
         validation = self.validate_package_structure(package_dir)
         
         # Report validation results
         if validation['errors']:
-            print("\n❌ Validation errors:")
+            print("\nValidation errors:")
             for error in validation['errors']:
                 print(f"  - {error}")
         
         if validation['warnings']:
-            print("\n⚠️  Warnings:")
+            print("\nWarnings:")
             for warning in validation['warnings']:
                 print(f"  - {warning}")
         
         if not validation['valid']:
-            print("\n💥 Package validation failed. Please fix the errors above.")
+            print("\nPackage validation failed. Please fix the errors above.")
             return False
         
         print(f"\n✅ Package validation successful!")
         package_info = validation['package_info']
-        
-        print(f"📋 Package Info:")
+
+        print(f"Package Info:")
         print(f"  - Name: {package_info.get('name')}")
         print(f"  - Author: {package_info.get('author')}")
         print(f"  - Version: {package_info.get('version')}")
@@ -392,12 +393,12 @@ class PaxDPackagePublisher:
             pr_url = self.create_pull_request(package_info, temp_path, custom_message)
             
             if pr_url:
-                print(f"\n🎉 Package published successfully!")
-                print(f"📄 Pull Request: {pr_url}")
-                print(f"⏳ Your package will be available after the PR is reviewed and merged.")
+                print(f"\nPackage published successfully!")
+                print(f"Pull Request: {pr_url}")
+                print(f"Your package will be available after the PR is reviewed and merged.")
                 return True
             else:
-                print(f"\n💥 Failed to create pull request.")
+                print(f"\nFailed to create pull request.")
                 return False
 
 
@@ -493,12 +494,12 @@ Environment Variables:
         sys.exit(0 if success else 1)
         
     except UnicodeDecodeError as e:
-        print(f"💥 Unicode/Encoding Error: {e}")
-        print(f"📄 This usually means there's a file with non-UTF-8 characters.")
-        print(f"🔧 Try saving all files with UTF-8 encoding and remove any binary files from the package.")
+        print(f"Unicode/Encoding Error: {e}")
+        print(f"This usually means there's a file with non-UTF-8 characters.")
+        print(f"Try saving all files with UTF-8 encoding and remove any binary files from the package.")
         sys.exit(1)
     except Exception as e:
-        print(f"💥 Unexpected error: {e}")
+        print(f"Unexpected error: {e}")
         sys.exit(1)
 
 
