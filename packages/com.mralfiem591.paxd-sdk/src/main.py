@@ -4,7 +4,7 @@ import os
 
 # Part 1: utilities that can be accessed by other packages based specifically on the SDK (eg. version)
 class SDKDetails:
-    Version = "1.2.0"
+    Version = "1.2.2"
 
     @staticmethod
     def AssertVersion(min_version: str) -> bool:
