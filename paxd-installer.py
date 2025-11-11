@@ -104,7 +104,7 @@ if not repo:
 repo = _resolve_repository_url(repo)
 print(f"{Fore.GREEN}Repository URL resolved to: {Fore.CYAN}{repo}{Fore.GREEN}.")
 
-paxd_ready = requests.get(f"{repo}/packages/com.mralfiem591.paxd", headers={"User-Agent": "PaxdInstaller/1.0.0"}, allow_redirects=True)
+paxd_ready = requests.get(f"{repo}/packages/com.mralfiem591.paxd/src/main.py", headers={"User-Agent": "PaxdInstaller/1.0.0"}, allow_redirects=True) # Some repositories always return 404 when looking for a folder - check for main.py instead
 if paxd_ready.status_code != 200:
     print(Fore.RED + "ERROR: The provided repository does not appear to be PaxD-ready (missing com.mralfiem591.paxd package). Installation aborted.")
     print(Fore.RED + "HELP: Please ensure you provide a valid PaxD-ready repository URL. You can find such repositories on the PaxD website!")
