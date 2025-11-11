@@ -339,6 +339,8 @@ class Helpers:
     @staticmethod
     def ParseJsonc(jsonc_text: str) -> dict:
         # Parse JSONC (JSON with comments) by removing comments.
+        # This mainly exists because the paxd file in packages on a repository is formatted in JSONC, containing comments.
+        # This makes it not function with pythons built in "json" module. This parser will replace the "json" module.
         
         # Remove single-line comments (// ...)
         lines = jsonc_text.split('\n')
