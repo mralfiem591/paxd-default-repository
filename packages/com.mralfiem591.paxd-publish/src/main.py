@@ -486,16 +486,23 @@ Environment Variables:
         print(f"❌ Error: Path is not a directory: {args.dir}")
         sys.exit(1)
         
-    warning_paths = [
-        os.path.expanduser("~"),
-        "/",
-        "/etc",
-        "/usr",
-        "/bin",
-        "/home",
-        "/tmp"
-    ]
-    if os.name == 'nt': # Windows-specific paths
+    warning_paths = [os.path.expanduser("~")]
+    
+    if os.name != 'nt':  # POSIX-specific paths
+        warning_paths.extend([
+            "/",
+            "/root",
+            "/home",
+            "/usr",
+            "/usr/bin",
+            "/usr/local",
+            "/etc",
+            "/var",
+            "/opt",
+            "/tmp",
+        ])
+    
+    elif os.name == 'nt': # Windows-specific paths
         for drive in ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']:
             warning_paths.append(f"{drive}:\\")
             warning_paths.append(os.path.join(f"{drive}:\\", "Users"))
