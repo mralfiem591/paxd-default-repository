@@ -72,6 +72,7 @@ def find_sdk():
     if not os.path.exists(os.path.join(os.path.expandvars('%LOCALAPPDATA%'), 'PaxD', 'com.mralfiem591.paxd-sdk', 'main.py')):
         print("PaxD SDK is not installed. Please install PaxD SDK to run this package, via 'paxd install paxd-sdk'.")
         print("ALERT: PaxD SDK is required, but cannot be installed normally due to PaxD not being able to run. A forced installation will begin.")
+        global SDK_BACKUP
         SDK_BACKUP = True
 
     SDK_PATH = os.path.join(os.path.expandvars('%LOCALAPPDATA%'), 'PaxD', 'com.mralfiem591.paxd-sdk', 'main.py')
@@ -2245,6 +2246,7 @@ def main():
     if SDK_BACKUP:
         paxd._verbose_print("PaxD SDK missing - forcing install")
         paxd.install("com.mralfiem591.paxd-sdk", user_requested=False)
+        exit(1)
     
     if os.path.exists(os.path.join(os.path.dirname(__file__), ".UPDATERUN")):
         print(f"{Fore.GREEN}PaxD was updated! Welcome to PaxD {Fore.CYAN}{paxd.paxd_version}{Fore.GREEN}: {paxd.paxd_version_phrase}...{Style.RESET_ALL}\n")
