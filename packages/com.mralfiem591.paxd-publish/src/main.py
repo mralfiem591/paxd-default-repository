@@ -454,6 +454,11 @@ Environment Variables:
         '--user',
         help='The user who is publishing the changes. Used to attribute the package correctly.'
     )
+    parser.add_argument(
+        '--print-warning-paths',
+        action='store_true',
+        help='Print warning paths and exit (for debugging purposes)'
+    )
     
     args = parser.parse_args()
     
@@ -498,6 +503,12 @@ Environment Variables:
         
     for home_path in ['Desktop', 'Documents', 'Downloads', 'Music', 'Pictures', 'Videos']:
         warning_paths.append(os.path.join(os.path.expanduser("~"), home_path))
+    
+    if args.print_warning_paths:
+        print("Warning paths:")
+        for path in warning_paths:
+            print(path)
+        sys.exit(0)
     
     for path in warning_paths:
         if Path.cwd() == path:
