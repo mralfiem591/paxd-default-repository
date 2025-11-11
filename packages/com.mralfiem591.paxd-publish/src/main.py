@@ -486,7 +486,7 @@ Environment Variables:
         print(f"❌ Error: Path is not a directory: {args.dir}")
         sys.exit(1)
         
-    warning_paths = [os.path.expanduser("~")]
+    warning_paths = []
     
     if os.name != 'nt':  # POSIX-specific paths
         warning_paths.extend([
@@ -508,6 +508,11 @@ Environment Variables:
             warning_paths.append(os.path.join(f"{drive}:\\", "Users"))
             warning_paths.append(os.path.join(f"{drive}:\\", "Windows"))
             warning_paths.append(os.path.join(f"{drive}:\\", "Windows", "System32"))
+            warning_paths.append(os.path.join(f"{drive}:\\", "Program Files"))
+            warning_paths.append(os.path.join(f"{drive}:\\", "Program Files (x86)"))
+            warning_paths.append(os.path.join(f"{drive}:\\", "ProgramData"))
+            warning_paths.append(os.path.join(f"{drive}:\\", "Temp"))
+            warning_paths.append(f"{drive}{os.path.expanduser('~')[1:]}")
             for home_path in ['Desktop', 'Documents', 'Downloads', 'Music', 'Pictures', 'Videos']:
                 warning_paths.append(os.path.join(f"{drive}{os.path.expanduser('~')[1:]}", home_path))
                 
