@@ -510,8 +510,10 @@ Environment Variables:
             warning_paths.append(os.path.join(f"{drive}:\\", "Windows", "System32"))
             for home_path in ['Desktop', 'Documents', 'Downloads', 'Music', 'Pictures', 'Videos']:
                 warning_paths.append(os.path.join(f"{drive}{os.path.expanduser('~')[1:]}", home_path))
+                
     
     if args.print_warning_paths:
+        warning_paths.sort(key = str.lower) # Sort alphabetically, A at the top and Z at the bottom
         print("Warning paths:")
         for path in warning_paths:
             print(path)
