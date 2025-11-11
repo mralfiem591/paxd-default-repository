@@ -2,7 +2,7 @@
 
 name: PaxD Publish
 author: mralfiem591
-version: 1.0.5
+version: 1.0.6
 description: A tool to validate and publish PaxD packages to the repository via GitHub PR.
 license: MIT
 tags:

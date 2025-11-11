@@ -1,3 +1,7 @@
+__name__ = "PaxD Client"
+__author__ = "mralfiem591"
+__license__ = "Copyright 2025 mralfiem591 (MIT, refer to LICENSE file)"
+
 import os
 
 import atexit
@@ -358,7 +362,8 @@ def add_to_path(folder_path: str) -> bool:
 class PaxD:
     def __init__(self, verbose=False):
         self.repository_file = os.path.join(os.path.dirname(__file__), "repository")
-        self.paxd_version = "1.6.5"
+        self.paxd_version = "1.6.6"
+        __version__ = self.paxd_version
         self.paxd_version_phrase = "The Authentication Update"
         # Check if a PAXD_GH_TOKEN environment variable is set for authentication
         self.paxd_auth_token = os.getenv("PAXD_GH_TOKEN", None)
