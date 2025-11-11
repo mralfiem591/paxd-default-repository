@@ -507,6 +507,7 @@ Environment Variables:
         print("Warning paths:")
         for path in warning_paths:
             print(path)
+        print(f"Total: {len(warning_paths)} paths")
         sys.exit(0)
     
     for path in warning_paths:
