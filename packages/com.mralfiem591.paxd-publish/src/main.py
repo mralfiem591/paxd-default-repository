@@ -534,6 +534,8 @@ Environment Variables:
         for path in warning_paths:
             print(path)
         print(f"Total: {len(warning_paths)} paths")
+        import random
+        print(f"If you attempt to publish from any of these paths, for example, {random.choice(warning_paths)}, you will receive a warning prompt asking if you want to continue.")
         sys.exit(0)
     
     for path in warning_paths:
