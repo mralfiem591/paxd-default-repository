@@ -12,11 +12,11 @@ Want to use PaxD, without fully installing it? **Try FastxD, the more temporary 
 #### NOTE: both of these, and PaxD itself, **require Python 3.x or above!**
 #### You can find a repository to use below, in the "Links" section.
 
-## 📦 About
+## About
 
 This repository serves as the default package repository for [PaxD](packages/com.mralfiem591.paxd), a command-line package manager. It hosts official packages and provides a centralized location for package distribution and management.
 
-## 🎯 What is PaxD?
+## What is PaxD?
 
 PaxD is a package manager and command-line tool designed to simplify the installation and management of software packages. It provides a streamlined interface for:
 
@@ -25,7 +25,7 @@ PaxD is a package manager and command-line tool designed to simplify the install
 - Updating installed packages
 - Running installed applications
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Installing PaxD
 
@@ -61,11 +61,11 @@ paxd install paxd-imageview
 
 You can view all aliases in the [resolution file](resolution).
 
-## 📋 Package Resolution
+## Package Resolution
 
 The repository includes a comprehensive package resolution system that maps common aliases to package IDs. You can install packages using their full ID or common aliases defined in the [resolution](resolution) file.
 
-## 🔐 Security
+## Security
 
 Security is a priority for the PaxD ecosystem. Known vulnerabilities are tracked in the [vulnerabilities](vulnerabilities) file.
 
@@ -81,11 +81,11 @@ You can scan for vulnerabilities by installing the `paxd-vulnscan` tool, via `pa
 
 Vulnerabilities will be tracked via GitHub Issues. A bot is set up to handle this, and you can easily view them via Issues on the topbar. They are tagged for ease of use, and will be automatically updated if anything happpens.
 
-## 🗺️ Roadmap
+## Roadmap
 
 You can find our roadmap in the [ROADMAP.md](ROADMAP.md) file. This roadmap is subject to change based on development progress and community feedback.
 
-## 🏅 Certified & Official Packages
+## Certified & Official Packages
 
 Packages in this repository are marked as:
 - **Official**: Maintained by the PaxD team
@@ -93,7 +93,9 @@ Packages in this repository are marked as:
 
 The lists of certified and official packages can be found in the [certified](certified) and [official](official) files.
 
-## 📝 License
+We are working on generating README.md files for each package, which will contain info on if it is certified and/or official.
+
+## License
 
 This repository and all packages within it are licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
@@ -102,7 +104,7 @@ MIT License
 Copyright (c) 2025 Alf (mralfiem591)
 ```
 
-## 🤝 Contributing
+## Contributing
 
 Contributions to the PaxD ecosystem are welcome! Whether you're:
 - Reporting bugs
@@ -112,19 +114,19 @@ Contributions to the PaxD ecosystem are welcome! Whether you're:
 
 Please ensure your contributions follow the existing patterns and maintain compatibility with the PaxD package manager.
 
-## 👨‍💻 Credits
+## Credits
 
 - **Maintainer**: mralfiem591
 - **Backend**: Git, GitHub API
 - **Frontend**: GitHub
 
-## 🔗 Links
+## Links
 
 - Repository (ready for use in repository file): `optimised::https://raw.githubusercontent.com/mralfiem591/paxd/refs/heads/main`
 - Repository (ready for use with FastxD and installer): `https://raw.githubusercontent.com/mralfiem591/paxd/refs/heads/main`
 - Author: [@mralfiem591](https://github.com/mralfiem591)
 
-## 📊 Repository Structure
+## Repository Structure
 
 ```
 paxd-default-repository/
