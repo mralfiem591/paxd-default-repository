@@ -7,10 +7,14 @@ on:
     paths:
       - 'packages/**'
       - 'resolution'
+  
+  workflow_dispatch:
 
 jobs:
   update-index:
     runs-on: self-hosted
+    permissions:
+      contents: write
     
     steps:
       - name: Checkout repository
