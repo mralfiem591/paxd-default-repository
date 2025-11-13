@@ -161,7 +161,7 @@ def generate_searchindex():
             fieldnames = ['package_id', 'package_name', 'description', 'author', 'version', 'alias', 'aliases']
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             writer.writeheader()
-        return False
+        return True
     
     fieldnames = ['package_id', 'package_name', 'description', 'author', 'version', 'alias', 'aliases']
     
