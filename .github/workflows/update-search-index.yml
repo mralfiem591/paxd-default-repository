@@ -10,9 +10,6 @@ on:
   
   workflow_dispatch:
 
-  schedule:
-    - cron: '0 3 * * 0'  # Every Sunday at 03:00 UTC (incase something is missed - keep it up to date anyway)
-
 jobs:
   update-index:
     runs-on: self-hosted
