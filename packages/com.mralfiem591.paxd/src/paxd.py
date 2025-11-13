@@ -2558,5 +2558,16 @@ def main():
     # Remove "try"/"except Exception": sentry now handles it
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except SystemExit as e:
+        print(f"SystemExit caught! {e}")
+        sentry_sdk.capture_exception(e)
+        sentry_sdk.flush(timeout=5)
+        sys.exit(e.code if hasattr(e, 'code') else 1)
+    except Exception as e:
+        print(f"Unhandled exception caught in main: {e}")
+        sentry_sdk.capture_exception(e)
+        sentry_sdk.flush(timeout=5)
+        sys.exit(e.code if hasattr(e, 'code') else 1)
     bat_file_path = os.path.join(os.path.dirname(__file__), 'bin', 'paxd.bat')
