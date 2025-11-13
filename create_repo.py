@@ -33,7 +33,7 @@ os.makedirs(os.path.join(directory, 'repoasset'), exist_ok=True)
 # Step 3: start pulling some files from the default repository
 default_repo = 'https://raw.githubusercontent.com/mralfiem591/paxd/refs/heads/main'
 
-mode = input(Fore.YELLOW + "CHOOSE A MODE:\n\n1. Lite: Just the required files. Markdown, and repoasset will be missing, as well as a few others.\n2. Full: All files from the default repository.\n3. Bare Minimum: literally just a paxd file and the folders.\nType '1' for Lite, '2' for Full, '3' for Bare Minimum (default is Full): ")
+mode = input(Fore.YELLOW + "CHOOSE A MODE:\n\n1. Lite: Just the required files. Markdown, and repoasset will be missing, as well as a few others.\n2. Full: All files from the default repository.\n3. Bare Minimum: literally just a paxd file and the folders. NOTE: This may not be compatible with all PaxD clients!\nType '1' for Lite, '2' for Full, '3' for Bare Minimum (default is Full): ")
 
 import requests
 
