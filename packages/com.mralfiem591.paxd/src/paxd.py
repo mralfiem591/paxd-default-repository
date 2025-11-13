@@ -6,14 +6,11 @@ import sentry_sdk
 
 sentry_sdk.init(
     dsn="https://0ad2cc445d5796110d1e4e65e3a92a38@o4510357020540928.ingest.de.sentry.io/4510357023293520",
-    # Add data like request headers and IP for users,
-    # see https://docs.sentry.io/platforms/python/data-management/data-collected/ for more info
     send_default_pii=True,
-    # Enable sending logs to Sentry
-    enable_logs=True,
-    # Set traces_sample_rate to 1.0 to capture 100%
-    # of transactions for tracing.
+    enable_logs=True, # type: ignore
     traces_sample_rate=1.0,
+    attach_stacktrace=True,
+    send_default_pii=True,
 )
 
 import os
@@ -405,7 +402,7 @@ class PaxD:
             LOGS_VERBOSE[f"({lexicographic_number}) {timestamp}"] = message # Also include the len of LOGS_VERBOSE so logs made at the exact same time are still valid and shown, instead of just the most recent one
             if self.verbose:
                 print(f"{color}[{timestamp}] VERBOSE: {message}{Style.RESET_ALL}")
-            sentry_sdk.logger.info(f"[{timestamp}] VERBOSE: {message}")
+            sentry_sdk.log.info(f"[{timestamp}] VERBOSE: {message}")
     
     def _verbose_timing_start(self, operation):
         """Start timing an operation in verbose mode."""
