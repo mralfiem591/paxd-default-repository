@@ -368,7 +368,7 @@ def add_to_path(folder_path: str) -> bool:
 class PaxD:
     def __init__(self, verbose=False):
         self.repository_file = os.path.join(os.path.dirname(__file__), "repository")
-        self.paxd_version = "1.6.7"
+        self.paxd_version = "1.6.8"
         __version__ = self.paxd_version
         self.paxd_version_phrase = "The Authentication Update"
         # Check if a PAXD_GH_TOKEN environment variable is set for authentication
