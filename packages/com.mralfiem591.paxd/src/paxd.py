@@ -405,7 +405,7 @@ class PaxD:
             LOGS_VERBOSE[f"({lexicographic_number}) {timestamp}"] = message # Also include the len of LOGS_VERBOSE so logs made at the exact same time are still valid and shown, instead of just the most recent one
             if self.verbose:
                 print(f"{color}[{timestamp}] VERBOSE: {message}{Style.RESET_ALL}")
-            sentry_sdk.log.info(f"[{timestamp}] VERBOSE: {message}")
+            sentry_sdk.logger.info(f"[{timestamp}] VERBOSE: {message}")
     
     def _verbose_timing_start(self, operation):
         """Start timing an operation in verbose mode."""
