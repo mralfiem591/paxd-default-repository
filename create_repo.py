@@ -10,6 +10,8 @@ directory = os.path.dirname(os.path.abspath(__file__))
 if input(Fore.YELLOW + "This will initialise the directory of this script as a custom PaxD repository. " + Fore.RED + Style.BRIGHT + f"This can delete and overwrite files in this directory. PLEASE HAVE A BACKUP IF NEEDED! The directory is: {directory}\n\nType 'YES' in full capitals to continue: ") != "YES":
     print(Fore.RED + "Aborting repository creation.")
     exit(1)
+
+os.chdir(directory)
     
 # Step 1: if /packages, or /repoasset exist, delete them
 def permission_error_handler(func, path, exc_info):
