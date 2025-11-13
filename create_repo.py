@@ -33,7 +33,7 @@ os.makedirs(os.path.join(directory, 'repoasset'), exist_ok=True)
 # Step 3: start pulling some files from the default repository
 default_repo = 'https://raw.githubusercontent.com/mralfiem591/paxd/refs/heads/main'
 
-mode = input(Fore.YELLOW + "CHOOSE A MODE:\n\n1. Lite: Just the required files. Markdown, and repoasset will be missing, as well as a few others.\n2. Full: All files from the default repository.\n\nType '1' for Lite, '2' for Full (default is Full): ")
+mode = input(Fore.YELLOW + "CHOOSE A MODE:\n\n1. Lite: Just the required files. Markdown, and repoasset will be missing, as well as a few others.\n2. Full: All files from the default repository.\n3. Bare Minimum: literally just a paxd file and the folders.\nType '1' for Lite, '2' for Full, '3' for Bare Minimum (default is Full): ")
 
 import requests
 
@@ -49,6 +49,10 @@ if mode.strip() != '2':
         'fastxd.py',
         'repoasset/certified.png',
         'repoasset/logo.png'
+    ]
+elif mode.strip() == '3':
+    required = [
+        'paxd'
     ]
 else:
     required = [
@@ -73,29 +77,32 @@ for entry in required:
 # Step 4: small extras
 
 # Create vulnerabilities and resolution with blank json dicts
-if mode.strip() != '2':
-    with open(os.path.join(directory, 'vulnerabilities'), 'w', encoding='utf-8') as f:
+if mode.strip() != '3':
+    if mode.strip() != '2':
+        with open(os.path.join(directory, 'vulnerabilities'), 'w', encoding='utf-8') as f:
+            f.write("{}")
+        print(Fore.GREEN + "Created blank 'vulnerabilities' file.")
+        
+    with open(os.path.join(directory, 'resolution'), 'w', encoding='utf-8') as f:
         f.write("{}")
-    print(Fore.GREEN + "Created blank 'vulnerabilities' file.")
-    
-with open(os.path.join(directory, 'resolution'), 'w', encoding='utf-8') as f:
-    f.write("{}")
-print(Fore.GREEN + "Created blank 'resolution' file.")
-    
-# Create certified with blank json list
-with open(os.path.join(directory, 'certified'), 'w', encoding='utf-8') as f:
-    f.write("[]")
-print(Fore.GREEN + "Created blank 'certified' file.")
-    
-# Generate initial searchindex.csv
-if mode.strip() != '2':
-    print(Fore.CYAN + "Generating initial searchindex.csv...")
-    with open(os.path.join(directory, 'generate_searchindex.py'), 'r', encoding='utf-8') as f:
-        exec(f.read())
-    print(Fore.GREEN + "searchindex.csv generated successfully.")
-    print(Fore.YELLOW + "NOTE: You should run this often! If the index is out of date, PaxD will not be able to find some packages.")
+    print(Fore.GREEN + "Created blank 'resolution' file.")
+        
+    # Create certified with blank json list
+    with open(os.path.join(directory, 'certified'), 'w', encoding='utf-8') as f:
+        f.write("[]")
+    print(Fore.GREEN + "Created blank 'certified' file.")
+        
+    # Generate initial searchindex.csv
+    if mode.strip() != '2':
+        print(Fore.CYAN + "Generating initial searchindex.csv...")
+        with open(os.path.join(directory, 'generate_searchindex.py'), 'r', encoding='utf-8') as f:
+            exec(f.read())
+        print(Fore.GREEN + "searchindex.csv generated successfully.")
+        print(Fore.YELLOW + "NOTE: You should run this often! If the index is out of date, PaxD will not be able to find some packages.")
+    else:
+        print(Fore.YELLOW + "Skipping searchindex.csv generation in Lite mode. You can run 'generate_searchindex.py' later to create it. NOTE: not running this will slow searching significantly!")
 else:
-    print(Fore.YELLOW + "Skipping searchindex.csv generation in Lite mode. You can run 'generate_searchindex.py' later to create it. NOTE: not running this will slow searching significantly!")
+    print(Fore.YELLOW + "Skipping all extras in Bare Minimum mode. You can run 'generate_searchindex.py' later to create searchindex.csv. NOTE: not running this will slow searching significantly!")
     
 # Final message
 print(Fore.GREEN + Style.BRIGHT + "\nRepository initialized successfully!\nYou can now add packages to the 'packages' directory and run 'generate_searchindex.py' to update the search index.\n")
