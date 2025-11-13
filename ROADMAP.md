@@ -22,6 +22,7 @@ Welcome to the roadmap of **PaxD**! This document outlines our vision, goals, an
 | PaxD SDK | Develop a Software Development Kit (SDK) for PaxD to facilitate package development | 🟢 Completed | Released immediately |
 | PaxDP CLI package | Create a command-line interface (CLI) tool for PaxD to streamline package publishing and updating | 🟢 Completed | Released immediately |
 | Manifest supports-fastxd flag | Allow packages to specify a `supports-fastxd` flag in their manifest to indicate compatibility with FastxD | 🟢 Completed | Released immediately |
+| Improved search indexing | Optimize the search indexing process for faster and more accurate results | 🟢 Completed | Released immediately |
 
 ### Version 1.8.0
 
