@@ -2076,25 +2076,6 @@ class PaxD:
                 print(f"Failed to install {package_name}: {e}")
 
         print(f"\n{Fore.GREEN}All package imports completed.")
-        
-    def message_package(self):
-        # Send a message to a compatible package. Requires the PaxD SDK.
-        find_sdk()
-        
-        import paxd_sdk as sdk # type: ignore
-        
-        if not sdk.SDKDetails().AssertVersion("1.2.0"):
-            print("Messaging another module is a feature only included in PaxD SDK 1.2.0 and later. Please update your SDK.")
-
-        to = input("Enter the package name to message: ").strip()
-        message = input("Enter the message to send: ").strip()
-
-        try:
-            sdk.Messaging.SendMessage("com.mralfiem591.paxd", to, {"message": message})
-        except ValueError as e:
-            print(f"Failed to send message: {e}")
-            return
-        print("Message sent!")
 
 PaxD()._verbose_print("IMPORTANT: please ignore the numbers stated at the left side of each log key! They are purely to make sorting easier for our bug trackers systems. They are lexicographic for a reason! (because our bug tracker can only read lexicographic ordering for some reason lol)", mode=2)
 
@@ -2298,13 +2279,6 @@ def create_argument_parser():
         '-y',
         action='store_true',
         help="Automatically confirm reinitialization without prompt"
-    )
-    
-    # Message command
-    subparsers.add_parser(
-        'message',
-        help="Send a message",
-        description="Send a message to a compatible package for it to receive."
     )
     
     # Return parser, with all commands
@@ -2531,9 +2505,6 @@ def main():
         elif args.command == "import":
             paxd._verbose_print("Importing packages from export.paxd")
             paxd.import_paxd()
-        elif args.command == "message":
-            paxd._verbose_print("Sending message to package")
-            paxd.message_package()
         elif args.command == "init":
             if not args.y:
                 if input(Fore.RED + Style.BRIGHT + "Are you SURE you want to complete first time initialization? This should only ever be done ONCE! Type 'YES' in full capitals to continue.") != "YES":
@@ -2613,19 +2584,6 @@ def main():
             os.remove(os.path.join(os.path.dirname(__file__), ".FIRSTRUN"))
             print(f"{Fore.GREEN}PaxD first time run initialization complete.")
             print(f"\n{Fore.CYAN}Welcome to PaxD!{Style.RESET_ALL}\nIt is recommended you try out PaxD with our {Fore.YELLOW}paxd-test{Style.RESET_ALL} package - install it with {Fore.GREEN}`paxd install paxd-test`{Style.RESET_ALL}, and run paxd-test to see it in action!\n\nYou can uninstall it later with {Fore.RED}`paxd uninstall paxd-test`{Style.RESET_ALL}.\n")
-            
-        elif args.command == "deltarunedeltarunedeltarune":
-            # sneaky sneaky easter egg
-            import random
-            rand = random.randint(1, 4)
-            if rand == 1:
-                print("Kris Get The Banana\n\nPotassium")
-            elif rand == 2:
-                print("NOWS YOUR CHANCE TO BE A [[Big Shot]]")
-            elif rand == 3:
-                print("WHAT GIVES PEOPLE FEELINGS OF POWER:\n\nMONEY: ██\nSTATUS: ███\n BEATING JEVIL FIRST TRY: ████████████████████")
-            elif rand == 4:
-                print(f"{Fore.MAGENTA}█ {Fore.YELLOW}█{Style.RESET_ALL}\n\nTHE POWER OF PATTERN RECOGNITION")
             
         else:
             paxd._verbose_print(f"Unknown command: {args.command}")
