@@ -2044,6 +2044,8 @@ class PaxD:
                 if item == "com.mralfiem591.paxd":
                     print(f"Skipping PaxD core package: {item}")
                     continue
+                if item == "bin":
+                    continue
                 package_path = os.path.join(local_app_data, item)
                 if os.path.isdir(package_path):
                     self._verbose_print(f"Exporting package: {item}")
