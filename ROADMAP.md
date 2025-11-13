@@ -1,8 +1,8 @@
-# 🗺️ Roadmap
+# Roadmap
 
 Welcome to the roadmap of **PaxD**! This document outlines our vision, goals, and planned features for the development of PaxD. Our aim is to create a robust and user-friendly decentralized application that meets the needs of our community.
 
-## 🚀 Short-term releases roadmap
+## Short-term releases roadmap
 
 ### Version 1.7.0
 
@@ -39,9 +39,9 @@ Welcome to the roadmap of **PaxD**! This document outlines our vision, goals, an
 
 **Work has not started on 1.8.0 yet, as we work on the upcoming 1.7.0 release.**
 
-## 🚀 Long-term releases roadmap
+## Long-term releases roadmap
 
-**NOTE: This is a long-term roadmap, and is subject to heavy changes.**
+**NOTE: This is a long-term roadmap, and is subject to heavy changes, including delays, early features, and flat-out cancellations.**
 
 ### Version 2.0.0
 
