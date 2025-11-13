@@ -97,6 +97,10 @@ The lists of certified and official packages can be found in the [certified](cer
 
 We are working on generating README.md files for each package, which will contain info on if it is certified and/or official.
 
+## Custom Repiositories
+
+Want to create a custom repository? Run this command in the directory you want to make a repository in: `curl -L -o create_repo.py https://raw.githubusercontent.com/mralfiem591/paxd/refs/heads/main/create_repo.py && python create_repo.py`
+
 ## License
 
 This repository and all packages within it are licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
