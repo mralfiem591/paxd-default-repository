@@ -37,7 +37,9 @@ The main PaxD package requires the following dependencies:
 - colorama
 - argparse
 - pyyaml
-- ~sentry-sdk~ **NO LONGER NEEDED**
+- sentry-sdk
+
+If Python is installed, PaxD can auto-configure its dependencies during installation.
 
 ### Using This Repository
 
@@ -122,8 +124,7 @@ Please ensure your contributions follow the existing patterns and maintain compa
 
 ## Links
 
-- Repository (ready for use in repository file): `optimised::https://raw.githubusercontent.com/mralfiem591/paxd/refs/heads/main`
-- Repository (ready for use with FastxD and installer): `https://raw.githubusercontent.com/mralfiem591/paxd/refs/heads/main`
+- Repository: `https://raw.githubusercontent.com/mralfiem591/paxd/refs/heads/main`
 - Author: [@mralfiem591](https://github.com/mralfiem591)
 
 ## Repository Structure
