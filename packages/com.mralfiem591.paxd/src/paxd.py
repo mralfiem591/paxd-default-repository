@@ -7,7 +7,6 @@ import sentry_sdk
 sentry_sdk.init(
     dsn="https://0ad2cc445d5796110d1e4e65e3a92a38@o4510357020540928.ingest.de.sentry.io/4510357023293520",
     send_default_pii=True,
-    enable_logs=True, # type: ignore
     traces_sample_rate=1.0,
 )
 
