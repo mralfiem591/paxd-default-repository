@@ -6,7 +6,6 @@ import sentry_sdk
 
 sentry_sdk.init(
     dsn="https://0ad2cc445d5796110d1e4e65e3a92a38@o4510357020540928.ingest.de.sentry.io/4510357023293520",
-    traces_sample_rate=0.2,
 )
 
 import os
@@ -398,7 +397,6 @@ class PaxD:
             LOGS_VERBOSE[f"({lexicographic_number}) {timestamp}"] = message # Also include the len of LOGS_VERBOSE so logs made at the exact same time are still valid and shown, instead of just the most recent one
             if self.verbose:
                 print(f"{color}[{timestamp}] VERBOSE: {message}{Style.RESET_ALL}")
-            sentry_sdk.set_context("verbose_log", LOGS_VERBOSE)
     
     def _verbose_timing_start(self, operation):
         """Start timing an operation in verbose mode."""
