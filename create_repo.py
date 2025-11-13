@@ -33,20 +33,29 @@ os.makedirs(os.path.join(directory, 'repoasset'), exist_ok=True)
 # Step 3: start pulling some files from the default repository
 default_repo = 'https://raw.githubusercontent.com/mralfiem591/paxd/refs/heads/main'
 
+mode = input(Fore.YELLOW + "CHOOSE A MODE:\n\n1. Lite: Just the required files. Markdown, and repoasset will be missing, as well as a few others.\n2. Full: All files from the default repository.\n\nType '1' for Lite, '2' for Full (default is Full): ")
+
 import requests
-required = [
-    'SECURITY.md',
-    'LICENSE',
-    'README.md',
-    'SEARCHINDEX.md',
-    'generate_searchindex.py',
-    'paxd',
-    'certified',
-    '.gitignore',
-    'fastxd.py',
-    'repoasset/certified.png',
-    'repoasset/logo.png'
-]
+
+if mode.strip() != '2':
+    required = [
+        'SECURITY.md',
+        'LICENSE',
+        'README.md',
+        'SEARCHINDEX.md',
+        'generate_searchindex.py',
+        'paxd',
+        '.gitignore',
+        'fastxd.py',
+        'repoasset/certified.png',
+        'repoasset/logo.png'
+    ]
+else:
+    required = [
+        'generate_searchindex.py',
+        'paxd',
+        'fastxd.py'
+    ]
 
 for entry in required:
     print(Fore.CYAN + f"Downloading '{entry}' from default repository...")
@@ -64,9 +73,10 @@ for entry in required:
 # Step 4: small extras
 
 # Create vulnerabilities and resolution with blank json dicts
-with open(os.path.join(directory, 'vulnerabilities'), 'w', encoding='utf-8') as f:
-    f.write("{}")
-print(Fore.GREEN + "Created blank 'vulnerabilities' file.")
+if mode.strip() != '2':
+    with open(os.path.join(directory, 'vulnerabilities'), 'w', encoding='utf-8') as f:
+        f.write("{}")
+    print(Fore.GREEN + "Created blank 'vulnerabilities' file.")
     
 with open(os.path.join(directory, 'resolution'), 'w', encoding='utf-8') as f:
     f.write("{}")
@@ -78,15 +88,21 @@ with open(os.path.join(directory, 'certified'), 'w', encoding='utf-8') as f:
 print(Fore.GREEN + "Created blank 'certified' file.")
     
 # Generate initial searchindex.csv
-print(Fore.CYAN + "Generating initial searchindex.csv...")
-with open(os.path.join(directory, 'generate_searchindex.py'), 'r', encoding='utf-8') as f:
-    exec(f.read())
-print(Fore.GREEN + "searchindex.csv generated successfully.")
+if mode.strip() != '2':
+    print(Fore.CYAN + "Generating initial searchindex.csv...")
+    with open(os.path.join(directory, 'generate_searchindex.py'), 'r', encoding='utf-8') as f:
+        exec(f.read())
+    print(Fore.GREEN + "searchindex.csv generated successfully.")
+    print(Fore.YELLOW + "NOTE: You should run this often! If the index is out of date, PaxD will not be able to find some packages.")
+else:
+    print(Fore.YELLOW + "Skipping searchindex.csv generation in Lite mode. You can run 'generate_searchindex.py' later to create it. NOTE: not running this will slow searching significantly!")
     
 # Final message
 print(Fore.GREEN + Style.BRIGHT + "\nRepository initialized successfully!\nYou can now add packages to the 'packages' directory and run 'generate_searchindex.py' to update the search index.\n")
 print(Fore.YELLOW + "Remember to review and update the README.md and other documentation files to reflect your custom repository details.\n")
 print(Fore.CYAN + "Thank you for using PaxD Repository Creator!\n")
+
+print(Fore.YELLOW + "NOTE: You should change your paxd file, and logo.png (if included), as well as all MD files, from the default repository ones to your own ones!")
 
 # Self-delete
 print(Fore.RED + "Cleanup success - self-deleted this script.")
