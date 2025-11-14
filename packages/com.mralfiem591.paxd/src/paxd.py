@@ -39,7 +39,7 @@ def cleanup():
         os.makedirs(os.path.dirname(bat_file_path), exist_ok=True)
         with open(bat_file_path, 'w') as f:
             f.write("@echo off\n")
-            f.write(f"python {CURRENT_FILE_PATH} %*\n")
+            f.write(f"uv run {CURRENT_FILE_PATH} %*\n")
 
 atexit.register(cleanup)
 
@@ -2381,7 +2381,7 @@ def main():
         if not os.path.exists(paxd_bin_path):
             with open(paxd_bin_path, 'w') as f:
                 f.write(f"@echo off\n")
-                f.write(f"python {os.path.abspath(__file__)} %*\n")
+                f.write(f"uv run {os.path.abspath(__file__)} %*\n")
             print(f"Created paxd.bat at {paxd_bin_path}")
         
         # 4. Register PaxD itself as user-installed and version PaxD
@@ -2575,7 +2575,7 @@ def main():
             if not os.path.exists(paxd_bin_path):
                 with open(paxd_bin_path, 'w') as f:
                     f.write(f"@echo off\n")
-                    f.write(f"python {os.path.abspath(__file__)} %*\n")
+                    f.write(f"uv run {os.path.abspath(__file__)} %*\n")
                 print(f"Created paxd.bat at {paxd_bin_path}")
             
             # 4. Register PaxD itself as user-installed and version PaxD
