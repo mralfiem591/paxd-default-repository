@@ -48,24 +48,16 @@ def cleanup():
 atexit.register(cleanup)
 
 import subprocess
+import requests # type: ignore (requests is in paxd file dependencies)
 import json
 from pathlib import Path as PathLib
 import hashlib
 import shutil
 import sys
+import argparse # type: ignore (argparse is in paxd file dependencies)
+from colorama import init, Fore, Style  # type: ignore (colorama is in paxd file dependencies)
+import yaml # type: ignore (yaml is in paxd file dependencies)
 import re
-import datetime
-import time
-import stat
-import importlib
-import importlib.abc
-import importlib.util
-
-# Import third-party dependencies - let uv handle dependency resolution
-import requests # type: ignore
-import argparse # type: ignore
-from colorama import init, Fore, Style  # type: ignore
-import yaml # type: ignore
 
 # Windows-specific imports with error handling
 try:

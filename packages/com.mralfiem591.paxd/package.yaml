@@ -21,7 +21,6 @@ install:
     - run_pkg.py
     - repository
     - LICENSE
-    - pyproject.toml
 
   dependencies:
     pip:
