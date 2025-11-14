@@ -169,7 +169,8 @@ with open(os.path.join(local_app_data, "com.mralfiem591.paxd", ".FIRSTRUN"), "w"
     firstrun_file.write("This file indicates that the package has been run for the first time.")
     
 print(Fore.GREEN + "4- Installing dependencies of PaxD...")
-if os.system("uv pip install --system requests colorama rich argparse sentry-sdk") != 0:
+import sys
+if os.system(f"uv pip install --system --python {sys.executable} requests colorama rich argparse sentry-sdk") != 0:
     print(Fore.RED + "ERROR: Failed to install dependencies via uv. Please ensure you have an active internet connection and try again.")
 
 # install paxd-sdk
@@ -184,8 +185,8 @@ with open(os.path.join(local_app_data, "com.mralfiem591.paxd-sdk", "main.py"), "
 print(Fore.LIGHTGREEN_EX + "NOTE: Dependencies that PaxD requires from the PaxD repository will be installed automatically when you first run PaxD, as they are not essential for the initialization.")
 
 print(Fore.GREEN + "Success! PaxD has been installed.")
-if subprocess.run(f"start cmd /k uv run {os.path.join(local_app_data, 'com.mralfiem591.paxd', 'paxd.py')} init -y", shell=True).returncode == 0:
+if subprocess.run(f'start cmd /k "{sys.executable}" "{os.path.join(local_app_data, "com.mralfiem591.paxd", "paxd.py")}" init -y', shell=True).returncode == 0:
     print(Fore.GREEN + "PaxD has been installed successfully and added to Path! Enjoy using PaxD. Simply run 'paxd' in a new Command Prompt to get started.")
-    print(Fore.YELLOW + f"HINT: If 'paxd' is not recognized, please restart your Command Prompt or computer to refresh environment variables. If it still isnt working, try 'uv run {os.path.join(local_app_data, 'com.mralfiem591.paxd', 'paxd.py')} init -y' directly.")
+    print(Fore.YELLOW + f'HINT: If \'paxd\' is not recognized, please restart your Command Prompt or computer to refresh environment variables. If it still isnt working, try \'"{sys.executable}" "{os.path.join(local_app_data, "com.mralfiem591.paxd", "paxd.py")}" init -y\' directly.')
 else:
-    print(Fore.YELLOW + f"WARNING: Could not complete install of PaxD. You can retry the installation by running 'python {os.path.join(local_app_data, 'com.mralfiem591.paxd', 'paxd.py')} init -y' in a Command Prompt.")
+    print(Fore.YELLOW + f'WARNING: Could not complete install of PaxD. You can retry the installation by running \'"{sys.executable}" "{os.path.join(local_app_data, "com.mralfiem591.paxd", "paxd.py")}" init -y\' in a Command Prompt.')
