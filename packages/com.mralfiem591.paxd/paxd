@@ -4,7 +4,7 @@
     "pkg_info": {
         "pkg_name": "PaxD",
         "pkg_author": "mralfiem591",
-        "pkg_version": "1.6.14",
+        "pkg_version": "1.6.15",
         "pkg_description": "The main command line tool for using PaxD.",
         "pkg_license": "MIT",
         "tags": ["cli", "package manager", "installer", "windows", "tool", "gateway", "http", "repository"]

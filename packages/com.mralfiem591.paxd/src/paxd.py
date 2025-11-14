@@ -688,14 +688,31 @@ class PaxD:
                 for pkg in package_list:
                     try:
                         print(f"{Fore.BLUE}Installing package {Fore.YELLOW}{pkg}{Fore.BLUE} from metapackage...")
-                        # For metapackages, we install each package with the same user_requested flag
-                        # This preserves existing dependency relationships
-                        self.install(pkg, user_requested=user_requested, skip_checksum=skip_checksum)
+                        # For metapackages, we install each package as a dependency (user_requested=False)
+                        # This ensures that existing dependencies are not converted to user-installed
+                        # and that new packages are installed as dependencies, not user packages
+                        self.install(pkg, user_requested=False, skip_checksum=skip_checksum)
                         installed_packages.append(pkg)
                     except Exception as e:
                         self._verbose_print(f"Failed to install package {pkg} from metapackage: {e}")
                         print(f"{Fore.RED}Failed to install {Fore.YELLOW}{pkg}{Fore.RED}: {e}")
                         failed_packages.append(pkg)
+                
+                # If the metapackage was user-requested, we need to track which packages
+                # were installed as part of this metapackage for proper uninstall behavior
+                if user_requested and installed_packages:
+                    # Create a tracking file for the metapackage installation
+                    metapackage_tracking_dir = os.path.join(local_app_data, ".metapackages")
+                    os.makedirs(metapackage_tracking_dir, exist_ok=True)
+                    
+                    # Remove .meta extension for tracking file name
+                    tracking_name = package_name[:-5] if package_name.endswith('.meta') else package_name
+                    tracking_file = os.path.join(metapackage_tracking_dir, f"{tracking_name}.installed")
+                    
+                    with open(tracking_file, 'w') as f:
+                        for pkg in installed_packages:
+                            f.write(f"{pkg}\n")
+                    self._verbose_print(f"Created metapackage tracking file: {tracking_file}")
                 
                 self._verbose_timing_end(f"install {package_name}")
                 
@@ -1033,20 +1050,33 @@ class PaxD:
                     print(f"  - {Fore.CYAN}{pkg}")
                 print()
                 
-                # Only uninstall packages that are user-installed
-                print(f"{Fore.YELLOW}Note: Only user-installed packages from this metapackage will be uninstalled.")
-                print(f"{Fore.YELLOW}Packages installed as dependencies will be kept unless orphaned.")
+                # Check if there's a metapackage tracking file
+                tracking_name = package_name[:-5] if package_name.endswith('.meta') else package_name
+                metapackage_tracking_dir = os.path.join(local_app_data, ".metapackages")
+                tracking_file = os.path.join(metapackage_tracking_dir, f"{tracking_name}.installed")
+                
+                # Only uninstall packages that were installed as part of this metapackage
+                # and are not needed as dependencies by other packages
+                print(f"{Fore.YELLOW}Note: Only packages installed by this metapackage will be uninstalled.")
+                print(f"{Fore.YELLOW}Packages needed as dependencies by other packages will be kept.")
                 print()
+                
+                packages_to_check = package_list
+                if os.path.exists(tracking_file):
+                    # Use the tracking file to know exactly which packages were installed by this metapackage
+                    with open(tracking_file, 'r') as f:
+                        packages_to_check = [line.strip() for line in f if line.strip()]
+                    print(f"{Fore.CYAN}Found metapackage tracking file - checking {len(packages_to_check)} packages.")
+                else:
+                    print(f"{Fore.YELLOW}No metapackage tracking file found - checking all packages in metapackage.")
                 
                 uninstalled_packages = []
                 skipped_packages = []
                 failed_packages = []
                 
-                for pkg in package_list:
+                for pkg in packages_to_check:
                     try:
-                        # Check if the package is user-installed
                         pkg_path = os.path.join(local_app_data, pkg)
-                        user_installed_file = os.path.join(pkg_path, ".USER_INSTALLED")
                         dependency_file = os.path.join(pkg_path, ".DEPENDENCY")
                         
                         if not os.path.exists(pkg_path):
@@ -1054,15 +1084,12 @@ class PaxD:
                             skipped_packages.append(pkg)
                             continue
                         
-                        # Check if package is user-installed
-                        is_user_installed = os.path.exists(user_installed_file)
-                        
                         # Check if package is still needed as a dependency by other packages
                         is_dependency_of_others = False
                         if os.path.exists(dependency_file):
                             with open(dependency_file, 'r') as f:
                                 dependent_packages = [line.strip() for line in f if line.strip()]
-                                # Remove empty lines and check if any dependencies still exist
+                                # Check if any dependencies still exist
                                 for dep_pkg in dependent_packages:
                                     dep_pkg_path = os.path.join(local_app_data, dep_pkg)
                                     if os.path.exists(dep_pkg_path):
@@ -1070,20 +1097,25 @@ class PaxD:
                                         self._verbose_print(f"Package {pkg} is still needed by {dep_pkg}")
                                         break
                         
-                        if is_user_installed and not is_dependency_of_others:
-                            print(f"{Fore.RED}Uninstalling user-installed package {Fore.YELLOW}{pkg}{Fore.RED}...")
+                        if not is_dependency_of_others:
+                            print(f"{Fore.RED}Uninstalling package {Fore.YELLOW}{pkg}{Fore.RED}...")
                             self.uninstall(pkg)
                             uninstalled_packages.append(pkg)
-                        elif is_user_installed and is_dependency_of_others:
-                            print(f"{Fore.YELLOW}Skipping {Fore.CYAN}{pkg}{Fore.YELLOW} (user-installed but needed as dependency)")
-                            skipped_packages.append(pkg)
                         else:
-                            print(f"{Fore.YELLOW}Skipping {Fore.CYAN}{pkg}{Fore.YELLOW} (installed as dependency)")
+                            print(f"{Fore.YELLOW}Skipping {Fore.CYAN}{pkg}{Fore.YELLOW} (needed as dependency by other packages)")
                             skipped_packages.append(pkg)
                     except Exception as e:
                         self._verbose_print(f"Failed to uninstall package {pkg} from metapackage: {e}")
                         print(f"{Fore.RED}Failed to uninstall {Fore.YELLOW}{pkg}{Fore.RED}: {e}")
                         failed_packages.append(pkg)
+                
+                # Clean up the metapackage tracking file if it exists
+                if os.path.exists(tracking_file):
+                    try:
+                        os.remove(tracking_file)
+                        self._verbose_print(f"Removed metapackage tracking file: {tracking_file}")
+                    except Exception as e:
+                        self._verbose_print(f"Failed to remove tracking file {tracking_file}: {e}")
                 
                 self._verbose_timing_end(f"uninstall {package_name}")
                 
