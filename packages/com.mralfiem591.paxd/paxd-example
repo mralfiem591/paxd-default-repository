@@ -30,7 +30,7 @@
             "paxd:com.mralfiem591.paxd-imageview"
         ],
         // "checksum": { // Optional SHA256 checksums for files to verify integrity after download.
-        //     "paxd.py": "sha256:1e7d44c61b5e0e64e98abd86c61632b5d4f696e45e177744c0eeddae09615e01"
+        //     "paxd.py": "sha256:checksum_goes_here"
         // },
         "firstrun": true, // Should we make a .FIRSTRUN file to indicate this package was just installed?
         "updaterun": true, // Should we make a .UPDATERUN file to indicate this package was just updated?
