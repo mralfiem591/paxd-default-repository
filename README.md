@@ -38,6 +38,9 @@ PaxD is a package manager and command-line tool designed to simplify the install
 
 ## Getting Started
 
+> [!NOTE]
+> PaxD is only compatible with Windows systems at this time.
+
 ### Installing PaxD
 
 To install PaxD, you'll need Python and pip installed on your system.
@@ -50,7 +53,7 @@ The main PaxD package requires the following dependencies:
 - pyyaml
 - sentry-sdk
 
-If Python is installed, PaxD can auto-configure its dependencies during installation.
+If Python and UV are installed, PaxD can auto-configure its dependencies during installation.
 
 ### Using This Repository
 
@@ -82,6 +85,12 @@ The repository includes a comprehensive package resolution system that maps comm
 
 Security is a priority for the PaxD ecosystem. Known vulnerabilities are tracked in the [vulnerabilities](vulnerabilities) file.
 
+> [!TIP]
+> Vulnerabilities are also viewable via the Issues tab, tagged with "vulnerability" for easy searching.
+
+> [!CAUTION]
+> Ensure you commonly check for vulnerabilites, and update to keep your system safe! They can pop up commonly, and some can be linked to full system compromise, completely remotely.
+
 ### Vulnerability Reporting
 
 If you discover a security vulnerability in any package, please report it through the appropriate channels.
@@ -108,7 +117,7 @@ The lists of certified and official packages can be found in the [certified](cer
 
 We are working on generating README.md files for each package, which will contain info on if it is certified and/or official.
 
-## Custom Repiositories
+## Custom Repositories
 
 Want to create a custom repository? Run this command in the directory you want to make a repository in: `curl -L -o create_repo.py https://raw.githubusercontent.com/mralfiem591/paxd/refs/heads/main/create_repo.py && python create_repo.py`
 
