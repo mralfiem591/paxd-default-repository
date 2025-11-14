@@ -61,34 +61,11 @@ import importlib
 import importlib.abc
 import importlib.util
 
-# Import third-party dependencies with fallbacks
-try:
-    import requests # type: ignore
-except ImportError:
-    print("ERROR: 'requests' module is required but not installed.")
-    print("Please run: uv pip install --system requests")
-    sys.exit(1)
-
-try:
-    import argparse # type: ignore
-except ImportError:
-    print("ERROR: 'argparse' module is required but not installed.")
-    print("Please run: uv pip install --system argparse")
-    sys.exit(1)
-
-try:
-    from colorama import init, Fore, Style  # type: ignore
-except ImportError:
-    print("ERROR: 'colorama' module is required but not installed.")
-    print("Please run: uv pip install --system colorama")
-    sys.exit(1)
-
-try:
-    import yaml # type: ignore
-except ImportError:
-    print("ERROR: 'pyyaml' module is required but not installed.")
-    print("Please run: uv pip install --system pyyaml")
-    sys.exit(1)
+# Import third-party dependencies - let uv handle dependency resolution
+import requests # type: ignore
+import argparse # type: ignore
+from colorama import init, Fore, Style  # type: ignore
+import yaml # type: ignore
 
 # Windows-specific imports with error handling
 try:
