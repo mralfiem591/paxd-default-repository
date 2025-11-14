@@ -2349,6 +2349,18 @@ def main():
 
     # Create PaxD instance with verbose flag
     paxd = PaxD(verbose=args.verbose if hasattr(args, 'verbose') else False)
+
+    # Check for status messages
+    try:
+        status = requests.get(f"{repo_optimised}/status", headers=paxd.headers, allow_redirects=True)
+        status.raise_for_status()
+
+        if status:
+            print(f"{Fore.YELLOW}Status Update on current repository:")
+            print()
+            print(f"{Fore.RED}{status.text}")
+    except:
+        pass
     
     if SDK_BACKUP:
         paxd._verbose_print("PaxD SDK missing - forcing install")
