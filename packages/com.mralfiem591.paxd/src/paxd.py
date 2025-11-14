@@ -2,11 +2,15 @@ __name__ = "PaxD Client"
 __author__ = "mralfiem591"
 __license__ = "Copyright 2025 mralfiem591 (MIT, refer to LICENSE file)"
 
-import sentry_sdk
-
-sentry_sdk.init(
-    dsn="https://0ad2cc445d5796110d1e4e65e3a92a38@o4510357020540928.ingest.de.sentry.io/4510357023293520",
-)
+# Try to initialize Sentry for error reporting
+try:
+    import sentry_sdk
+    sentry_sdk.init(
+        dsn="https://0ad2cc445d5796110d1e4e65e3a92a38@o4510357020540928.ingest.de.sentry.io/4510357023293520",
+    )
+except ImportError:
+    # Sentry not available, continue without it
+    pass
 
 import os
 
