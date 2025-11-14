@@ -190,7 +190,7 @@ import time
 time.sleep(0.7)
 paxd_py_path = os.path.join(local_app_data, "com.mralfiem591.paxd", "paxd.py")
 result = subprocess.run([sys.executable, paxd_py_path, "init", "-y"])
-result2 = subprocess.run([sys.executable, paxd_py_path, "update", "-f", "paxd"])
+result2 = subprocess.run([sys.executable, paxd_py_path, "update", "paxd"])
 if result.returncode == 0 and result2.returncode == 0:
     print(Fore.GREEN + "PaxD has been installed successfully and added to Path! Enjoy using PaxD. Simply run 'paxd' in a new Command Prompt to get started.")
     print(Fore.YELLOW + f'HINT: If \'paxd\' is not recognized, please restart your Command Prompt or computer to refresh environment variables. If it still isnt working, try \'"{sys.executable}" "{paxd_py_path}" init -y\' directly.')
