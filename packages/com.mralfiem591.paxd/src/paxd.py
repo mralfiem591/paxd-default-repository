@@ -867,7 +867,7 @@ class PaxD:
             
             # Mark as user-installed if requested by user (not as dependency)
             if user_requested:
-                self._verbose_print("Marking package as user-installed")
+                self._verbose_print("Marking package as user-installed...")
                 self._mark_as_user_installed(package_name)
             else:
                 self._verbose_print("Package installed as dependency, not marking as user-installed")
