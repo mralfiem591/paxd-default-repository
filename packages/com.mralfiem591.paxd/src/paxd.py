@@ -688,6 +688,8 @@ class PaxD:
                 for pkg in package_list:
                     try:
                         print(f"{Fore.BLUE}Installing package {Fore.YELLOW}{pkg}{Fore.BLUE} from metapackage...")
+                        # For metapackages, we install each package with the same user_requested flag
+                        # This preserves existing dependency relationships
                         self.install(pkg, user_requested=user_requested, skip_checksum=skip_checksum)
                         installed_packages.append(pkg)
                     except Exception as e:
@@ -736,11 +738,14 @@ class PaxD:
             self._verbose_print(f"Checking if package already installed at: {package_install_path}")
             if os.path.exists(package_install_path):
                 self._verbose_print("Package directory already exists")
+                
+                # Check current installation status
+                user_installed_file = os.path.join(package_install_path, ".USER_INSTALLED")
+                is_currently_user_installed = os.path.exists(user_installed_file)
+                
                 if user_requested:
                     # User is manually installing a package that already exists
-                    user_installed_file = os.path.join(package_install_path, ".USER_INSTALLED")
-                    self._verbose_print(f"Checking user-installed marker: {user_installed_file}")
-                    if os.path.exists(user_installed_file):
+                    if is_currently_user_installed:
                         self._verbose_print("Package is already user-installed")
                         print(f"{Fore.YELLOW}Package '{Fore.CYAN}{package_name}{Fore.YELLOW}' is already installed by user at {package_install_path}")
                         return
@@ -751,9 +756,13 @@ class PaxD:
                         self._mark_as_user_installed(package_name)
                         return
                 else:
-                    # Installing as dependency, package already exists - that's fine
-                    self._verbose_print("Package already exists, installing as dependency - nothing to do")
-                    print(f"Package '{package_name}' is already installed at {package_install_path}")
+                    # Installing as dependency - don't change existing status
+                    if is_currently_user_installed:
+                        self._verbose_print("Package is user-installed, keeping that status")
+                        print(f"Package '{package_name}' is already user-installed at {package_install_path}")
+                    else:
+                        self._verbose_print("Package is dependency, keeping that status")
+                        print(f"Package '{package_name}' is already installed as dependency at {package_install_path}")
                     return
             else:
                 self._verbose_print("Package is not currently installed, proceeding with installation")
@@ -1038,16 +1047,38 @@ class PaxD:
                         # Check if the package is user-installed
                         pkg_path = os.path.join(local_app_data, pkg)
                         user_installed_file = os.path.join(pkg_path, ".USER_INSTALLED")
+                        dependency_file = os.path.join(pkg_path, ".DEPENDENCY")
                         
-                        if os.path.exists(pkg_path) and os.path.exists(user_installed_file):
+                        if not os.path.exists(pkg_path):
+                            print(f"{Fore.YELLOW}Skipping {Fore.CYAN}{pkg}{Fore.YELLOW} (not installed)")
+                            skipped_packages.append(pkg)
+                            continue
+                        
+                        # Check if package is user-installed
+                        is_user_installed = os.path.exists(user_installed_file)
+                        
+                        # Check if package is still needed as a dependency by other packages
+                        is_dependency_of_others = False
+                        if os.path.exists(dependency_file):
+                            with open(dependency_file, 'r') as f:
+                                dependent_packages = [line.strip() for line in f if line.strip()]
+                                # Remove empty lines and check if any dependencies still exist
+                                for dep_pkg in dependent_packages:
+                                    dep_pkg_path = os.path.join(local_app_data, dep_pkg)
+                                    if os.path.exists(dep_pkg_path):
+                                        is_dependency_of_others = True
+                                        self._verbose_print(f"Package {pkg} is still needed by {dep_pkg}")
+                                        break
+                        
+                        if is_user_installed and not is_dependency_of_others:
                             print(f"{Fore.RED}Uninstalling user-installed package {Fore.YELLOW}{pkg}{Fore.RED}...")
                             self.uninstall(pkg)
                             uninstalled_packages.append(pkg)
-                        elif os.path.exists(pkg_path):
-                            print(f"{Fore.YELLOW}Skipping {Fore.CYAN}{pkg}{Fore.YELLOW} (installed as dependency)")
+                        elif is_user_installed and is_dependency_of_others:
+                            print(f"{Fore.YELLOW}Skipping {Fore.CYAN}{pkg}{Fore.YELLOW} (user-installed but needed as dependency)")
                             skipped_packages.append(pkg)
                         else:
-                            print(f"{Fore.YELLOW}Skipping {Fore.CYAN}{pkg}{Fore.YELLOW} (not installed)")
+                            print(f"{Fore.YELLOW}Skipping {Fore.CYAN}{pkg}{Fore.YELLOW} (installed as dependency)")
                             skipped_packages.append(pkg)
                     except Exception as e:
                         self._verbose_print(f"Failed to uninstall package {pkg} from metapackage: {e}")
