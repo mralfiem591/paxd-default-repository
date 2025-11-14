@@ -112,19 +112,6 @@ else:
 
 print(Fore.GREEN + "0- Pre-checks...")
 
-print(Fore.GREEN + "   - Checking that paxd isnt already installed...")
-if os.path.exists(os.path.join(os.path.expandvars(r"%LOCALAPPDATA%"), "PaxD")):
-    if not os.path.exists(os.path.join(os.path.expandvars(r"%LOCALAPPDATA%"), "PaxD", "com.mralfiem591.paxd", "paxd.py")) or not os.path.exists(os.path.join(os.path.expandvars(r"%LOCALAPPDATA%"), "PaxD", "com.mralfiem591.paxd", "bin", "paxd.bat")) or not os.path.exists(os.path.join(os.path.expandvars(r"%LOCALAPPDATA%"), "PaxD", "com.mralfiem591.paxd-sdk")) or not os.path.exists(os.path.join(os.path.expandvars(r"%LOCALAPPDATA%"), "com.mralfiem591.paxd-sdk", "main.py")):
-        print(Fore.YELLOW + "ERROR: PaxD is already installed, but problems were detected with the existing installation.")
-        reinstall = input(Fore.YELLOW + "Would you like to continue, and attempt repair? (y/n): ").strip().lower()
-        if reinstall != "y":
-            print(Fore.RED + "Installation aborted.")
-            exit(1)
-    else:
-        print(Fore.RED + "ERROR: PaxD is already installed.")
-        exit(1)
-print(Fore.GREEN + "   - PaxD is not currently installed.")
-
 print(Fore.GREEN + "   - Checking internet connection...")
 if not os.system("ping -n 1 google.com >nul 2>&1") == 0:
     print(Fore.RED + "ERROR: No internet connection.")
