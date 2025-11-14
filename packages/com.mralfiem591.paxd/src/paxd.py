@@ -2453,6 +2453,7 @@ def main():
             os.remove(os.path.join(os.path.dirname(__file__), ".FIRSTRUN"))
         print(f"{Fore.GREEN}PaxD first time run initialization complete.")
         print(f"\n{Fore.CYAN}Welcome to PaxD!{Style.RESET_ALL}\nIt is recommended you try out PaxD with our {Fore.YELLOW}paxd-test{Style.RESET_ALL} package - install it with {Fore.GREEN}`paxd install paxd-test`{Style.RESET_ALL}, and run paxd-test to see it in action!\n\nYou can uninstall it later with {Fore.RED}`paxd uninstall paxd-test`{Style.RESET_ALL}.\n")
+        exit(0)
         
     # Check version file and user-installed file in case they were removed by the user
     # Define PaxD package path
