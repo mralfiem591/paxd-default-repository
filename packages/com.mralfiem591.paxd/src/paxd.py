@@ -372,7 +372,7 @@ def add_to_path(folder_path: str) -> bool:
 
 class PaxD:
     def __init__(self, verbose=False):
-        self.paxd_version_phrase = "The SearchIndex Update"
+        self.paxd_version_phrase = "The MetaPackage Update"
         self.repository_file = os.path.join(os.path.dirname(__file__), "repository")
         if os.path.exists(os.path.join(os.path.dirname(__file__), ".VERSION")):
             with open(os.path.join(os.path.dirname(__file__), ".VERSION"), 'r') as vf:
