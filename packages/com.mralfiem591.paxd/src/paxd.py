@@ -2359,8 +2359,8 @@ def main():
             print(f"{Fore.YELLOW}Status Update on current repository:")
             print()
             print(f"{Fore.RED}{status.text}")
-    except:
-        pass
+    except Exception as e:
+        paxd._verbose_print(f"Error fetching status! {e}")
     
     if SDK_BACKUP:
         paxd._verbose_print("PaxD SDK missing - forcing install")
