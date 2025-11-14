@@ -73,4 +73,5 @@ sys.meta_path.insert(0, PaxDSDKFinder())
 
 # Step 2: run the package, with adjusted sys.argv (remove the first argument, which is the run_pkg.py path, to prevent issues with modules like argparse thinking the main script is named run_pkg.py and not the actual package script)
 sys.argv = sys.argv[1:]
-os.system(f'uv run {" ".join(sys.argv)}')
+with open(sys.argv[1], "r", encoding="utf-8") as f:
+    exec(f.read())
