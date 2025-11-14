@@ -709,7 +709,9 @@ class PaxD:
                     if dep.startswith("pip:"):
                         pip_package = dep[len("pip:"):]
                         self._verbose_print(f"Installing pip package (with uv): {pip_package}")
-                        print(f"{Fore.CYAN}Installing Python package '{Fore.YELLOW}{pip_package}{Fore.CYAN}' via pip")
+                        if pip_package == "uv":
+                            print(f"{Fore.RED}Skipped: UV: cannot update UV with UV, as pipx handles that")
+                            continue
                         PIP_PACKAGES.append(pip_package)
                     # Dependency begins with "winget": use winget to install
                     elif dep.startswith("winget:"):
@@ -1145,7 +1147,9 @@ class PaxD:
                     # Dependency begins with "pip:": use pip to install
                     if dep.startswith("pip:"):
                         pip_package = dep[len("pip:"):]
-                        print(f"{Fore.CYAN}Installing/updating Python package '{Fore.YELLOW}{pip_package}{Fore.CYAN}' via pip (with uv)")
+                        if pip_package == "uv":
+                            print(f"{Fore.RED}Skipped: UV: cannot update UV with UV, as pipx handles that")
+                            continue
                         PIP_PACKAGES.append(pip_package)
                     # Dependency begins with "winget": use winget to install
                     elif dep.startswith("winget:"):
@@ -2418,6 +2422,13 @@ def main():
                     paxd.install(paxd_package, user_requested=False)
                 elif dep.startswith("pip:"):
                     pip_package = dep[len("pip:"):]
+                    if pip_package == "uv":
+                        uv_exists = True if subprocess.run(['uv', 'self', 'version'], capture_output=True).returncode == 0 else False
+                        if uv_exists:
+                            paxd._verbose_print("UV is already installed, skipping UV installation")
+                            continue
+                        else:
+                            os.system('pip install uv')
                     PIP_PACKAGES.append(pip_package)
                 # Add more dependency types as needed
                 else:
@@ -2605,11 +2616,19 @@ def main():
                         paxd.install(paxd_package, user_requested=False)
                     elif dep.startswith("pip:"):
                         pip_package = dep[len("pip:"):]
+                        if pip_package == "uv":
+                            uv_exists = True if subprocess.run(['uv', 'self', 'version'], capture_output=True).returncode == 0 else False
+                            if uv_exists:
+                                paxd._verbose_print("UV is already installed, skipping UV installation")
+                                continue
+                            else:
+                                os.system('pip install uv')
                         PIP_PACKAGES.append(pip_package)
                     # Add more dependency types as needed
                     else:
                         print(f"Unknown dependency type for '{dep}'")
-                        
+                
+                # Now install pip dependencies
                 if PIP_PACKAGES:
                     paxd._verbose_print(f"Installing PaxD pip dependencies: {PIP_PACKAGES}")
                     pip_install_command = [sys.executable, '-m', 'pip', 'install'] + PIP_PACKAGES

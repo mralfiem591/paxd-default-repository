@@ -145,14 +145,14 @@ if not os.path.exists(os.path.expandvars(r"%LOCALAPPDATA%")):
 print(Fore.GREEN + "   - LOCALAPPDATA directory exists.")
 
 print(Fore.GREEN + "   - Checking pip and python exist...")
-if not os.system("pip --version >nul 2>&1") == 0:
-    print(Fore.RED + "ERROR: pip is not installed or not in PATH. Please install pip and ensure it is in PATH.")
+if not os.system("uv self version >nul 2>&1") == 0:
+    print(Fore.RED + "ERROR: uv is not installed or not in PATH. Please install uv (you can easily do this with 'pip install pipx && pipx install uv' for cmd.exe, 'pip install pipx; pipx install uv' for PowerShell) and ensure it is in PATH.")
     exit(1)
 if not os.system("python --version >nul 2>&1") == 0:
     print(Fore.RED + "ERROR: python is not installed or not in PATH. Please install python and ensure it is in PATH.")
     exit(1)
     
-print(Fore.GREEN + "   - pip and python are installed and in PATH.")
+print(Fore.GREEN + "   - uv and python are installed and in PATH.")
 print()
 print(Fore.GREEN + "All pre-checks passed.")
 print()
@@ -178,7 +178,7 @@ with open(os.path.join(local_app_data, "com.mralfiem591.paxd", ".FIRSTRUN"), "w"
     firstrun_file.write("This file indicates that the package has been run for the first time.")
     
 print(Fore.GREEN + "4- Installing dependencies of PaxD...")
-if os.system("pip install requests colorama rich argparse sentry-sdk") != 0:
+if os.system("uv install --system requests colorama rich argparse sentry-sdk") != 0:
     print(Fore.RED + "ERROR: Failed to install dependencies via pip. Please ensure you have an active internet connection and try again.")
     
 # install paxd-sdk
