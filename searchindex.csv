@@ -5,4 +5,4 @@ com.mralfiem591.paxd-imageview,PaxD ImageView,A simple image viewer used by PaxD
 com.mralfiem591.paxd-publish,PaxD Publish,A tool to validate and publish PaxD packages to the repository via GitHub PR.,mralfiem591,1.0.6,paxdp,paxdp
 com.mralfiem591.paxd-sdk,PaxD SDK,The main SDK (Software Development Kit) for PaxD.,mralfiem591,1.2.2,,paxd-sdk
 com.mralfiem591.test,Test Package,A test package to ensure PaxD works correctly.,mralfiem591,1.0.0,paxd-test,paxd-test|paxd-example
-com.mralfiem591.vulnerability,PaxD Vulnerability Scanner,A simple vulnerability scanner for PaxD.,mralfiem591,1.0.1,paxd-vulnscan,paxd-vulnscan
+com.mralfiem591.vulnerability,PaxD Vulnerability Scanner,A simple vulnerability scanner for PaxD.,mralfiem591,1.0.1,paxd-vulnscan,paxd-vulnsca
