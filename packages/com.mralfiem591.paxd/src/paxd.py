@@ -2437,7 +2437,7 @@ def main():
             # Now install pip dependencies
             if PIP_PACKAGES:
                 paxd._verbose_print(f"Installing PaxD pip dependencies: {PIP_PACKAGES}")
-                pip_install_command = [sys.executable, '-m', 'pip', 'install'] + PIP_PACKAGES
+                pip_install_command = ['uv', 'pip', 'install'] + PIP_PACKAGES
                 result = subprocess.run(pip_install_command, capture_output=True, text=True)
                 if result.returncode != 0:
                     print(f"{Fore.RED}Pip installation failed: {result.stderr}")
@@ -2631,7 +2631,7 @@ def main():
                 # Now install pip dependencies
                 if PIP_PACKAGES:
                     paxd._verbose_print(f"Installing PaxD pip dependencies: {PIP_PACKAGES}")
-                    pip_install_command = [sys.executable, '-m', 'pip', 'install'] + PIP_PACKAGES
+                    pip_install_command = ['uv', 'pip', 'install'] + PIP_PACKAGES
                     result = subprocess.run(pip_install_command, capture_output=True, text=True)
                     if result.returncode != 0:
                         print(f"{Fore.RED}Pip installation failed: {result.stderr}")

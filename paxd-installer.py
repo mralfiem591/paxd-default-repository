@@ -178,8 +178,8 @@ with open(os.path.join(local_app_data, "com.mralfiem591.paxd", ".FIRSTRUN"), "w"
     firstrun_file.write("This file indicates that the package has been run for the first time.")
     
 print(Fore.GREEN + "4- Installing dependencies of PaxD...")
-if os.system("uv install --system requests colorama rich argparse sentry-sdk") != 0:
-    print(Fore.RED + "ERROR: Failed to install dependencies via pip. Please ensure you have an active internet connection and try again.")
+if os.system("uv pip install --system requests colorama rich argparse sentry-sdk") != 0:
+    print(Fore.RED + "ERROR: Failed to install dependencies via uv. Please ensure you have an active internet connection and try again.")
     
 # install paxd-sdk
 print(Fore.GREEN + "5- Installing PaxD SDK...")
