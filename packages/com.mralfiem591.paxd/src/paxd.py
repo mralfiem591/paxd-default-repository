@@ -579,6 +579,42 @@ class PaxD:
         # This shouldn't be reached, but just in case
         raise FileNotFoundError(f"Could not find package metadata for {package_name}")
 
+    def _is_metapackage(self, package_name):
+        """Check if a package name refers to a metapackage."""
+        return package_name.endswith('.meta')
+    
+    def _fetch_metapackage_data(self, repo_url, metapackage_name) -> list[str]:
+        """Fetch metapackage data from a .meta file."""
+        self._verbose_print(f"Fetching metapackage data for: {metapackage_name}")
+        
+        # Remove .meta suffix for the file path if present
+        if metapackage_name.endswith('.meta'):
+            base_name = metapackage_name[:-5]
+        else:
+            base_name = metapackage_name
+            
+        meta_url = f"{repo_url}/packages/{base_name}.meta"
+        self._verbose_print(f"Trying metapackage file at: {meta_url}")
+        
+        try:
+            meta_response = requests.get(meta_url, headers=self.headers, allow_redirects=True)  # type: ignore
+            self._verbose_print(f"GET {meta_url}: {meta_response.status_code}")
+            
+            if meta_response.status_code == 200:
+                self._verbose_print("Found metapackage file, parsing content")
+                # Parse the content as a list of package names (one per line)
+                package_list = [line.strip() for line in meta_response.text.strip().split('\n') if line.strip()]
+                self._verbose_print(f"Metapackage contains {len(package_list)} packages: {package_list}")
+                return package_list
+            else:
+                meta_response.raise_for_status()
+        except Exception as e:
+            self._verbose_print(f"Failed to fetch metapackage file: {e}")
+            raise FileNotFoundError(f"Metapackage '{metapackage_name}' not found in repository")
+        
+        # This line should never be reached due to raise_for_status() or the exception
+        return []
+
     def install(self, package_name, user_requested=False, skip_checksum=False): # type: ignore
         """Install a package using the PaxD repository.
         
@@ -625,6 +661,51 @@ class PaxD:
                 self._verbose_print(f"Repository validation failed with status {response.status_code}")
                 print(f"Invalid PaxD repository at {repo_url}")
                 raise ValueError("Invalid PaxD repository")
+
+            # Check if this is a metapackage
+            if self._is_metapackage(package_name):
+                self._verbose_print(f"Detected metapackage: {package_name}")
+                print(f"{Fore.CYAN}Installing metapackage {Fore.YELLOW}{package_name}{Fore.CYAN}...")
+                
+                # Fetch the list of packages from the metapackage
+                try:
+                    package_list = self._fetch_metapackage_data(repo_url, package_name)
+                except FileNotFoundError as e:
+                    self._verbose_print(f"Metapackage not found: {e}")
+                    self._verbose_timing_end(f"install {package_name}")
+                    print(f"{Fore.RED}Error: {e}")
+                    return
+                
+                print(f"{Fore.GREEN}Metapackage contains {len(package_list)} packages:")
+                for pkg in package_list:
+                    print(f"  - {Fore.CYAN}{pkg}")
+                print()
+                
+                # Install each package in the metapackage
+                installed_packages = []
+                failed_packages = []
+                
+                for pkg in package_list:
+                    try:
+                        print(f"{Fore.BLUE}Installing package {Fore.YELLOW}{pkg}{Fore.BLUE} from metapackage...")
+                        self.install(pkg, user_requested=user_requested, skip_checksum=skip_checksum)
+                        installed_packages.append(pkg)
+                    except Exception as e:
+                        self._verbose_print(f"Failed to install package {pkg} from metapackage: {e}")
+                        print(f"{Fore.RED}Failed to install {Fore.YELLOW}{pkg}{Fore.RED}: {e}")
+                        failed_packages.append(pkg)
+                
+                self._verbose_timing_end(f"install {package_name}")
+                
+                # Report results
+                if installed_packages:
+                    print(f"\n{Fore.GREEN}✓ Metapackage {Fore.YELLOW}{package_name}{Fore.GREEN} installed successfully!")
+                    print(f"{Fore.GREEN}Successfully installed: {Fore.CYAN}{', '.join(installed_packages)}")
+                
+                if failed_packages:
+                    print(f"{Fore.RED}Failed to install: {Fore.YELLOW}{', '.join(failed_packages)}")
+                    
+                return
 
             # GET {repo_url}/resolution
             resolution_url = f"{repo_url}/resolution"
@@ -924,6 +1005,70 @@ class PaxD:
             local_app_data = os.path.join(os.path.expandvars(r"%LOCALAPPDATA%"), "PaxD")
             self._verbose_print(f"Local app data directory: {local_app_data}")
             
+            # Check if this is a metapackage
+            if self._is_metapackage(package_name):
+                self._verbose_print(f"Detected metapackage for uninstall: {package_name}")
+                print(f"{Fore.CYAN}Uninstalling metapackage {Fore.YELLOW}{package_name}{Fore.CYAN}...")
+                
+                # Fetch the list of packages from the metapackage
+                try:
+                    package_list = self._fetch_metapackage_data(repo_url, package_name)
+                except FileNotFoundError as e:
+                    self._verbose_print(f"Metapackage not found: {e}")
+                    self._verbose_timing_end(f"uninstall {package_name}")
+                    print(f"{Fore.RED}Error: {e}")
+                    return
+                
+                print(f"{Fore.GREEN}Metapackage contains {len(package_list)} packages:")
+                for pkg in package_list:
+                    print(f"  - {Fore.CYAN}{pkg}")
+                print()
+                
+                # Only uninstall packages that are user-installed
+                print(f"{Fore.YELLOW}Note: Only user-installed packages from this metapackage will be uninstalled.")
+                print(f"{Fore.YELLOW}Packages installed as dependencies will be kept unless orphaned.")
+                print()
+                
+                uninstalled_packages = []
+                skipped_packages = []
+                failed_packages = []
+                
+                for pkg in package_list:
+                    try:
+                        # Check if the package is user-installed
+                        pkg_path = os.path.join(local_app_data, pkg)
+                        user_installed_file = os.path.join(pkg_path, ".USER_INSTALLED")
+                        
+                        if os.path.exists(pkg_path) and os.path.exists(user_installed_file):
+                            print(f"{Fore.RED}Uninstalling user-installed package {Fore.YELLOW}{pkg}{Fore.RED}...")
+                            self.uninstall(pkg)
+                            uninstalled_packages.append(pkg)
+                        elif os.path.exists(pkg_path):
+                            print(f"{Fore.YELLOW}Skipping {Fore.CYAN}{pkg}{Fore.YELLOW} (installed as dependency)")
+                            skipped_packages.append(pkg)
+                        else:
+                            print(f"{Fore.YELLOW}Skipping {Fore.CYAN}{pkg}{Fore.YELLOW} (not installed)")
+                            skipped_packages.append(pkg)
+                    except Exception as e:
+                        self._verbose_print(f"Failed to uninstall package {pkg} from metapackage: {e}")
+                        print(f"{Fore.RED}Failed to uninstall {Fore.YELLOW}{pkg}{Fore.RED}: {e}")
+                        failed_packages.append(pkg)
+                
+                self._verbose_timing_end(f"uninstall {package_name}")
+                
+                # Report results
+                if uninstalled_packages:
+                    print(f"\n{Fore.GREEN}✓ Metapackage {Fore.YELLOW}{package_name}{Fore.GREEN} processed successfully!")
+                    print(f"{Fore.GREEN}Uninstalled packages: {Fore.CYAN}{', '.join(uninstalled_packages)}")
+                
+                if skipped_packages:
+                    print(f"{Fore.YELLOW}Skipped packages: {Fore.CYAN}{', '.join(skipped_packages)}")
+                    
+                if failed_packages:
+                    print(f"{Fore.RED}Failed to uninstall: {Fore.YELLOW}{', '.join(failed_packages)}")
+                    
+                return
+
             # GET {repo_url}/resolution
             resolution_url = f"{repo_url}/resolution"
             self._verbose_print(f"Fetching resolution data from: {resolution_url}")
@@ -1086,6 +1231,51 @@ class PaxD:
             local_app_data = os.path.join(os.path.expandvars(r"%LOCALAPPDATA%"), "PaxD")
             self._verbose_print(f"Local app data directory: {local_app_data}")
             
+            # Check if this is a metapackage
+            if self._is_metapackage(package_name):
+                self._verbose_print(f"Detected metapackage for update: {package_name}")
+                print(f"{Fore.CYAN}Updating metapackage {Fore.YELLOW}{package_name}{Fore.CYAN}...")
+                
+                # Fetch the list of packages from the metapackage
+                try:
+                    package_list = self._fetch_metapackage_data(repo_url, package_name)
+                except FileNotFoundError as e:
+                    self._verbose_print(f"Metapackage not found: {e}")
+                    self._verbose_timing_end(f"update {package_name}")
+                    print(f"{Fore.RED}Error: {e}")
+                    return
+                
+                print(f"{Fore.GREEN}Metapackage contains {len(package_list)} packages:")
+                for pkg in package_list:
+                    print(f"  - {Fore.CYAN}{pkg}")
+                print()
+                
+                # Update each package in the metapackage
+                updated_packages = []
+                failed_packages = []
+                
+                for pkg in package_list:
+                    try:
+                        print(f"{Fore.BLUE}Updating package {Fore.YELLOW}{pkg}{Fore.BLUE} from metapackage...")
+                        self.update(pkg, force=force, skip_checksum=skip_checksum)
+                        updated_packages.append(pkg)
+                    except Exception as e:
+                        self._verbose_print(f"Failed to update package {pkg} from metapackage: {e}")
+                        print(f"{Fore.RED}Failed to update {Fore.YELLOW}{pkg}{Fore.RED}: {e}")
+                        failed_packages.append(pkg)
+                
+                self._verbose_timing_end(f"update {package_name}")
+                
+                # Report results
+                if updated_packages:
+                    print(f"\n{Fore.GREEN}✓ Metapackage {Fore.YELLOW}{package_name}{Fore.GREEN} updated successfully!")
+                    print(f"{Fore.GREEN}Updated packages: {Fore.CYAN}{', '.join(updated_packages)}")
+                
+                if failed_packages:
+                    print(f"{Fore.RED}Failed to update: {Fore.YELLOW}{', '.join(failed_packages)}")
+                    
+                return
+
             # GET {repo_url}/resolution to resolve aliases
             resolution_url = f"{repo_url}/resolution"
             resolution_response = requests.get(resolution_url, headers=self.headers, allow_redirects=True)  # type: ignore
@@ -1655,6 +1845,62 @@ class PaxD:
             found_packages = []
             search_term_lower = search_term.lower()
             
+            # Search for metapackages first
+            self._verbose_print("Searching for metapackages")
+            
+            try:
+                # Try to find metapackages by searching for .meta files
+                packages_url = f"{repo_url}/packages"
+                self._verbose_print(f"Looking for metapackages at: {packages_url}")
+                
+                # Get list of items in packages directory (not perfect but works with GitHub)
+                # This is a simple heuristic - try common metapackage names
+                potential_metapackages = [
+                    "paxd-development.meta",
+                    "paxd-essentials.meta", 
+                    "web-dev.meta",
+                    "python-dev.meta",
+                    "utilities.meta",
+                    "games.meta"
+                ]
+                
+                # Also try the search term as a metapackage
+                if not search_term.endswith('.meta'):
+                    potential_metapackages.append(f"{search_term}.meta")
+                    potential_metapackages.append(f"{search_term}-dev.meta")
+                    potential_metapackages.append(f"{search_term}-tools.meta")
+                
+                for meta_name in potential_metapackages:
+                    try:
+                        meta_base = meta_name[:-5] if meta_name.endswith('.meta') else meta_name
+                        if search_term_lower in meta_base.lower():
+                            # Try to fetch this metapackage
+                            meta_url = f"{repo_url}/packages/{meta_name}"
+                            meta_response = requests.get(meta_url, headers=self.headers, allow_redirects=True)  # type: ignore
+                            
+                            if meta_response.status_code == 200:
+                                self._verbose_print(f"Found metapackage: {meta_name}")
+                                # Parse the metapackage content
+                                package_list = [line.strip() for line in meta_response.text.strip().split('\n') if line.strip()]
+                                
+                                found_packages.append({
+                                    'package_name': meta_name,
+                                    'display_name': f"Metapackage: {meta_base}",
+                                    'description': f"Collection of {len(package_list)} packages: {', '.join(package_list[:3])}{'...' if len(package_list) > 3 else ''}",
+                                    'author': 'Repository Maintainer',
+                                    'version': 'metapackage',
+                                    'alias': '',
+                                    'aliases': [],
+                                    'matches': [f"metapackage name: {meta_base}"],
+                                    'is_installed': False  # Metapackages don't have installation state
+                                })
+                    except Exception as e:
+                        self._verbose_print(f"Error checking metapackage {meta_name}: {e}")
+                        continue
+                        
+            except Exception as e:
+                self._verbose_print(f"Error searching for metapackages: {e}")
+
             # Try to use searchindex.csv for faster searching
             searchindex_url = f"{repo_url}/searchindex.csv"
             self._verbose_print(f"Attempting to fetch search index from: {searchindex_url}")

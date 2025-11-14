@@ -131,6 +131,7 @@ def generate_searchindex():
     # Collect package data
     packages = []
     
+    # First, collect regular packages
     for package_path in sorted(packages_dir.iterdir()):
         if not package_path.is_dir():
             continue
@@ -151,6 +152,35 @@ def generate_searchindex():
         else:
             print(f"Warning: Could not extract metadata from {package_path.name}")
     
+    # Then, collect metapackages (.meta files)
+    print("Searching for metapackages...")
+    for meta_file in sorted(packages_dir.glob('*.meta')):
+        print(f"Processing metapackage {meta_file.name}...")
+        
+        try:
+            with open(meta_file, 'r', encoding='utf-8') as f:
+                content = f.read().strip()
+                package_list = [line.strip() for line in content.split('\n') if line.strip()]
+            
+            # Create metadata for the metapackage
+            meta_name = meta_file.name
+            base_name = meta_name[:-5]  # Remove .meta extension
+            
+            metadata = {
+                'package_id': meta_name,
+                'package_name': f"Metapackage: {base_name}",
+                'description': f"Collection of {len(package_list)} packages: {', '.join(package_list[:3])}{'...' if len(package_list) > 3 else ''}",
+                'author': 'Repository Maintainer',
+                'version': 'metapackage',
+                'alias': '',
+                'aliases': ''
+            }
+            
+            packages.append(metadata)
+            
+        except Exception as e:
+            print(f"Warning: Error processing metapackage {meta_file.name}: {e}")
+
     # Write CSV file
     csv_path = Path('searchindex.csv')
     
