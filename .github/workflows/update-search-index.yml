@@ -19,40 +19,39 @@ jobs:
     runs-on: self-hosted
     permissions:
       contents: write
-    
+
     steps:
       - name: Checkout repository
+        id: checkout
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-      
-      - name: Set up Python virtual environment
-        run: |
-          uv venv
+          path: repo   # <--- fix
 
-        # Use UV since it's really fast at downloading packages and setting up enviroments
+      - name: Set up Python virtual environment
+        working-directory: repo
+        run: uv venv
 
       - name: Install dependencies
-        run: |
-          uv pip install pyyaml
-
-        # PyYAML is the only dependency needed to run the search index generator. Also, no need to source the venv, UV handles that automatically for both running and installing.
+        working-directory: repo
+        run: uv pip install pyyaml
 
       - name: Generate search index
-        run: |
-          uv run generate_searchindex.py
-      
+        working-directory: repo
+        run: uv run generate_searchindex.py
+
       - name: Check for changes
-        run: git diff --exit-code -- searchindex.csv || echo "changed=true" >> $GITHUB_OUTPUT
-        working-directory: ${{ github.workspace }}
-      
+        id: git-check
+        working-directory: repo
+        run: |
+          git diff --exit-code -- searchindex.csv || echo "changed=true" >> $GITHUB_OUTPUT
+
       - name: Commit and push if changed
-        if: success() && steps.git-check.outputs.changed == 'true'
-        working-directory: ${{ github.workspace }}
+        if: steps.git-check.outputs.changed == 'true'
+        working-directory: repo
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add searchindex.csv
           git commit -m "Update search index"
           git push
-
