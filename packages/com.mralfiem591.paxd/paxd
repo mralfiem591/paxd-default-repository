@@ -25,7 +25,8 @@
             "pip:uv",
             "paxd:paxd-vulnscan",
             "paxd:com.mralfiem591.paxd-sdk",
-            "paxd:com.mralfiem591.paxd-imageview"
+            "paxd:com.mralfiem591.paxd-imageview",
+            "paxd:paxd-gui"
         ],
         "firstrun": true,
         "updaterun": true,
