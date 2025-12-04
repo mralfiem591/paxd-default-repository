@@ -10,9 +10,7 @@ Welcome to the roadmap of **PaxD**! This document outlines our vision, goals, an
 | Feature | Description | Status | Priority (/3) |
 |-|-|-|-|
 | Pulls from external sources | Enable packages to store their package src/ folder in another location, instead of the GitHub repository | 🔴 **Delayed until further notice** | P2 |
-| paxd-vulnerability included by default | Integrate paxd-vulnerability scanner into the core PaxD package for improved security | 🟡 In Progress | P3 |
 | Setup script | Allow packages to have a setup script that runs on installation | 🟠 Planned | P2 |
-| PaxD-gui GUI package | Develop a graphical user interface (GUI) for PaxD to enhance user experience for non-terminal users | 🟡 In Progress | P1 |
 
 #### Completed
 | Feature | Description | Status | Release Type |
@@ -25,6 +23,8 @@ Welcome to the roadmap of **PaxD**! This document outlines our vision, goals, an
 | Replace pip with uv for package dependencies | Switch from using pip to uv for managing Python package dependencies, due to its major speed increase | 🟢 Completed | Released immediately |
 | Improved error handling | Enhance error messages and handling throughout the application for better user experience | 🟢 Completed | Released immediately |
 | Metapackages support | Introduce support for metapackages, allowing users to install a collection of related packages with a single command | 🟢 Completed | Released immediately |
+| PaxD-gui GUI package | Develop a graphical user interface (GUI) for PaxD to enhance user experience for non-terminal users | 🟢 Completed | Released immediately |
+| paxd-vulnerability included by default | Integrate paxd-vulnerability scanner into the core PaxD package for improved security | 🟢 Completed | Released immediately |
 
 ### Version 26.1.0
 
