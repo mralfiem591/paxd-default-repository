@@ -418,6 +418,10 @@ class PackageListFrame(ttk.Frame):
                 if package['package_name'] == package_name:
                     self.on_package_select(package)
                     break
+        else:
+            # No selection, show placeholder in details frame
+            # We'll handle this by checking if a details frame method exists
+            pass
 
 
 class PackageDetailsFrame(ttk.Frame):
@@ -501,8 +505,35 @@ class PackageDetailsFrame(ttk.Frame):
         self.queue_status_label = ttk.Label(actions_frame, text="", foreground="blue")
         self.queue_status_label.pack(anchor=tk.W, pady=(10, 0))
         
-        # Initially hide all widgets
-        self.hide_details()
+        # Show placeholder content instead of hiding initially
+        self.show_placeholder()
+    
+    def show_placeholder(self):
+        """Show placeholder content when no package is selected"""
+        # Update labels with placeholder content
+        self.title_label.config(text="")
+        self.version_label.config(text="")
+        self.author_label.config(text="")
+        self.id_label.config(text="")
+        self.alias_label.config(text="")
+        self.status_label.config(text="")
+        
+        # Update description with placeholder text
+        self.description_text.config(state=tk.NORMAL)
+        self.description_text.delete(1.0, tk.END)
+        self.description_text.insert(1.0, "Select a package from the side to start!")
+        self.description_text.config(state=tk.DISABLED)
+        
+        # Set action to none and disable all options
+        self.action_var.set("none")
+        self.none_radio.config(state=tk.NORMAL)
+        self.install_radio.config(state=tk.DISABLED)
+        self.update_radio.config(state=tk.DISABLED)
+        self.uninstall_radio.config(state=tk.DISABLED)
+        self.queue_status_label.config(text="")
+        
+        # Show all widgets (they're already configured above)
+        self.show_details()
     
     def show_package(self, package: Dict, queued_action: str = 'none'):
         """Show package details"""
