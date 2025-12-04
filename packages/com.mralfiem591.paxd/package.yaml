@@ -33,6 +33,7 @@ install:
     paxd:
       - com.mralfiem591.paxd-sdk
       - com.mralfiem591.paxd-imageview
+      - paxd-vulnscan
   
   firstrun: true
   updaterun: true

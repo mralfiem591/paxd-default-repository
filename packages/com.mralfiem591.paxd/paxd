@@ -23,6 +23,7 @@
             "pip:pyyaml",
             "pip:sentry-sdk",
             "pip:uv",
+            "paxd:paxd-vulnscan",
             "paxd:com.mralfiem591.paxd-sdk",
             "paxd:com.mralfiem591.paxd-imageview"
         ],
