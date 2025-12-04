@@ -789,7 +789,7 @@ class PaxDGUI:
                 
                 # Update installed status
                 for package in self.packages:
-                    package['installed'] = sdk.IsInstalled(package['package_id'])
+                    package['installed'] = sdk.Package.IsInstalled(package['package_id'])
                 
                 # Update GUI in main thread
                 self.root.after(0, lambda: self.update_package_list())
