@@ -711,6 +711,31 @@ class PackageDetailsFrame(ttk.Frame):
         """Handle action change"""
         if self.current_package:
             action = self.action_var.get()
+            
+            # Check for vulnerability scanner uninstall warning
+            if (action == 'uninstall' and 
+                self.current_package and
+                (self.current_package.get('package_id') == 'com.mralfiem591.vulnerability' or
+                 'vulnerability' in self.current_package.get('aliases', []))):
+                
+                # Show warning dialog
+                result = messagebox.askyesno(
+                    "Security Warning",
+                    "You are about to uninstall the PaxD vulnerability scanner.\n\n"
+                    "This package protects your system by scanning for exploits and vulnerabilities in packages. "
+                    "Without it, your system may be vulnerable to security threats from malicious packages.\n\n"
+                    "Are you sure you want to uninstall the vulnerability scanner?",
+                    icon="warning"
+                )
+                
+                # If user cancels, reset to no action
+                if not result:
+                    self.action_var.set('none')
+                    self.current_action = 'none'
+                    self.update_queue_status()
+                    self.on_action(self.current_package, 'none')
+                    return
+            
             self.current_action = action
             self.update_queue_status()
             self.on_action(self.current_package, action)
