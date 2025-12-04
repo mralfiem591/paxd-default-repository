@@ -757,9 +757,9 @@ class QueueWindow:
                     try:
                         result = self.package_manager.execute_action(package, action)
                         
-                        # Check for "already up to date" message in any output
+                        # Check if update actually occurred by looking for success message
                         full_output = result.get('output', '') + ' ' + result.get('error', '')
-                        is_already_up_to_date = 'is already up to date.' in full_output
+                        is_already_up_to_date = '✓ Successfully updated' not in full_output and action == 'update'
                         
                         # Check if this is a GUI package update
                         is_gui_update = (action == 'update' and 
