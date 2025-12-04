@@ -655,6 +655,7 @@ class QueueWindow:
         self.queue = queue
         self.package_manager = package_manager
         self.parent_refresh_callback = refresh_callback
+        self.gui_was_updated = False  # Track if GUI was updated
         
         self.window = tk.Toplevel(parent)
         self.window.title("Processing Queue")
@@ -727,8 +728,16 @@ class QueueWindow:
                         full_output = result.get('output', '') + ' ' + result.get('error', '')
                         is_already_up_to_date = 'is already up to date.' in full_output
                         
+                        # Check if this is a GUI package update
+                        is_gui_update = (action == 'update' and 
+                                       (package.get('package_id') == 'com.mralfiem591.paxd-gui' or
+                                        'paxd-gui' in package.get('aliases', [])))
+                        
                         if result.get('success') and not is_already_up_to_date:
                             self.log(f"✓ Success: {result.get('message', 'Operation completed')}")
+                            # Mark GUI as updated if this was a GUI update
+                            if is_gui_update:
+                                self.gui_was_updated = True
                         elif is_already_up_to_date and action == 'update':
                             # Handle update retry option for "already up to date" case
                             if messagebox.askyesno(
@@ -740,6 +749,10 @@ class QueueWindow:
                                 force_result = self.package_manager.execute_action(package, 'force_update')
                                 if force_result.get('success'):
                                     self.log(f"✓ Force update successful")
+                                    # Mark GUI as updated if this was a GUI force update
+                                    if (package.get('package_id') == 'com.mralfiem591.paxd-gui' or
+                                        'paxd-gui' in package.get('aliases', [])):
+                                        self.gui_was_updated = True
                                 else:
                                     self.log(f"✗ Force update failed: {force_result.get('message')}")
                             else:
@@ -760,11 +773,27 @@ class QueueWindow:
                 if hasattr(self, 'parent_refresh_callback') and self.parent_refresh_callback:
                     self.parent_refresh_callback()
                 
+                # Check if GUI was updated and restart if needed
+                if hasattr(self, 'gui_was_updated') and self.gui_was_updated:
+                    self.log("GUI was updated - restarting application...")
+                    self.window.after(2000, self._restart_application)  # Wait 2 seconds before restart
+                
             except Exception as e:
                 self.log(f"Critical error: {str(e)}")
                 self.close_button.config(state=tk.NORMAL)
         
         threading.Thread(target=process, daemon=True).start()
+    
+    def _restart_application(self):
+        """Restart the application after GUI update"""
+        try:
+            # Start new instance
+            os.system("start cmd /c paxd-gui")
+            # Exit current instance
+            os._exit(0)
+        except Exception as e:
+            self.log(f"Failed to restart application: {e}")
+            self.close_button.config(state=tk.NORMAL)
 
 
 # ============================================================================
