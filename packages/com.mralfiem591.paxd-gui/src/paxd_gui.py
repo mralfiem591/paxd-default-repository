@@ -14,6 +14,9 @@ import requests
 import csv
 import io
 from typing import List, Dict, Optional, Callable
+import atexit
+
+atexit.register(lambda: print("PaxD GUI has exited.\nSo long and thanks for all the fish!"))
 
 try:
     import paxd_sdk as sdk  # type: ignore
@@ -820,6 +823,7 @@ class QueueWindow:
         try:
             # Start new instance
             os.system("start cmd /c paxd-gui")
+            self.log("Handoff to new GUI instance was a success! This instance will now exit.")
             # Exit current instance
             os._exit(0)
         except Exception as e:
