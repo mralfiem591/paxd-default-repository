@@ -707,6 +707,9 @@ class QueueWindow:
         self.log_text.insert(tk.END, message + "\n")
         self.log_text.see(tk.END)
         self.window.update()
+        
+        # Also print
+        print(message)
     
     def start_processing(self):
         """Start processing queue"""
