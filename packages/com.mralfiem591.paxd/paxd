@@ -24,8 +24,7 @@
             "pip:sentry-sdk",
             "pip:uv",
             "paxd:com.mralfiem591.paxd-sdk",
-            "paxd:com.mralfiem591.paxd-imageview",
-            "paxd:paxd-gui"
+            "paxd:com.mralfiem591.paxd-imageview"
         ],
         "firstrun": true,
         "updaterun": true,

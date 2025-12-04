@@ -33,7 +33,6 @@ install:
     paxd:
       - com.mralfiem591.paxd-sdk
       - com.mralfiem591.paxd-imageview
-      - paxd-gui
   
   firstrun: true
   updaterun: true
