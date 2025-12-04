@@ -1,7 +1,7 @@
 # PaxD package configuration - converted from manifest
 # Original file: paxd
 
-name: PaxD ImageView
+name: PaxD Imageview
 author: mralfiem591
 version: 1.1.4
 description: A simple image viewer used by PaxD.
@@ -26,3 +26,4 @@ install:
   main_executable: imageview.py
   command_alias: paxd-imageview
   supports_fastxd: true
+
