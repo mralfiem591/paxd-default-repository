@@ -1,6 +1,6 @@
 name: PaxD GUI
 author: mralfiem591
-version: 1.0.6
+version: 1.0.7
 description: A graphical user interface for PaxD package management.
 license: MIT
 tags:

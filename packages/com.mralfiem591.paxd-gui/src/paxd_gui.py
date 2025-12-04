@@ -501,6 +501,13 @@ class PackageDetailsFrame(ttk.Frame):
         )
         self.uninstall_radio.pack(anchor=tk.W)
         
+        # Label for GUI package uninstall instruction
+        self.uninstall_note_label = ttk.Label(
+            actions_frame, text="", 
+            foreground="gray", font=('TkDefaultFont', 8)
+        )
+        self.uninstall_note_label.pack(anchor=tk.W, padx=(20, 0))
+        
         # Queue status
         self.queue_status_label = ttk.Label(actions_frame, text="", foreground="blue")
         self.queue_status_label.pack(anchor=tk.W, pady=(10, 0))
@@ -530,6 +537,7 @@ class PackageDetailsFrame(ttk.Frame):
         self.install_radio.config(state=tk.DISABLED)
         self.update_radio.config(state=tk.DISABLED)
         self.uninstall_radio.config(state=tk.DISABLED)
+        self.uninstall_note_label.config(text="")
         self.queue_status_label.config(text="")
         
         # Show all widgets (they're already configured above)
@@ -578,14 +586,29 @@ class PackageDetailsFrame(ttk.Frame):
     
     def update_action_buttons(self, installed: bool):
         """Update action button states"""
+        # Check if this is the GUI package itself (prevent self-uninstallation)
+        is_gui_package = (self.current_package and 
+                         (self.current_package.get('package_id') == 'com.mralfiem591.paxd-gui' or
+                          'paxd-gui' in self.current_package.get('aliases', [])))
+        
         if installed:
             self.install_radio.config(state=tk.DISABLED)
             self.update_radio.config(state=tk.NORMAL)
-            self.uninstall_radio.config(state=tk.NORMAL)
+            # Disable uninstall for the GUI package itself
+            self.uninstall_radio.config(state=tk.DISABLED if is_gui_package else tk.NORMAL)
+            
+            # Show uninstall instruction for GUI package
+            if is_gui_package:
+                self.uninstall_note_label.config(
+                    text="(uninstall by closing this GUI and executing the command 'paxd uninstall paxd-gui'!)"
+                )
+            else:
+                self.uninstall_note_label.config(text="")
         else:
             self.install_radio.config(state=tk.NORMAL)
             self.update_radio.config(state=tk.DISABLED)
             self.uninstall_radio.config(state=tk.DISABLED)
+            self.uninstall_note_label.config(text="")
     
     def update_queue_status(self):
         """Update queue status display"""
