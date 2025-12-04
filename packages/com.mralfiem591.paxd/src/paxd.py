@@ -3033,7 +3033,7 @@ def main():
     messages = paxd_sdk.Messaging.GetMessages('com.mralfiem591.paxd')
     for message in messages:
         if message['from'] == 'com.mralfiem591.paxd-gui' and message['message']['queue_gui_uninstall'] == True:
-            print("Received uninstall request from GUI, uninstalling PaxD GUI!")
+            print(f"Received uninstall request from GUI (sent time: {message['timestamp']}), uninstalling PaxD GUI!")
             paxd.uninstall("com.mralfiem591.paxd-gui")
     paxd_sdk.Messaging.ClearMessages('com.mralfiem591.paxd')
 
