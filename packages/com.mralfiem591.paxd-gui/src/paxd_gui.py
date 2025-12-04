@@ -864,6 +864,14 @@ class PaxDGUI:
         )
         refresh_button.pack(side=tk.RIGHT, padx=(0, 10))
         
+        # Update All button
+        update_all_button = ttk.Button(
+            top_frame, 
+            text="Update All", 
+            command=self.update_all_packages
+        )
+        update_all_button.pack(side=tk.LEFT, padx=(10, 0))
+        
         # Queue info label
         self.queue_label = ttk.Label(top_frame, text="Queue: 0 actions")
         self.queue_label.pack(side=tk.LEFT)
@@ -1001,6 +1009,33 @@ class PaxDGUI:
     def refresh_packages(self):
         """Refresh package list"""
         self.load_packages()
+    
+    def update_all_packages(self):
+        """Queue update action for all installed packages"""
+        updated_count = 0
+        
+        for package in self.packages:
+            if package.get('installed', False):
+                # Remove any existing action for this package
+                self.queue = [item for item in self.queue if item['package']['package_id'] != package['package_id']]
+                
+                # Add update action
+                self.queue.append({
+                    'package': package,
+                    'action': 'update'
+                })
+                updated_count += 1
+        
+        if updated_count > 0:
+            self.update_queue_display()
+            messagebox.showinfo("Update All", f"Queued {updated_count} packages for update.")
+            
+            # If the currently selected package is in the queue, update its display
+            current_package = self.package_details_frame.current_package
+            if current_package and current_package.get('installed', False):
+                self.package_details_frame.show_package(current_package, 'update')
+        else:
+            messagebox.showinfo("Update All", "No installed packages found to update.")
     
     def show_error(self, title, message):
         """Show error dialog"""
