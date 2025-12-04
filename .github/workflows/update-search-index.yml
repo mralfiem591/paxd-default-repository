@@ -25,6 +25,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           path: ${{ env.REPO_DIR }}
+          clean: false
 
       - name: Set up Python virtual environment
         working-directory: ${{ env.REPO_DIR }}
