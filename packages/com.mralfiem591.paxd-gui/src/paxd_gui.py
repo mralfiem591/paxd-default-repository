@@ -268,7 +268,7 @@ class PackageManager:
         """Import packages from .paxd file"""
         try:
             # Get package directory from SDK
-            package_dir = sdk.Package.GetPackageDir()
+            package_dir = sdk.PackageDir
             export_path = os.path.join(package_dir, "export.paxd")
             
             # Copy the selected file to export.paxd in package directory
@@ -301,7 +301,7 @@ class PackageManager:
             
             if result['success']:
                 # Get package directory from SDK
-                package_dir = sdk.Package.GetPackageDir()
+                package_dir = sdk.PackageDir
                 export_source = os.path.join(package_dir, "export.paxd")
                 
                 # Check if export.paxd was created
@@ -826,23 +826,19 @@ class QueueWindow:
                     try:
                         result = self.package_manager.execute_action(package, action)
                         
-                        # Check if update actually occurred by looking for success message
-                        full_output = result.get('output', '') + ' ' + result.get('error', '')
-                        is_already_up_to_date = '✓ Successfully updated' not in full_output and action == 'update'
-                        
-                        # Check if this is a GUI package update
+                        # Check if this is a GUI package update (trigger restart after any update attempt)
                         is_gui_update = (action == 'update' and 
                                        (package.get('package_id') == 'com.mralfiem591.paxd-gui' or
                                         'paxd-gui' in package.get('aliases', [])))
                         
-                        if result.get('success') and not is_already_up_to_date:
-                            self.log(f"✓ Success: {result.get('message', 'Operation completed')}")
-                            # Mark GUI as updated if this was a GUI update
+                        # Always show as attempted, regardless of actual outcome
+                        if action == 'update':
+                            self.log(f"✓ Update attempted of {package['package_name']}!")
+                            # Mark GUI as updated if this was a GUI update attempt
                             if is_gui_update:
                                 self.gui_was_updated = True
-                        elif is_already_up_to_date and action == 'update':
-                            # Skip packages that are already up to date
-                            self.log(f"ℹ Skipped: {package['package_name']} is already up to date")
+                        elif result.get('success'):
+                            self.log(f"✓ Success: {result.get('message', 'Operation completed')}")
                         else:
                             self.log(f"✗ Error: {result.get('message', 'Unknown error')}")
                     
