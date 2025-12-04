@@ -144,7 +144,9 @@ class PackageManager:
                     [path, "--version"], 
                     capture_output=True, 
                     text=True, 
-                    timeout=5
+                    timeout=5,
+                    shell=True,  # Use shell to inherit PATH on Windows
+                    env=os.environ  # Explicitly pass environment variables
                 )
                 if result.returncode == 0:
                     return path
@@ -164,7 +166,9 @@ class PackageManager:
                 capture_output=True,
                 text=True,
                 timeout=timeout,
-                cwd=os.getcwd()
+                cwd=os.getcwd(),
+                shell=True,  # Use shell to inherit PATH on Windows
+                env=os.environ  # Explicitly pass environment variables
             )
             
             return {
