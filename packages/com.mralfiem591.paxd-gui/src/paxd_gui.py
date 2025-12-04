@@ -213,11 +213,36 @@ class PackageManager:
         package_identifier = get_package_identifier(package)
         
         try:
+            # Special handling for GUI uninstall
+            if (action == 'uninstall' and 
+                (package.get('package_id') == 'com.mralfiem591.paxd-gui' or
+                 'paxd-gui' in package.get('aliases', []))):
+                
+                # Use SDK messaging to queue GUI uninstall after exit
+                try:
+                    sdk.Messaging.SendMessage(
+                        'com.mralfiem591.paxd-gui',
+                        'com.mralfiem591.paxd',
+                        {'queue_gui_uninstall': True}
+                    )
+                    return {
+                        'success': True,
+                        'message': 'GUI queued for uninstall after exit',
+                        'output': 'Uninstall message sent to main PaxD package',
+                        'error': ''
+                    }
+                except Exception as e:
+                    return {
+                        'success': False,
+                        'message': f'Failed to queue GUI uninstall: {str(e)}',
+                        'output': '',
+                        'error': str(e)
+                    }
+            
             if action == 'install':
                 result = self.install_package(package_identifier)
             elif action == 'update':
                 result = self.update_package(package_identifier)
-
             elif action == 'uninstall':
                 result = self.uninstall_package(package_identifier)
             else:
@@ -669,19 +694,19 @@ class PackageDetailsFrame(ttk.Frame):
                       (self.current_package.get('package_id') == 'com.mralfiem591.paxd-sdk' or
                        'paxd-sdk' in self.current_package.get('aliases', [])))
         
-        # Any protected package cannot be uninstalled
-        is_protected = is_gui_package or is_main_paxd or is_paxd_sdk
+        # Only main PaxD and SDK cannot be uninstalled (GUI can now be uninstalled via messaging)
+        is_protected = is_main_paxd or is_paxd_sdk
         
         if installed:
             self.install_radio.config(state=tk.DISABLED)
             self.update_radio.config(state=tk.NORMAL)
-            # Disable uninstall for protected packages
+            # Disable uninstall for protected packages only (not GUI)
             self.uninstall_radio.config(state=tk.DISABLED if is_protected else tk.NORMAL)
             
             # Show appropriate uninstall instruction/warning for protected packages
             if is_gui_package:
                 self.uninstall_note_label.config(
-                    text="(uninstall by closing this GUI and executing the command 'paxd uninstall paxd-gui'!)"
+                    text="(will queue GUI for uninstall after exit)"
                 )
             elif is_main_paxd:
                 self.uninstall_note_label.config(
@@ -852,6 +877,21 @@ class QueueWindow:
                             # Mark GUI as updated if this was a GUI update attempt
                             if is_gui_update:
                                 self.gui_was_updated = True
+                        elif action == 'uninstall' and (package.get('package_id') == 'com.mralfiem591.paxd-gui' or
+                                                       'paxd-gui' in package.get('aliases', [])):
+                            # Special handling for GUI uninstall messaging
+                            if result.get('success'):
+                                self.log(f"✓ {result.get('message', 'GUI queued for uninstall')}")
+                                # Show popup about GUI uninstall queue
+                                self.window.after(100, lambda: messagebox.showinfo(
+                                    "GUI Uninstall Queued",
+                                    "The PaxD GUI has been queued for uninstall.\n\n"
+                                    "When you exit this application, the main PaxD package will "
+                                    "automatically uninstall the GUI for you.\n\n"
+                                    "Thank you for using PaxD GUI!"
+                                ))
+                            else:
+                                self.log(f"✗ Failed to queue GUI uninstall: {result.get('message', 'Unknown error')}")
                         elif result.get('success'):
                             self.log(f"✓ Success: {result.get('message', 'Operation completed')}")
                         else:
