@@ -302,7 +302,7 @@ class PackageListFrame(ttk.Frame):
         filter_combo = ttk.Combobox(
             filter_frame, 
             textvariable=self.filter_var,
-            values=["all", "installed", "not installed"],
+            values=["all", "installed", "not installed", "updates available"],
             state="readonly"
         )
         filter_combo.pack(side=tk.LEFT)
@@ -366,6 +366,8 @@ class PackageListFrame(ttk.Frame):
                 continue
             elif filter_type == "not installed" and package.get('installed', False):
                 continue
+            elif filter_type == "updates available" and not package.get('update_available', False):
+                continue
             
             filtered.append(package)
         
@@ -380,8 +382,21 @@ class PackageListFrame(ttk.Frame):
         
         # Add packages
         for package in self.filtered_packages:
-            status = "✓ Installed" if package.get('installed', False) else "Not installed"
-            icon = "✓" if package.get('installed', False) else ""
+            installed = package.get('installed', False)
+            update_available = package.get('update_available', False)
+            
+            if installed and update_available:
+                status = f"✓ Installed - Update available! {package.get('installed_version', 'Unknown')} > {package['version']}"
+                icon = "⚠"
+                tag = 'update_available'
+            elif installed:
+                status = "✓ Installed"
+                icon = "✓"
+                tag = 'installed'
+            else:
+                status = "Not installed"
+                icon = ""
+                tag = 'not_installed'
             
             self.tree.insert('', 'end', 
                 text=icon,
@@ -391,12 +406,13 @@ class PackageListFrame(ttk.Frame):
                     package['author'],
                     status
                 ),
-                tags=('installed' if package.get('installed', False) else 'not_installed',)
+                tags=(tag,)
             )
         
         # Configure tags
         self.tree.tag_configure('installed', foreground='green')
         self.tree.tag_configure('not_installed', foreground='black')
+        self.tree.tag_configure('update_available', foreground='orange', font=('TkDefaultFont', 9, 'bold'))
     
     def on_search_changed(self, *args):
         """Handle search change"""
@@ -562,10 +578,22 @@ class PackageDetailsFrame(ttk.Frame):
         self.alias_label.config(text=alias_text)
         
         installed = package.get('installed', False)
-        status_text = "✓ Installed" if installed else "Not installed"
+        update_available = package.get('update_available', False)
+        installed_version = package.get('installed_version')
+        
+        if installed and update_available and installed_version:
+            status_text = f"✓ Installed ({installed_version}) - Update available to {package['version']}!"
+            status_color = "orange"
+        elif installed:
+            status_text = f"✓ Installed" + (f" ({installed_version})" if installed_version else "")
+            status_color = "green"
+        else:
+            status_text = "Not installed"
+            status_color = "red"
+            
         self.status_label.config(
             text=f"Status: {status_text}",
-            foreground="green" if installed else "red"
+            foreground=status_color
         )
         
         # Update description
@@ -888,9 +916,32 @@ class PaxDGUI:
                 search_index = fetch_search_index()
                 self.packages = parse_search_index(search_index)
                 
-                # Update installed status
+                # Update installed status and check for updates
                 for package in self.packages:
                     package['installed'] = sdk.Package.IsInstalled(package['package_id'])
+                    
+                    # Check for updates if package is installed
+                    if package['installed']:
+                        try:
+                            installed_version = sdk.Package.GetInstalledVersion(package['package_id'])
+                            latest_version = package['version']
+                            
+                            # Check if installed version is latest using AssertVersion
+                            is_latest = sdk.Helpers.AssertVersion(installed_version, latest_version)
+                            package['update_available'] = not is_latest
+                            package['installed_version'] = installed_version
+                            
+                            # Check if this is the GUI package and needs update
+                            if (package['package_id'] == 'com.mralfiem591.paxd-gui' or 
+                                'paxd-gui' in package.get('aliases', [])) and not is_latest:
+                                print(f"PaxD GUI has an update! {installed_version} > {latest_version}")
+                        except Exception as e:
+                            # If we can't get version info, assume no update available
+                            package['update_available'] = False
+                            package['installed_version'] = 'Unknown'
+                    else:
+                        package['update_available'] = False
+                        package['installed_version'] = None
                 
                 # Update GUI in main thread
                 self.root.after(0, lambda: self.update_package_list())
