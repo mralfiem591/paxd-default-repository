@@ -1,6 +1,6 @@
 name: PaxD GUI
 author: mralfiem591
-version: 1.0.1
+version: 1.0.2
 description: A graphical user interface for PaxD package management.
 license: MIT
 tags:
@@ -15,10 +15,6 @@ tags:
 install:
   files:
     - paxd_gui.py
-    - gui_components.py
-    - package_manager.py
-    - utils.py
-    - launch.py
 
   dependencies:
     pip:
@@ -28,6 +24,6 @@ install:
   
   firstrun: false
   updaterun: false
-  main_executable: launch.py
+  main_executable: paxd_gui.py
   command_alias: paxd-gui
-  supports_fastxd: true
+  supports_fastxd: false # SDK cant be used in fastxd
