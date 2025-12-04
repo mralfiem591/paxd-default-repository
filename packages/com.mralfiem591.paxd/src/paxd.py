@@ -2768,6 +2768,7 @@ def main():
             paxd._verbose_print(f"Successfully fetched PaxD metadata from {source_file}")
             install_info = package_data.get('install', {})
             dependencies = install_info.get('depend', [])
+            paxd.install('com.mralfiem591.vulnerability', user_requested=True)
             for dep in dependencies:
                 if dep.startswith("paxd:"):
                     paxd_package = dep[len("paxd:"):]
@@ -2778,9 +2779,9 @@ def main():
                         uv_exists = True if subprocess.run(['uv', 'self', 'version'], capture_output=True).returncode == 0 else False
                         if uv_exists:
                             paxd._verbose_print("UV is already installed, skipping UV installation")
-                            continue
                         else:
                             os.system('pip install uv')
+                        continue
                     PIP_PACKAGES.append(pip_package)
                 # Add more dependency types as needed
                 else:
@@ -2964,6 +2965,7 @@ def main():
                 paxd._verbose_print(f"Successfully fetched PaxD metadata from {source_file}")
                 install_info = package_data.get('install', {})
                 dependencies = install_info.get('depend', [])
+                paxd.install('com.mralfiem591.vulnerability', user_requested=True)
                 for dep in dependencies:
                     if dep.startswith("paxd:"):
                         paxd_package = dep[len("paxd:"):]
