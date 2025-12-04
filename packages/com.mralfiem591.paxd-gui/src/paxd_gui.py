@@ -668,24 +668,30 @@ class QueueWindow:
                     
                     try:
                         result = self.package_manager.execute_action(package, action)
-                        if result.get('success'):
+                        
+                        # Check for "already up to date" message in any output
+                        full_output = result.get('output', '') + ' ' + result.get('error', '')
+                        is_already_up_to_date = 'is already up to date.' in full_output
+                        
+                        if result.get('success') and not is_already_up_to_date:
                             self.log(f"✓ Success: {result.get('message', 'Operation completed')}")
+                        elif is_already_up_to_date and action == 'update':
+                            # Handle update retry option for "already up to date" case
+                            if messagebox.askyesno(
+                                "Force Update", 
+                                f"{package['package_name']} is already up to date. Force update anyway?",
+                                parent=self.window
+                            ):
+                                self.log(f"Forcing update for {package['package_name']}...")
+                                force_result = self.package_manager.execute_action(package, 'force_update')
+                                if force_result.get('success'):
+                                    self.log(f"✓ Force update successful")
+                                else:
+                                    self.log(f"✗ Force update failed: {force_result.get('message')}")
+                            else:
+                                self.log(f"ℹ Skipped: {package['package_name']} is already up to date")
                         else:
                             self.log(f"✗ Error: {result.get('message', 'Unknown error')}")
-                            
-                            # Handle update retry option
-                            if action == 'update' and 'is already up to date.' in result.get('output', ''):
-                                if messagebox.askyesno(
-                                    "Force Update", 
-                                    f"{package['package_name']} is already up to date. Force update anyway?",
-                                    parent=self.window
-                                ):
-                                    self.log(f"Forcing update for {package['package_name']}...")
-                                    force_result = self.package_manager.execute_action(package, 'force_update')
-                                    if force_result.get('success'):
-                                        self.log(f"✓ Force update successful")
-                                    else:
-                                        self.log(f"✗ Force update failed: {force_result.get('message')}")
                     
                     except Exception as e:
                         self.log(f"✗ Exception: {str(e)}")
