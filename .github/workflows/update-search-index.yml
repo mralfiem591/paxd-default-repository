@@ -10,6 +10,10 @@ on:
   
   workflow_dispatch:
 
+defaults:
+  run:
+    working-directory: ${{ github.workspace }}
+
 jobs:
   update-index:
     runs-on: self-hosted
