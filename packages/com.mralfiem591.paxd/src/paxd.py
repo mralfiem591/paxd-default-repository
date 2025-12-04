@@ -3003,12 +3003,12 @@ def main():
         elif args.command == "gui":
             paxd._verbose_print("Launching PaxD GUI")
             try:
-                os.system('paxd-gui')
-            except KeyboardInterrupt:
-                pass
-            except:
+                subprocess.run(['paxd-gui'], check=True, shell=True)
+            # Catch specific exception for if the command paxd-gui isnt found
+            except subprocess.CalledProcessError:
                 paxd.install("com.mralfiem591.paxd-gui", user_requested=True)
-                os.system('paxd-gui')
+                subprocess.run(['paxd-gui'], check=True, shell=True)
+            
                 
             
         else:
