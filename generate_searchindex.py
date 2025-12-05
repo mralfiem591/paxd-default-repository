@@ -63,9 +63,9 @@ def get_package_metadata(package_path: Path):
     
     # Try different manifest files in order
     manifest_files = [
+        ('package.yaml', 'yaml'),
         ('paxd', 'json'),
-        ('paxd.yaml', 'yaml'),
-        ('package.yaml', 'yaml')
+        ('paxd.yaml', 'yaml')
     ]
     
     for manifest_file, file_type in manifest_files:
