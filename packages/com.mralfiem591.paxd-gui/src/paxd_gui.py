@@ -886,10 +886,9 @@ class QueueWindow:
                                 self.window.after(100, lambda: messagebox.showinfo(
                                     "GUI Uninstall Queued",
                                     "The PaxD GUI has been queued for uninstall.\n\n"
-                                    "When you exit this application, the main PaxD package will "
+                                    "When you exit this application, PaxD package will "
                                     "automatically uninstall the GUI for you.\n\n"
-                                    "IMPORTANT: If you have updated the GUI in this session, you must rerun the GUI to complete the uninstall!\n\n"
-                                    "Thank you for using PaxD GUI!"
+                                    "Thank you for using PaxD GUI, and we hope to see you again soon.\n\n    - mralfiem591 :)"
                                 ))
                             else:
                                 self.log(f"✗ Failed to queue GUI uninstall: {result.get('message', 'Unknown error')}")
