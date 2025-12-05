@@ -15,16 +15,11 @@
     <header class="header">
         <div class="container">
             <div class="nav">
-                <div class="logo">
-                    <img src="../repoasset/logo.png" alt="PaxD Logo" onerror="this.style.display='none'">
-                    <span>PaxD</span>
-                </div>
                 <nav class="nav-menu">
                     <a href="#home" class="nav-link active">Home</a>
                     <a href="#features" class="nav-link">Features</a>
                     <a href="#installation" class="nav-link">Installation</a>
                     <a href="#packages" class="nav-link">Packages</a>
-                    <a href="#command-builder" class="nav-link">Command Builder</a>
                     <a href="#docs" class="nav-link">Documentation</a>
                     <a href="https://github.com/mralfiem591/paxd" class="nav-link" target="_blank" rel="noopener">GitHub</a>
                 </nav>
@@ -53,6 +48,10 @@
                         <a href="#features" class="btn btn-secondary">Learn More</a>
                     </div>
                     <div class="hero-stats">
+                        <div class="stat">
+                            <span class="stat-number">26.0.0</span>
+                            <span class="stat-label">Latest Version</span>
+                        </div>
                         <div class="stat">
                             <span class="stat-number">Windows</span>
                             <span class="stat-label">Platform</span>
@@ -202,102 +201,6 @@
             </div>
             <div class="packages-footer">
                 <a href="https://github.com/mralfiem591/paxd/tree/main/packages" class="btn btn-outline">View All Packages</a>
-            </div>
-        </div>
-    </section>
-
-    <!-- Quick Command Builder Section -->
-    <section id="command-builder" class="command-builder">
-        <div class="container">
-            <div class="section-header">
-                <h2>Quick Command Builder</h2>
-                <p>Generate PaxD URL commands for easy package management</p>
-            </div>
-            <div class="command-notice">
-                <div class="notice-icon">ℹ️</div>
-                <div class="notice-content">
-                    <p><strong>Note:</strong> PaxD must be installed and the URL protocol must be registered. Run <code>paxd register-protocol</code> to enable URL commands.</p>
-                </div>
-            </div>
-            <div class="command-builder-grid">
-                <div class="command-card">
-                    <div class="command-header">
-                        <div class="command-icon">📦</div>
-                        <h3>Install Package</h3>
-                    </div>
-                    <p>Install a package using its name or alias</p>
-                    <div class="command-form">
-                        <input type="text" id="install-package" placeholder="Enter package name or alias..." class="command-input">
-                        <button onclick="buildInstallCommand()" class="btn btn-primary">Build Command</button>
-                    </div>
-                    <div class="command-output" id="install-output" style="display: none;">
-                        <div class="output-header">
-                            <span>Generated Command:</span>
-                            <button class="copy-btn" onclick="copyCommand('install-result')" title="Copy to clipboard">📋</button>
-                        </div>
-                        <div class="command-result" id="install-result"></div>
-                    </div>
-                </div>
-                
-                <div class="command-card">
-                    <div class="command-header">
-                        <div class="command-icon">🔄</div>
-                        <h3>Update Package</h3>
-                    </div>
-                    <p>Update a specific package or all packages</p>
-                    <div class="command-form">
-                        <input type="text" id="update-package" placeholder="Enter package name or leave empty for all..." class="command-input">
-                        <button onclick="buildUpdateCommand()" class="btn btn-primary">Build Command</button>
-                    </div>
-                    <div class="command-output" id="update-output" style="display: none;">
-                        <div class="output-header">
-                            <span>Generated Command:</span>
-                            <button class="copy-btn" onclick="copyCommand('update-result')" title="Copy to clipboard">📋</button>
-                        </div>
-                        <div class="command-result" id="update-result"></div>
-                    </div>
-                </div>
-                
-                <div class="command-card">
-                    <div class="command-header">
-                        <div class="command-icon">🔍</div>
-                        <h3>Info/Search Package</h3>
-                    </div>
-                    <p>Get information about or search for a package</p>
-                    <div class="command-form">
-                        <select id="info-action" class="command-select" title="Select info or search action">
-                            <option value="info">Info</option>
-                            <option value="search">Search</option>
-                        </select>
-                        <input type="text" id="info-package" placeholder="Enter package name or alias..." class="command-input">
-                        <button onclick="buildInfoCommand()" class="btn btn-primary">Build Command</button>
-                    </div>
-                    <div class="command-output" id="info-output" style="display: none;">
-                        <div class="output-header">
-                            <span>Generated Command:</span>
-                            <button class="copy-btn" onclick="copyCommand('info-result')" title="Copy to clipboard">📋</button>
-                        </div>
-                        <div class="command-result" id="info-result"></div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="command-examples">
-                <h3>Example Commands</h3>
-                <div class="examples-grid">
-                    <div class="example-card">
-                        <h4>Install PaxD SDK</h4>
-                        <code>paxd://install/paxd-sdk</code>
-                    </div>
-                    <div class="example-card">
-                        <h4>Update All Packages</h4>
-                        <code>paxd://update</code>
-                    </div>
-                    <div class="example-card">
-                        <h4>Search for GUI Apps</h4>
-                        <code>paxd://search/gui</code>
-                    </div>
-                </div>
             </div>
         </div>
     </section>
