@@ -1,5 +1,5 @@
 package_id,package_name,description,author,version,alias,aliases
-com.mralfiem591.paxd,PaxD,The main command line tool for using PaxD.,mralfiem591,26.0.6,paxd,paxd|paxd-client
+com.mralfiem591.paxd,PaxD,The main command line tool for using PaxD.,mralfiem591,26.0.7,paxd,paxd|paxd-client
 com.mralfiem591.paxd-compiler,PaxD Compiler,The main command line tool for using the new YAML PaxD format.,mralfiem591,1.0.0,paxd-compile,paxd-compiler
 com.mralfiem591.paxd-gui,PaxD GUI,A graphical user interface for PaxD package management.,mralfiem591,1.1.3,paxd-gui,paxd-gui
 com.mralfiem591.paxd-imageview,PaxD Imageview,A simple image viewer used by PaxD.,mralfiem591,1.1.4,paxd-imageview,paxd-imageview
