@@ -1,10 +1,9 @@
 package_id,package_name,description,author,version,alias,aliases
 com.mralfiem591.paxd,PaxD,The main command line tool for using PaxD.,mralfiem591,26.0.5,paxd,paxd|paxd-client
 com.mralfiem591.paxd-compiler,PaxD Compiler,The main command line tool for using the new YAML PaxD format.,mralfiem591,1.0.0,paxd-compile,paxd-compiler
-com.mralfiem591.paxd-gui,PaxD GUI,A graphical user interface for PaxD package management.,mralfiem591,1.1.2,paxd-gui,paxd-gui
+com.mralfiem591.paxd-gui,PaxD GUI,A graphical user interface for PaxD package management.,mralfiem591,1.1.3,paxd-gui,paxd-gui
 com.mralfiem591.paxd-imageview,PaxD Imageview,A simple image viewer used by PaxD.,mralfiem591,1.1.4,paxd-imageview,paxd-imageview
 com.mralfiem591.paxd-publish,PaxD Publish,A tool to validate and publish PaxD packages to the repository via GitHub PR.,mralfiem591,1.0.6,paxdp,paxdp
 com.mralfiem591.paxd-sdk,PaxD SDK,The main SDK (Software Development Kit) for PaxD.,mralfiem591,1.2.2,,paxd-sdk
 com.mralfiem591.test,Test Package,A test package to ensure PaxD works correctly.,mralfiem591,1.0.0,paxd-test,paxd-test|paxd-example
 com.mralfiem591.vulnerability,PaxD Vulnerability Scanner,A simple vulnerability scanner for PaxD.,mralfiem591,1.0.1,paxd-vulnscan,paxd-vulnscan
-
