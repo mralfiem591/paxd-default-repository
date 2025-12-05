@@ -957,16 +957,28 @@ class PaxDGUI:
         self.load_packages()
         
         # If a .FIRSTRUN file exists, show welcome message
-        if os.path.exists(os.path.join(f"{os.path.dirname(__file__)}-gui", '.FIRSTRUN')) or os.path.exists(os.path.join(os.path.dirname(__file__), '.FIRSTRUN')):
-            messagebox.showinfo(
-                "Welcome to PaxD GUI!",
-                "Thank you for installing PaxD GUI!\n\n"
-                "This application allows you to manage PaxD packages with an easy-to-use graphical interface.\n\n"
-                "To get started, use the package list on the left to browse and select packages.\n\n"
-                "Enjoy using PaxD GUI!\n\n    - mralfiem591 :)"
-            )
-            # Remove the .FIRSTRUN file after showing the message
-            os.remove(os.path.join(os.path.dirname(__file__), '.FIRSTRUN'))
+        firstrun_path1 = os.path.join(f"{os.path.dirname(__file__)}-gui", '.FIRSTRUN')
+        firstrun_path2 = os.path.join(os.path.dirname(__file__), '.FIRSTRUN')
+        
+        try:
+            if os.path.exists(firstrun_path1) or os.path.exists(firstrun_path2):
+                messagebox.showinfo(
+                    "Welcome to PaxD GUI!",
+                    "Thank you for installing PaxD GUI!\n\n"
+                    "This application allows you to manage PaxD packages with an easy-to-use graphical interface.\n\n"
+                    "To get started, use the package list on the left to browse and select packages.\n\n"
+                    "Enjoy using PaxD GUI!\n\n    - mralfiem591 :)"
+                )
+                # Remove the .FIRSTRUN file after showing the message
+                try:
+                    if os.path.exists(firstrun_path1):
+                        os.remove(firstrun_path1)
+                    if os.path.exists(firstrun_path2):
+                        os.remove(firstrun_path2)
+                except Exception:
+                    pass  # Ignore file removal errors
+        except Exception:
+            pass  # Ignore any errors with firstrun check
     
     def setup_menu(self):
         """Setup the menu bar"""
@@ -1000,7 +1012,10 @@ class PaxDGUI:
             
             def import_in_thread():
                 try:
-                    self.status_var.set("Parsing package file...")
+                    try:
+                        self.status_var.set("Parsing package file...")
+                    except RuntimeError:
+                        pass  # Main loop has exited
                     
                     # Read and parse the .paxd file
                     with open(file_path, 'r', encoding='utf-8') as f:
@@ -1071,15 +1086,27 @@ class PaxDGUI:
                     
                     if queued_count > 0:
                         result_message += "\n\nClick 'Apply Changes' to install the queued packages."
-                        self.root.after(0, lambda: messagebox.showinfo("Import Complete", result_message))
+                        try:
+                            self.root.after(0, lambda: messagebox.showinfo("Import Complete", result_message))
+                        except RuntimeError:
+                            pass
                     else:
-                        self.root.after(0, lambda: messagebox.showwarning("Import Complete", result_message))
+                        try:
+                            self.root.after(0, lambda: messagebox.showwarning("Import Complete", result_message))
+                        except RuntimeError:
+                            pass
                     
-                    self.root.after(0, lambda: self.status_var.set("Ready"))
+                    try:
+                        self.root.after(0, lambda: self.status_var.set("Ready"))
+                    except RuntimeError:
+                        pass
                     
                 except Exception as e:
-                    self.root.after(0, lambda: messagebox.showerror("Import Error", f"Error parsing file: {str(e)}"))
-                    self.root.after(0, lambda: self.status_var.set("Ready"))
+                    try:
+                        self.root.after(0, lambda: messagebox.showerror("Import Error", f"Error parsing file: {str(e)}"))
+                        self.root.after(0, lambda: self.status_var.set("Ready"))
+                    except RuntimeError:
+                        pass  # Main loop has exited
             
             threading.Thread(target=import_in_thread, daemon=True).start()
     
@@ -1098,19 +1125,35 @@ class PaxDGUI:
             
             def export_in_thread():
                 try:
-                    self.status_var.set("Exporting packages...")
+                    try:
+                        self.status_var.set("Exporting packages...")
+                    except RuntimeError:
+                        pass
+                    
                     result = self.package_manager.export_packages(file_path)
                     
                     if result['success']:
-                        self.root.after(0, lambda: messagebox.showinfo("Export Successful", f"Packages exported to:\n{file_path}"))
+                        try:
+                            self.root.after(0, lambda: messagebox.showinfo("Export Successful", f"Packages exported to:\n{file_path}"))
+                        except RuntimeError:
+                            pass
                     else:
                         error_msg = result.get('error', 'Unknown error')
-                        self.root.after(0, lambda: messagebox.showerror("Export Failed", f"Failed to export packages:\n{error_msg}"))
+                        try:
+                            self.root.after(0, lambda: messagebox.showerror("Export Failed", f"Failed to export packages:\n{error_msg}"))
+                        except RuntimeError:
+                            pass
                     
-                    self.root.after(0, lambda: self.status_var.set("Ready"))
+                    try:
+                        self.root.after(0, lambda: self.status_var.set("Ready"))
+                    except RuntimeError:
+                        pass
                 except Exception as e:
-                    self.root.after(0, lambda: messagebox.showerror("Export Error", f"Error during export: {str(e)}"))
-                    self.root.after(0, lambda: self.status_var.set("Ready"))
+                    try:
+                        self.root.after(0, lambda: messagebox.showerror("Export Error", f"Error during export: {str(e)}"))
+                        self.root.after(0, lambda: self.status_var.set("Ready"))
+                    except RuntimeError:
+                        pass
             
             threading.Thread(target=export_in_thread, daemon=True).start()
         
@@ -1220,11 +1263,19 @@ class PaxDGUI:
                         package['installed_version'] = None
                 
                 # Update GUI in main thread
-                self.root.after(0, lambda: self.update_package_list())
-                self.root.after(0, lambda: self.status_var.set(f"Loaded {len(self.packages)} packages"))
+                try:
+                    self.root.after(0, lambda: self.update_package_list())
+                    self.root.after(0, lambda: self.status_var.set(f"Loaded {len(self.packages)} packages"))
+                except RuntimeError:
+                    # Main loop has exited, ignore GUI updates
+                    pass
             except Exception as e:
-                self.root.after(0, lambda: self.show_error("Error loading packages", str(e)))
-                self.root.after(0, lambda: self.status_var.set("Error loading packages"))
+                try:
+                    self.root.after(0, lambda: self.show_error("Error loading packages", str(e)))
+                    self.root.after(0, lambda: self.status_var.set("Error loading packages"))
+                except RuntimeError:
+                    # Main loop has exited, ignore GUI updates
+                    pass
         
         threading.Thread(target=load_in_thread, daemon=True).start()
     
