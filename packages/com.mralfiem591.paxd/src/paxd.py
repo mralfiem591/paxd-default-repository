@@ -2434,6 +2434,15 @@ class PaxD:
 
         print(f"\n{Fore.GREEN}All package imports completed.")
 
+    def url_warning_message(self, action: str):
+        """Display a warning message about using paxd:// URLs."""
+        os.system('cls')
+        print(f"{Fore.YELLOW}Warning: You have opened a link to preform the command '{Fore.CYAN}{action}{Fore.YELLOW}' using the paxd:// protocol.")
+        print(f"{Fore.YELLOW}Ensure you trust the source of this link before proceeding.")
+        if input("\nWould you like to continue? (y/n): ").strip().lower() != 'y':
+            print(f"{Fore.RED}Action '{action}' cancelled by user.")
+            exit(0)
+
     def handle_url(self, url: str):
         """Handle paxd:// protocol URLs for package operations."""
         try:
@@ -2461,6 +2470,7 @@ class PaxD:
                 # Handle install with optional parameters (e.g., paxd://install/package-name?skip-checksum=true)
                 package_name = params.split('?')[0]  # Remove query parameters for now
                 print(f"{Fore.BLUE}Installing package from URL: {Fore.CYAN}{package_name}")
+                self.url_warning_message(f"install {package_name}")
                 self.install(package_name, user_requested=True)
                 
             elif action == "uninstall":
@@ -2469,6 +2479,7 @@ class PaxD:
                     return
                 package_name = params.split('?')[0]
                 print(f"{Fore.BLUE}Uninstalling package from URL: {Fore.CYAN}{package_name}")
+                self.url_warning_message(f"uninstall {package_name}")
                 self.uninstall(package_name)
                 
             elif action == "info":
@@ -2491,9 +2502,11 @@ class PaxD:
                 if params:
                     package_name = params.split('?')[0]
                     print(f"{Fore.BLUE}Updating package from URL: {Fore.CYAN}{package_name}")
+                    self.url_warning_message(f"update {package_name}")
                     self.update(package_name)
                 else:
                     print(f"{Fore.BLUE}Updating all packages from URL")
+                    self.url_warning_message("update-all")
                     self.update_all()
                     
             else:
