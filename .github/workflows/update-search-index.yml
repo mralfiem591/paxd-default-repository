@@ -2,11 +2,12 @@ name: Update Search Index
 
 on:
   push:
-    branches:
-      - main
     paths:
-      - 'packages/**'
-      - 'resolution'
+      - "packages/**/*.meta"
+      - "packages/**/paxd"
+      - "packages/**/paxd.yaml"
+      - "packages/**/package.yaml"
+      - "resolution"
   
   workflow_dispatch:
 
@@ -29,7 +30,6 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
           pip install pyyaml
 
 
