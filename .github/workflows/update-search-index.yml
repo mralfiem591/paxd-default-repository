@@ -13,10 +13,8 @@ on:
 
 jobs:
   update-index:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    
+    runs-on: self-hosted
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -26,21 +24,18 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.14'
+          python-version: '3.x'
 
       - name: Install dependencies
-        run: |
-          pip install pyyaml
-
+        run: pip install pyyaml
 
       - name: Generate search index
-        run: |
-          python generate_searchindex.py
-      
+        run: python generate_searchindex.py
+
       - name: Check for changes
         id: git-check
         run: |
-          git diff --exit-code searchindex.csv || echo "changed=true" >> $GITHUB_OUTPUT
+          git diff --exit-code -- searchindex.csv || echo "changed=true" >> $GITHUB_OUTPUT
       
       - name: Commit and push if changed
         if: steps.git-check.outputs.changed == 'true'
@@ -48,5 +43,5 @@ jobs:
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add searchindex.csv
-          git commit -m "chore: Rebuild SearchIndex due to updates"
+          git commit -m "chore: recreate SearchIndex to keep up to date"
           git push
