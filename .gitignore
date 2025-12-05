@@ -1,14 +1,10 @@
 .vscode
-.htaccess
-index.html
 favicon.ico
 generate_package_docs.py
 hasher.py
 log_watcher.py
-**/README.html
 favicon.ico
 repoasset/favicon.ico
-README.html
 vulnerability_issue_creator.py
 .env
 __pycache__/
