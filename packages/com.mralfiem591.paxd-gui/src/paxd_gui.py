@@ -1231,7 +1231,12 @@ class PaxDGUI:
         """Load packages from search index"""
         def load_in_thread():
             try:
-                self.status_var.set("Loading packages...")
+                # Update status in main thread
+                try:
+                    self.root.after(0, lambda: self.status_var.set("Loading packages..."))
+                except RuntimeError:
+                    pass
+                
                 search_index = fetch_search_index()
                 self.packages = parse_search_index(search_index)
                 
