@@ -3297,7 +3297,17 @@ def main():
             # Catch specific exception for if the command paxd-gui isnt found
             except subprocess.CalledProcessError:
                 paxd.install("com.mralfiem591.paxd-gui", user_requested=True)
-                subprocess.run(['paxd-gui'], check=True, shell=True)        
+                subprocess.run(['paxd-gui'], check=True, shell=True)
+            finally:
+                # Handle uninstall requests from the GUI
+                paxd._verbose_print("Checking for uninstall requests from GUI")
+                messages = paxd_sdk.Messaging.GetMessages('com.mralfiem591.paxd')
+                for message in messages:
+                    if message['from'] == 'com.mralfiem591.paxd-gui' and message['message']['queue_gui_uninstall'] == True:
+                        print(f"Received uninstall request from GUI (sent time: {message['timestamp']}), uninstalling PaxD GUI!")
+                        paxd.uninstall("com.mralfiem591.paxd-gui")
+                        paxd_sdk.Messaging.ClearMessages('com.mralfiem591.paxd')
+        
         elif args.command == "url":
             paxd._verbose_print(f"Processing URL: {args.url}")
             paxd.handle_url(args.url)
@@ -3328,14 +3338,6 @@ def main():
     latest_version = paxd.get_latest_version()
     if latest_version and latest_version != paxd.paxd_version and args.command not in ["update", "update-all"]:
         print(f"{Fore.YELLOW}New PaxD version available: {Fore.RED}{paxd.paxd_version}{Fore.YELLOW} -> {Fore.GREEN}{latest_version}\n{Fore.YELLOW}Get it with '{Fore.LIGHTYELLOW_EX}paxd update paxd{Fore.YELLOW}'.")
-    # Handle uninstall requests from the GUI
-    paxd._verbose_print("Checking for uninstall requests from GUI")
-    messages = paxd_sdk.Messaging.GetMessages('com.mralfiem591.paxd')
-    for message in messages:
-        if message['from'] == 'com.mralfiem591.paxd-gui' and message['message']['queue_gui_uninstall'] == True:
-            print(f"Received uninstall request from GUI (sent time: {message['timestamp']}), uninstalling PaxD GUI!")
-            paxd.uninstall("com.mralfiem591.paxd-gui")
-    paxd_sdk.Messaging.ClearMessages('com.mralfiem591.paxd')
 
 main()
 bat_file_path = os.path.join(os.path.dirname(__file__), 'bin', 'paxd.bat')
