@@ -2,7 +2,11 @@
 # A basic script to run when installing PaxD for the first time (as you would normally need PaxD to access the PaxD repo, where PaxD is located)
 import ctypes
 import os
-import requests
+try:
+    import requests
+except ImportError:
+    print("ERROR: requests module is required but not found. Please install requests via 'pip install requests' and re-run the installer.")
+    exit(1)
 
 WINDOWS_AVAILABLE = os.name == "nt"
 
