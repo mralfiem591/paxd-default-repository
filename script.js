@@ -9,6 +9,40 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
+    // PaxD Webcontrol functionality
+    const actionSelect = document.getElementById('action-select');
+    const packageInput = document.getElementById('package-input');
+    const webcontrolBtn = document.getElementById('webcontrol-btn');
+    
+    function updateWebcontrolButton() {
+        const action = actionSelect?.value;
+        const packageName = packageInput?.value.trim();
+        
+        if (action && packageName && webcontrolBtn) {
+            webcontrolBtn.disabled = false;
+            webcontrolBtn.textContent = `${action.charAt(0).toUpperCase() + action.slice(1)} ${packageName}`;
+            webcontrolBtn.innerHTML = `<span class="btn-icon">🚀</span>${action.charAt(0).toUpperCase() + action.slice(1)} ${packageName}`;
+        } else if (webcontrolBtn) {
+            webcontrolBtn.disabled = true;
+            webcontrolBtn.innerHTML = `<span class="btn-icon">🚀</span>Execute Command`;
+        }
+    }
+    
+    if (actionSelect && packageInput && webcontrolBtn) {
+        actionSelect.addEventListener('change', updateWebcontrolButton);
+        packageInput.addEventListener('input', updateWebcontrolButton);
+        
+        webcontrolBtn.addEventListener('click', function() {
+            const action = actionSelect.value;
+            const packageName = packageInput.value.trim();
+            
+            if (action && packageName) {
+                const url = `paxd://${action}/${packageName}`;
+                window.location.href = url;
+            }
+        });
+    }
+    
     // Let anchor links work with default browser behavior
     // Removed custom smooth scrolling to allow # links to work properly
     

@@ -19,6 +19,7 @@
                     <a href="#home" class="nav-link active">Home</a>
                     <a href="#features" class="nav-link">Features</a>
                     <a href="#installation" class="nav-link">Installation</a>
+                    <a href="#webcontrol" class="nav-link">Webcontrol</a>
                     <a href="#packages" class="nav-link">Packages</a>
                     <a href="#docs" class="nav-link">Documentation</a>
                     <a href="https://github.com/mralfiem591/paxd" class="nav-link" target="_blank" rel="noopener">GitHub</a>
@@ -138,6 +139,45 @@
                     <li>Python 3.x or higher</li>
                     <li>Internet connection for package downloads</li>
                 </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- PaxD Webcontrol Section -->
+    <section id="webcontrol" class="webcontrol">
+        <div class="container">
+            <div class="section-header">
+                <h2>PaxD Webcontrol</h2>
+                <p>Quickly interact with PaxD using custom protocol links</p>
+            </div>
+            <div class="webcontrol-card">
+                <div class="webcontrol-form">
+                    <div class="form-group">
+                        <label for="action-select">Action</label>
+                        <select id="action-select" class="form-control">
+                            <option value="">Select action...</option>
+                            <option value="install">Install</option>
+                            <option value="uninstall">Uninstall</option>
+                            <option value="update">Update</option>
+                            <option value="info">Info</option>
+                            <option value="search">Search</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="package-input">Package</label>
+                        <input type="text" id="package-input" class="form-control" placeholder="Enter package name...">
+                    </div>
+                    <div class="form-group">
+                        <button id="webcontrol-btn" class="btn btn-primary" disabled>
+                            <span class="btn-icon">🚀</span>
+                            Execute Command
+                        </button>
+                    </div>
+                </div>
+                <div class="webcontrol-info">
+                    <div class="info-icon">ℹ️</div>
+                    <p><strong>Note:</strong> This feature requires PaxD to be installed on your system to handle the custom protocol links. Make sure your PaxD has protocol support with <code>paxd register-protocol</code> at least once.</p>
+                </div>
             </div>
         </div>
     </section>
