@@ -2,15 +2,6 @@
 
 This directory contains the GitHub Pages site for PaxD - a modern Python package manager for Windows.
 
-## Features
-
-- 🎨 Modern, responsive design
-- 📱 Mobile-friendly navigation
-- 🚀 Fast loading with optimized assets
-- 💻 Syntax-highlighted code examples
-- 📋 Copy-to-clipboard functionality
-- 🌐 SEO optimized
-
 ## Structure
 
 - `index.html` - Main page with hero, features, installation, packages, and docs
