@@ -93,7 +93,7 @@ If you discover a security vulnerability in any package, please report it throug
 
 ### Vulnerability Scanning
 
-You can scan for vulnerabilities by installing the `paxd-vulnscan` tool, via `paxd install paxd-vulnscan`, and running it with `paxd-vulnscan`.
+You can scan for vulnerabilities by ~~installing the `paxd-vulnscan` tool, via `paxd install paxd-vulnscan`, and~~ running `paxd-vulnscan`.
 
 ### Vulnerability Viewing and Searching
 
