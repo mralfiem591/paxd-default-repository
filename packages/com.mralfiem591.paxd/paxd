@@ -1,4 +1,5 @@
 // PaxD package - auto-generated from YAML source
+// IMPORTANT: JSONC manifests are deprecated, and not for use in other package. This is only here to allow for older versions to update to a YAML-based version.
 
 {
     "pkg_info": {

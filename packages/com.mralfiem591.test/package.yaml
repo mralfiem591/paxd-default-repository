@@ -1,0 +1,25 @@
+# PaxD package configuration - converted from manifest
+# Original file: paxd
+
+name: Test Package
+author: mralfiem591
+version: 1.0.0
+description: A test package to ensure PaxD works correctly.
+license: MIT
+tags:
+- test
+- example
+- cli
+- windows
+install:
+  files:
+  - test.py
+  - LICENSE
+  dependencies:
+    paxd:
+    - com.mralfiem591.paxd-sdk
+  firstrun: false
+  updaterun: false
+  supports_fastxd: true
+  main_executable: test.py
+  command_alias: paxd-test

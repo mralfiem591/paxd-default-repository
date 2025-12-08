@@ -1,8 +1,9 @@
-Many PaxD packages have been switching to a YAML-first system, and while this is good, the main PaxD package will be sticking to serving a PaxD file, now just compiled via a YAML file.
+JSONC manifests have been phased out in favor of YAML-based manifests.
+They are retained here solely to facilitate updates from older versions of PaxD that may still rely on JSONC manifests.
 
-This gets us the benifits of using a YAML file, without breaking other scripts and the main installer, of which are built for paxd files.
+Please, if you are making a package, **use YAML manifests** as documented.
 
-This will make no difference to your daily usage.
+This will make no difference to users, as PaxD supports both formats seamlessly.
 
-Thanks for taking the (probably short) amount of time to read this.
+Thank you for your understanding!
     - mralfiem591 :)

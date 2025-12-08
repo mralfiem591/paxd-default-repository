@@ -1,0 +1,23 @@
+# PaxD package configuration - converted from manifest
+# Original file: paxd
+
+name: PaxD Compiler
+author: mralfiem591
+version: 1.0.0
+description: The main command line tool for using the new YAML PaxD format.
+license: MIT
+tags:
+- cli
+- compiler
+- paxd
+install:
+  files:
+  - main.py
+  dependencies:
+    pip:
+    - pyyaml
+  firstrun: false
+  updaterun: false
+  supports_fastxd: true
+  main_executable: main.py
+  command_alias: paxd-compile
