@@ -3192,7 +3192,5 @@ except Exception as e:
         pass
     print(f"{Fore.RED}Oh no! PaxD has encountered an unexpected error and needs to close.")
     print("Below are the details, and full traceback:")
-    import traceback
-    traceback.print_exc()
     print(f"\n{Fore.YELLOW}Please report this issue, along with the traceback above, to the PaxD GitHub repository: https://github.com/mralfiem591/paxd/issues")
     raise e
