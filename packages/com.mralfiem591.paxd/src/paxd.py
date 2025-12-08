@@ -3339,5 +3339,14 @@ def main():
     if latest_version and latest_version != paxd.paxd_version and args.command not in ["update", "update-all"]:
         print(f"{Fore.YELLOW}New PaxD version available: {Fore.RED}{paxd.paxd_version}{Fore.YELLOW} -> {Fore.GREEN}{latest_version}\n{Fore.YELLOW}Get it with '{Fore.LIGHTYELLOW_EX}paxd update paxd{Fore.YELLOW}'.")
 
-main()
-bat_file_path = os.path.join(os.path.dirname(__file__), 'bin', 'paxd.bat')
+try:
+    main()
+except KeyboardInterrupt:
+    pass
+except Exception as e:
+    os.system(f'paxd-imageview https://images.steamusercontent.com/ugc/15391250646052049694/AB48ACB3ECBF9E79C5239DC013E60D557593E575/?imw=637&imh=358&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=true')
+    print(f"{Fore.RED}Oh no! PaxD has encountered an unexpected error and needs to close.")
+    print("Below are the details, and full traceback:")
+    import traceback
+    traceback.print_exc()
+    print(f"\n{Fore.YELLOW}Please report this issue, along with the traceback above, to the PaxD GitHub repository: https://github.com/mralfiem591/paxd/issues")
