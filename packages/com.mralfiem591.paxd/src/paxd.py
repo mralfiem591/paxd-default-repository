@@ -3186,7 +3186,10 @@ try:
 except KeyboardInterrupt:
     pass
 except Exception as e:
-    os.system(f'paxd-imageview https://images.steamusercontent.com/ugc/15391250646052049694/AB48ACB3ECBF9E79C5239DC013E60D557593E575/?imw=637&imh=358&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=true')
+    try:
+        os.system(f'paxd-imageview https://images.steamusercontent.com/ugc/15391250646052049694/AB48ACB3ECBF9E79C5239DC013E60D557593E575/?imw=637&imh=358&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=true')
+    except:
+        pass
     print(f"{Fore.RED}Oh no! PaxD has encountered an unexpected error and needs to close.")
     print("Below are the details, and full traceback:")
     import traceback
