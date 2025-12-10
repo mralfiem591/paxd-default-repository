@@ -265,9 +265,6 @@ def compile_paxd_manifest(yaml_data: dict) -> dict:
     # Handle checksums
     if "checksums" in install_config:
         manifest["install"]["checksum"] = install_config["checksums"]
-        print(f"DEBUG: Found {len(install_config['checksums'])} checksums in YAML")
-        for file_path, checksum in install_config["checksums"].items():
-            print(f"DEBUG: {file_path} -> {checksum}")
     
     # Handle optional install settings
     optional_bool_settings = ["firstrun", "updaterun"]
