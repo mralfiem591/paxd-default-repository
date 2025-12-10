@@ -58,7 +58,8 @@ else:
         '.gitignore',
         'fastxd.py',
         'repoasset/certified.png',
-        'repoasset/logo.png'
+        'repoasset/logo.png',
+        'packages/hasher.py'
     ]
 
 for entry in required:
