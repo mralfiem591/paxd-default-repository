@@ -6,5 +6,6 @@
     "com.mralfiem591.paxd-compiler",
     "com.mralfiem591.vulnerability",
     "com.mralfiem591.paxd-publish",
-    "com.mralfiem591.paxd-gui"
+    "com.mralfiem591.paxd-gui",
+    "com.mralfiem591.paxd-hasher"
 ]
