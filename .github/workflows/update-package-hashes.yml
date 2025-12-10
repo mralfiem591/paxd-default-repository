@@ -7,7 +7,6 @@ concurrency:
   group: package-chores
   cancel-in-progress: false
 
-
 on:
   push:
     paths:
