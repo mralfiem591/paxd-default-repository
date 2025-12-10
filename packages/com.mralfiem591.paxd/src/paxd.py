@@ -964,22 +964,19 @@ class PaxD:
                     self._verbose_print(f"File size on disk: {os.path.getsize(install_path)} bytes")
                 
                 # Verify the checksum using the same method as hasher.py
-                self._verbose_print(f"Starting checksum calculation with 4096-byte chunks")
-                sha256 = hashlib.sha256()
-                chunk_count = 0
-                total_bytes = 0
+                self._verbose_print(f"Starting checksum calculation with stripped content")
+                # Read file and strip leading/trailing whitespace like hasher.py
                 with open(install_path, "rb") as f:
-                    while True:
-                        chunk: bytes = f.read(4096)
-                        if not chunk:
-                            break
-                        sha256.update(chunk)
-                        chunk_count += 1
-                        total_bytes += len(chunk)
-                        self._verbose_print(f"DEBUG: Chunk {chunk_count}: {len(chunk)} bytes")
+                    content = f.read()
                 
-                calculated_checksum = f"sha256:{sha256.hexdigest()}"
-                self._verbose_print(f"Processed {chunk_count} chunks, {total_bytes} total bytes")
+                # Strip leading and trailing whitespace/newlines
+                stripped_content = content.strip()
+                
+                self._verbose_print(f"Original file size: {len(content)} bytes")
+                self._verbose_print(f"Stripped file size: {len(stripped_content)} bytes")
+                self._verbose_print(f"Bytes stripped: {len(content) - len(stripped_content)}")
+                
+                calculated_checksum = f"sha256:{hashlib.sha256(stripped_content).hexdigest()}"
                 self._verbose_print(f"Calculated checksum: {calculated_checksum}")
                 self._verbose_print(f"Expected checksum:   {expected_checksum}")
                 self._verbose_print(f"Checksums match: {calculated_checksum == expected_checksum}")
@@ -1500,22 +1497,19 @@ class PaxD:
                     self._verbose_print(f"DEBUG: File size on disk: {os.path.getsize(install_path)} bytes")
                 
                 # Verify the checksum using the same method as hasher.py
-                self._verbose_print(f"DEBUG: Starting checksum calculation with 4096-byte chunks for update")
-                sha256 = hashlib.sha256()
-                chunk_count = 0
-                total_bytes = 0
+                self._verbose_print(f"DEBUG: Starting checksum calculation with stripped content for update")
+                # Read file and strip leading/trailing whitespace like hasher.py
                 with open(install_path, "rb") as f:
-                    while True:
-                        chunk: bytes = f.read(4096)
-                        if not chunk:
-                            break
-                        sha256.update(chunk)
-                        chunk_count += 1
-                        total_bytes += len(chunk)
-                        self._verbose_print(f"DEBUG: Update chunk {chunk_count}: {len(chunk)} bytes")
+                    content = f.read()
                 
-                calculated_checksum = f"sha256:{sha256.hexdigest()}"
-                self._verbose_print(f"DEBUG: Update processed {chunk_count} chunks, {total_bytes} total bytes")
+                # Strip leading and trailing whitespace/newlines
+                stripped_content = content.strip()
+                
+                self._verbose_print(f"DEBUG: Update original file size: {len(content)} bytes")
+                self._verbose_print(f"DEBUG: Update stripped file size: {len(stripped_content)} bytes")
+                self._verbose_print(f"DEBUG: Update bytes stripped: {len(content) - len(stripped_content)}")
+                
+                calculated_checksum = f"sha256:{hashlib.sha256(stripped_content).hexdigest()}"
                 self._verbose_print(f"DEBUG: Update calculated checksum: {calculated_checksum}")
                 self._verbose_print(f"DEBUG: Update expected checksum:   {expected_checksum}")
                 self._verbose_print(f"DEBUG: Update checksums match: {calculated_checksum == expected_checksum}")

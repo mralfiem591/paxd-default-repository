@@ -17,14 +17,15 @@ from pathlib import Path
 
 def calculate_file_hash(file_path):
     """Calculate SHA256 hash for a file using the same method as PaxD."""
-    sha256 = hashlib.sha256()
+    # Read the file and strip leading/trailing blank lines
     with open(file_path, "rb") as f:
-        while True:
-            chunk: bytes = f.read(4096)
-            if not chunk:
-                break
-            sha256.update(chunk)
-    return f"sha256:{sha256.hexdigest()}"
+        content = f.read()
+    
+    # Strip leading and trailing whitespace/newlines
+    content = content.strip()
+    
+    # Calculate hash of the stripped content
+    return f"sha256:{hashlib.sha256(content).hexdigest()}"
 
 def get_package_yaml_path(package_dir):
     """Find the package YAML file (package.yaml or paxd.yaml)."""
