@@ -1,0 +1,78 @@
+name: Package Chores
+
+permissions:
+  contents: write
+
+concurrency:
+  group: package-chores
+  cancel-in-progress: false
+
+
+on:
+  push:
+    paths:
+      - "packages/**/src/**" # Package source files (triggers hash update)
+      - "packages/metapackages/*.meta" # Metapackages (triggers search index update)
+      - "packages/**/paxd" # Legacy package files (triggers search index update)
+      - "packages/**/paxd.yaml" # Package manifest files (triggers search index update)
+      - "packages/**/package.yaml" # Package manifest files (triggers search index update)
+      - "resolution" # Resolution file (triggers search index update)
+  
+  workflow_dispatch:
+
+jobs:
+  update-checksums:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update package hashes
+        run: |
+          cd packages
+          python hasher.py
+          cd ..
+
+      - name: Check for hash changes
+        id: git-check-hashes
+        run: |
+          git diff --exit-code -- packages/ || echo "changed=true" >> $GITHUB_OUTPUT
+      
+      - name: Commit and push hash changes
+        if: steps.git-check-hashes.outputs.changed == 'true'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add packages/
+          git commit -m "chore: update package checksums"
+          git push
+
+  update-search-index:
+    runs-on: self-hosted
+    needs: update-checksums
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate search index
+        run: python generate_searchindex.py
+
+      - name: Check for search index changes
+        id: git-check-index
+        run: |
+          git diff --exit-code -- searchindex.csv || echo "changed=true" >> $GITHUB_OUTPUT
+      
+      - name: Commit and push search index changes
+        if: steps.git-check-index.outputs.changed == 'true'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add searchindex.csv
+          git commit -m "chore: update search index"
+          git push
