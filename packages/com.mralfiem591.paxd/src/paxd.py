@@ -976,6 +976,19 @@ class PaxD:
                 self._verbose_print(f"Stripped file size: {len(stripped_content)} bytes")
                 self._verbose_print(f"Bytes stripped: {len(content) - len(stripped_content)}")
                 
+                # Show first and last 50 bytes of content for debugging
+                self._verbose_print(f"Install first 50 bytes of content: {content[:50]}")
+                self._verbose_print(f"Install last 50 bytes of content: {content[-50:]}")
+                self._verbose_print(f"Install first 50 bytes of stripped: {stripped_content[:50]}")
+                self._verbose_print(f"Install last 50 bytes of stripped: {stripped_content[-50:]}")
+                
+                # Show hex representation of differences
+                if len(content) != len(stripped_content):
+                    self._verbose_print(f"Install original content hex start: {content[:20].hex()}")
+                    self._verbose_print(f"Install original content hex end: {content[-20:].hex()}")
+                    self._verbose_print(f"Install stripped content hex start: {stripped_content[:20].hex()}")
+                    self._verbose_print(f"Install stripped content hex end: {stripped_content[-20:].hex()}")
+                
                 calculated_checksum = f"sha256:{hashlib.sha256(stripped_content).hexdigest()}"
                 self._verbose_print(f"Calculated checksum: {calculated_checksum}")
                 self._verbose_print(f"Expected checksum:   {expected_checksum}")
@@ -1480,24 +1493,24 @@ class PaxD:
             
             # Verify checksum if provided
             expected_checksum = package_data.get("install", {}).get("checksum", {}).get(file)
-            self._verbose_print(f"DEBUG: Looking for checksum for file '{file}' during update")
-            self._verbose_print(f"DEBUG: package_data install section: {package_data.get('install', {})}")
-            self._verbose_print(f"DEBUG: checksum section: {package_data.get('install', {}).get('checksum', {})}")
-            self._verbose_print(f"DEBUG: Expected checksum for '{file}': {expected_checksum}")
+            self._verbose_print(f"Looking for checksum for file '{file}' during update")
+            self._verbose_print(f"package_data install section: {package_data.get('install', {})}")
+            self._verbose_print(f"checksum section: {package_data.get('install', {}).get('checksum', {})}")
+            self._verbose_print(f"Expected checksum for '{file}': {expected_checksum}")
             
             if expected_checksum and not skip_checksum:
                 self._verbose_print(f"Starting checksum verification for update of {file}")
                 # Also calculate checksum of the raw downloaded data for debugging
                 raw_checksum = f"sha256:{hashlib.sha256(file_data).hexdigest()}"
-                self._verbose_print(f"DEBUG: Raw downloaded data checksum: {raw_checksum}")
-                self._verbose_print(f"DEBUG: Downloaded data length: {len(file_data)} bytes")
-                self._verbose_print(f"DEBUG: File written to: {install_path}")
-                self._verbose_print(f"DEBUG: File exists after write: {os.path.exists(install_path)}")
+                self._verbose_print(f"Raw downloaded data checksum: {raw_checksum}")
+                self._verbose_print(f"Downloaded data length: {len(file_data)} bytes")
+                self._verbose_print(f"File written to: {install_path}")
+                self._verbose_print(f"File exists after write: {os.path.exists(install_path)}")
                 if os.path.exists(install_path):
-                    self._verbose_print(f"DEBUG: File size on disk: {os.path.getsize(install_path)} bytes")
+                    self._verbose_print(f"File size on disk: {os.path.getsize(install_path)} bytes")
                 
                 # Verify the checksum using the same method as hasher.py
-                self._verbose_print(f"DEBUG: Starting checksum calculation with stripped content for update")
+                self._verbose_print(f"Starting checksum calculation with stripped content for update")
                 # Read file and strip leading/trailing whitespace like hasher.py
                 with open(install_path, "rb") as f:
                     content = f.read()
@@ -1505,14 +1518,27 @@ class PaxD:
                 # Strip leading and trailing whitespace/newlines
                 stripped_content = content.strip()
                 
-                self._verbose_print(f"DEBUG: Update original file size: {len(content)} bytes")
-                self._verbose_print(f"DEBUG: Update stripped file size: {len(stripped_content)} bytes")
-                self._verbose_print(f"DEBUG: Update bytes stripped: {len(content) - len(stripped_content)}")
+                self._verbose_print(f"Update original file size: {len(content)} bytes")
+                self._verbose_print(f"Update stripped file size: {len(stripped_content)} bytes")
+                self._verbose_print(f"Update bytes stripped: {len(content) - len(stripped_content)}")
+                
+                # Show first and last 50 bytes of content for debugging
+                self._verbose_print(f"First 50 bytes of content: {content[:50]}")
+                self._verbose_print(f"Last 50 bytes of content: {content[-50:]}")
+                self._verbose_print(f"First 50 bytes of stripped: {stripped_content[:50]}")
+                self._verbose_print(f"Last 50 bytes of stripped: {stripped_content[-50:]}")
+                
+                # Show hex representation of differences
+                if len(content) != len(stripped_content):
+                    self._verbose_print(f"Original content hex start: {content[:20].hex()}")
+                    self._verbose_print(f"Original content hex end: {content[-20:].hex()}")
+                    self._verbose_print(f"Stripped content hex start: {stripped_content[:20].hex()}")
+                    self._verbose_print(f"Stripped content hex end: {stripped_content[-20:].hex()}")
                 
                 calculated_checksum = f"sha256:{hashlib.sha256(stripped_content).hexdigest()}"
-                self._verbose_print(f"DEBUG: Update calculated checksum: {calculated_checksum}")
-                self._verbose_print(f"DEBUG: Update expected checksum:   {expected_checksum}")
-                self._verbose_print(f"DEBUG: Update checksums match: {calculated_checksum == expected_checksum}")
+                self._verbose_print(f"Update calculated checksum: {calculated_checksum}")
+                self._verbose_print(f"Update expected checksum:   {expected_checksum}")
+                self._verbose_print(f"Update checksums match: {calculated_checksum == expected_checksum}")
                 
                 if calculated_checksum == expected_checksum:
                     print(f"Checksum verified for {file}")
