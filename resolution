@@ -24,5 +24,8 @@
     ],
     "com.mralfiem591.paxd-gui": [
         "paxd-gui"
+    ],
+    "com.mralfiem591.paxd-hasher": [
+        "paxd-hasher"
     ]
 }
