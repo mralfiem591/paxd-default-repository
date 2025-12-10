@@ -35,7 +35,7 @@ jobs:
         run: |
           git diff --exit-code -- packages/ || echo "changed=true" >> $GITHUB_OUTPUT
       
-      - name: Commit and push hash changes
+      - name: Commit and push hash changes (if any)
         if: steps.git-check-hashes.outputs.changed == 'true'
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
@@ -62,7 +62,7 @@ jobs:
         run: |
           git diff --exit-code -- searchindex.csv || echo "changed=true" >> $GITHUB_OUTPUT
       
-      - name: Commit and push search index changes
+      - name: Commit and push search index changes (if any)
         if: steps.git-check-index.outputs.changed == 'true'
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
