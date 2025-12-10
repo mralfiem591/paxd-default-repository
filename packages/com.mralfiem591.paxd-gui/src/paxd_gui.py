@@ -62,11 +62,8 @@ def parse_search_index(csv_content: str) -> List[Dict]:
             if aliases_str:
                 aliases = [alias.strip() for alias in aliases_str.split('|') if alias.strip()]
             
-            # Parse is_metapackage column (defaults to False if not present or invalid)
-            is_metapackage = False
-            metapackage_str = row.get('is_metapackage', '').strip().lower()
-            if metapackage_str in ['true', '1', 'yes']:
-                is_metapackage = True
+            # Check if this is a metapackage
+            is_metapackage = row.get('is_metapackage', '').strip().lower() in ['true', '1', 'yes']
             
             package = {
                 'package_id': row.get('package_id', '').strip(),
@@ -76,7 +73,7 @@ def parse_search_index(csv_content: str) -> List[Dict]:
                 'version': row.get('version', '').strip(),
                 'alias': row.get('alias', '').strip(),  # Main alias
                 'aliases': aliases,  # All aliases as list
-                'is_metapackage': is_metapackage,  # Whether this is a metapackage
+                'is_metapackage': is_metapackage,
                 'installed': False  # Will be updated later
             }
             
@@ -427,9 +424,7 @@ class PackageListFrame(ttk.Frame):
         filter_type = self.filter_var.get()
         
         # Filter packages
-        filtered_regular = []
-        filtered_meta = []
-        
+        filtered = []
         for package in self.packages:
             # Search filter
             if search_term and search_term not in package['package_name'].lower() and \
@@ -445,65 +440,51 @@ class PackageListFrame(ttk.Frame):
             elif filter_type == "updates available" and not package.get('update_available', False):
                 continue
             
-            # Separate regular packages and metapackages
-            if package.get('is_metapackage', False):
-                filtered_meta.append(package)
-            else:
-                filtered_regular.append(package)
+            filtered.append(package)
         
-        # Store both lists for display
-        self.filtered_packages = filtered_regular + filtered_meta
-        self.filtered_regular_packages = filtered_regular
-        self.filtered_meta_packages = filtered_meta
+        self.filtered_packages = filtered
         self.display_packages()
     
     def display_packages(self):
-        """Display filtered packages in treeview with separator for metapackages"""
+        """Display filtered packages in treeview with metapackage separator"""
         # Clear existing items
         for item in self.tree.get_children():
             self.tree.delete(item)
         
-        # Add regular packages first
-        for package in getattr(self, 'filtered_regular_packages', []):
-            self._add_package_to_tree(package)
+        # Separate regular packages and metapackages
+        regular_packages = [pkg for pkg in self.filtered_packages if not pkg.get('is_metapackage', False)]
+        meta_packages = [pkg for pkg in self.filtered_packages if pkg.get('is_metapackage', False)]
         
-        # Add separator if we have both regular packages and metapackages
-        if (hasattr(self, 'filtered_regular_packages') and 
-            hasattr(self, 'filtered_meta_packages') and 
-            self.filtered_regular_packages and 
-            self.filtered_meta_packages):
-            
-            separator_item = self.tree.insert('', 'end',
-                text="───",
-                values=(
-                    "Metapackages",
-                    "",
-                    "",
-                    f"({len(self.filtered_meta_packages)} items)"
-                ),
+        # Add regular packages first
+        for package in regular_packages:
+            self._add_package_item(package)
+        
+        # Add separator if we have both types of packages
+        if regular_packages and meta_packages:
+            self.tree.insert('', 'end',
+                text="",
+                values=("── Metapackages ──", "", "", ""),
                 tags=('separator',)
             )
-            # Make separator non-selectable by overriding selection
-            self.tree.set(separator_item, 'selectable', False)
         
         # Add metapackages
-        for package in getattr(self, 'filtered_meta_packages', []):
-            self._add_package_to_tree(package, is_metapackage=True)
+        for package in meta_packages:
+            self._add_package_item(package, is_meta=True)
         
         # Configure tags
         self.tree.tag_configure('installed', foreground='green')
         self.tree.tag_configure('not_installed', foreground='black')
         self.tree.tag_configure('update_available', foreground='orange', font=('TkDefaultFont', 9, 'bold'))
-        self.tree.tag_configure('metapackage', foreground='purple', font=('TkDefaultFont', 9, 'italic'))
-        self.tree.tag_configure('separator', foreground='gray', font=('TkDefaultFont', 9, 'bold'))
+        self.tree.tag_configure('metapackage', foreground='purple')
+        self.tree.tag_configure('separator', foreground='gray', font=('TkDefaultFont', 9, 'italic'))
     
-    def _add_package_to_tree(self, package, is_metapackage=False):
-        """Add a single package to the tree"""
+    def _add_package_item(self, package, is_meta=False):
+        """Add a package item to the tree"""
         installed = package.get('installed', False)
         update_available = package.get('update_available', False)
         
-        if is_metapackage:
-            status = "Metapackage"
+        if is_meta:
+            status = "📦 Metapackage"
             icon = "📦"
             tag = 'metapackage'
         elif installed and update_available:
@@ -546,7 +527,6 @@ class PackageListFrame(ttk.Frame):
             
             # Check if this is a separator item and prevent selection
             if 'separator' in item.get('tags', []):
-                # Deselect the separator
                 self.tree.selection_remove(selection[0])
                 return
             
