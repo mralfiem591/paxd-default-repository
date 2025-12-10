@@ -23,3 +23,6 @@ install:
   supports_fastxd: true
   main_executable: test.py
   command_alias: paxd-test
+  checksum:
+    LICENSE: sha256:c856d6c33a97f74f274e7d7bee176b0515f34631d34642ec95a0156df614e207
+    test.py: sha256:9c5fad03db2c08b35ac0733189ed822462ce5608f051d86490e6de4d1cd2bfb9

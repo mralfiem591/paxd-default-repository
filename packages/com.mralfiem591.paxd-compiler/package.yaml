@@ -20,3 +20,5 @@ install:
   command_alias: paxd-compile
   checksums:
     main.py: sha256:a2c12d67443bbcf6da4c59f6b6ba21640772854dd2cf6b50683d1acb210c4fed
+  checksum:
+    main.py: sha256:a2c12d67443bbcf6da4c59f6b6ba21640772854dd2cf6b50683d1acb210c4fed
