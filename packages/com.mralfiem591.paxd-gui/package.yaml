@@ -4,27 +4,26 @@ version: 1.1.9
 description: A graphical user interface for PaxD package management.
 license: MIT
 tags:
-  - gui
-  - package manager
-  - installer
-  - windows
-  - paxd
-  - graphical
-  - tkinter
-
+- gui
+- package manager
+- installer
+- windows
+- paxd
+- graphical
+- tkinter
 install:
   files:
-    - paxd_gui.py
-
+  - paxd_gui.py
   dependencies:
     pip:
-      - requests
+    - requests
     paxd:
-      - com.mralfiem591.paxd-sdk
-      - com.mralfiem591.paxd
-  
+    - com.mralfiem591.paxd-sdk
+    - com.mralfiem591.paxd
   firstrun: true
   updaterun: false
   main_executable: paxd_gui.py
   command_alias: paxd-gui
-  supports_fastxd: false # SDK cant be used in fastxd
+  supports_fastxd: false
+  checksums:
+    paxd_gui.py: sha256:f95afa061f230d742703e78b540923fb97b148316ed33368fdf1e7795ecf73bb

@@ -1,6 +1,3 @@
-# PaxD package configuration - converted from manifest
-# Original file: paxd
-
 name: PaxD Imageview
 author: mralfiem591
 version: 1.1.4
@@ -26,4 +23,6 @@ install:
   main_executable: imageview.py
   command_alias: paxd-imageview
   supports_fastxd: true
-
+  checksums:
+    imageview.py: sha256:6a558ac49571af60a0cb9658c4e7ba0921bdda8157bf30915421d2cadcf01483
+    LICENSE: sha256:c856d6c33a97f74f274e7d7bee176b0515f34631d34642ec95a0156df614e207

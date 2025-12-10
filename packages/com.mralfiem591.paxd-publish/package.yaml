@@ -1,35 +1,34 @@
-# PaxD YAML package
-
 name: PaxD Publish
 author: mralfiem591
 version: 1.0.6
-description: A tool to validate and publish PaxD packages to the repository via GitHub PR.
+description: A tool to validate and publish PaxD packages to the repository via GitHub
+  PR.
 license: MIT
 tags:
-  - cli
-  - publishing
-  - validation
-  - github
-  - tool
-  - automation
-  - package manager
-
+- cli
+- publishing
+- validation
+- github
+- tool
+- automation
+- package manager
 install:
   files:
-    - main.py
-    - LICENSE
-  
+  - main.py
+  - LICENSE
   dependencies:
     pip:
-      - requests
-      - PyGithub
-      - pyyaml
-      - gitpython
+    - requests
+    - PyGithub
+    - pyyaml
+    - gitpython
     paxd: []
-  
   firstrun: false
   updaterun: false
   exclude_from_updates: []
   main_executable: main.py
   command_alias: paxdp
   supports_fastxd: true
+  checksums:
+    LICENSE: sha256:63c5eb34eec5700c8732813cb1cf05115e107e9fc1d4b99f071bd69566a5066c
+    main.py: sha256:408234a799d06d0bb55b17ad1356212440c14ddc4f69a0680c9db8a6f9188162

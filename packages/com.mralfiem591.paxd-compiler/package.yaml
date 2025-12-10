@@ -1,6 +1,3 @@
-# PaxD package configuration - converted from manifest
-# Original file: paxd
-
 name: PaxD Compiler
 author: mralfiem591
 version: 1.0.0
@@ -21,3 +18,5 @@ install:
   supports_fastxd: true
   main_executable: main.py
   command_alias: paxd-compile
+  checksums:
+    main.py: sha256:a2c12d67443bbcf6da4c59f6b6ba21640772854dd2cf6b50683d1acb210c4fed

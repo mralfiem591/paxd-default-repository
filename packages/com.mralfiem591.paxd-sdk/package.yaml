@@ -1,6 +1,3 @@
-# PaxD package configuration - converted from manifest
-# Original file: paxd
-
 name: PaxD SDK
 author: mralfiem591
 version: 1.2.3
@@ -16,6 +13,6 @@ install:
   firstrun: false
   updaterun: false
   checksums:
-    main.py: sha256:3a5eca4ba1a93072a58460281aba3e5b77c2595c33647b3785c5d6e02b6eb600
+    main.py: sha256:17fbaf2d1fdf7fccd0c8a415cfa104e180005b7dc7afd7659e53e80ce90afa9c
   exclude_from_updates: []
   supports_fastxd: false
