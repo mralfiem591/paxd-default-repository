@@ -17,4 +17,4 @@ We apologise for any inconvenience caused.
 
 
 # IMPORTANT NOTE
-You may notice an empty package list upon first run after installation of version 1.1.9 or later. We are looking into this issue, and hope to have a fix out soon. In the meantime, please restart the GUI once, or press the "Refresh" button located at the top-right of the package list, to load the packages correctly. This only occurs once.
+You may notice an empty package list upon first run after installation of version 1.1.9. A fix should now be released in 1.1.10.
