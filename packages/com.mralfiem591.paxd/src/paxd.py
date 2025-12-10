@@ -942,7 +942,7 @@ class PaxD:
                 f.write(file_data)
             self._verbose_print(f"Successfully wrote file to disk")
             
-            # Check if this file has a checksum at package_data[install][checksum], if so, verify it
+            # Check if this file has a checksum at package_data[install][checksum], if so, verify it, if not delete it for safety (unless skip_checksum is True)
             expected_checksum = package_data.get("install", {}).get("checksum", {}).get(file)
             if expected_checksum and not skip_checksum:
                 self._verbose_print(f"Verifying checksum for {file}: expected {expected_checksum}")
@@ -971,7 +971,11 @@ class PaxD:
                     self._verbose_print(f"Deleted invalid file: {install_path}")
                     print(f"Deleted invalid file {install_path}")
             else:
-                self._verbose_print("No checksum verification required for this file")
+                self._verbose_print("No checksum verification for this file!")
+                if not skip_checksum:
+                    self._verbose_print("Deleting checksum entry for safety")
+                    print(f"{Fore.YELLOW}No checksum provided for {file}, skipping verification.")
+                    os.remove(install_path)
 
         # If package_data[install][firstrun], create a .FIRSTRUN file. If this value is false or non-existent, ignore and continue
         firstrun_flag = package_data.get("install", {}).get("firstrun")
@@ -1487,7 +1491,39 @@ class PaxD:
                         # Remove from updated_files since it was deleted
                         updated_files.remove(file) if file in updated_files else None
             else:
-                print(f"No checksum verification required for {file}")
+                print(f"No checksum verification found for {file}!")
+                if not skip_checksum:
+                    print(f"{Fore.YELLOW}No checksum provided for {file}, recovering from backup for safety.")
+                    self._verbose_print(f"Deleting checksum entry for safety for {file}")
+                    # Restore from backup
+                    if os.path.exists(backup_path):
+                        shutil.copy2(backup_path, install_path)
+                        os.remove(backup_path)
+                        backup_files.remove(backup_path) if backup_path in backup_files else None
+                        print(f"Restored {file} from backup due to missing checksum")
+                        # Remove from updated_files since it was restored
+                        updated_files.remove(file) if file in updated_files else None
+                    else:
+                        print(f"{Fore.RED}CRITICAL: There was a checksum mismatch for {file}, but no backup file was found!")
+                        print("This should NEVER happen. You have a choice to make:")
+                        print("1) Abort the update process now to avoid potential corruption.")
+                        print("2) Proceed anyway, understanding the risk of someone doing something NASTY to your machine.")
+                        print(f"3) Delete the installed file ({file}), understanding that this may corrupt this package.")
+                        choice = input("Enter 1, 2, or 3: ").strip()
+                        if choice == "1":
+                            print("Aborting update process.")
+                            raise Exception("Update aborted by user due to missing backup file on checksum failure.")
+                        elif choice == "2":
+                            print("Proceeding with update despite missing backup file.")
+                        elif choice == "3":
+                            if os.path.exists(install_path):
+                                os.remove(install_path)
+                                print(f"Deleted installed file {file} due to missing backup on checksum failure.")
+                                # Remove from updated_files since it was deleted
+                                updated_files.remove(file) if file in updated_files else None
+                        else:
+                            print("Invalid choice. Aborting update process.")
+                            raise Exception("Update aborted by user due to invalid choice on missing backup file.")
         
         # Clean up any remaining backup files (for files without checksums or after successful updates)
         cleaned_backups = self._cleanup_backup_files(backup_files, "successful update")
