@@ -265,6 +265,9 @@ def compile_paxd_manifest(yaml_data: dict) -> dict:
     # Handle checksums
     if "checksums" in install_config:
         manifest["install"]["checksum"] = install_config["checksums"]
+        print(f"DEBUG: Found {len(install_config['checksums'])} checksums in YAML")
+        for file_path, checksum in install_config["checksums"].items():
+            print(f"DEBUG: {file_path} -> {checksum}")
     
     # Handle optional install settings
     optional_bool_settings = ["firstrun", "updaterun"]
@@ -505,32 +508,38 @@ class PaxD:
             return repo_url
     
     def _fetch_package_metadata(self, repo_url, package_name):
-        """Fetch package metadata, trying both paxd and paxd.yaml files."""
+        """Fetch package metadata, trying package.yaml first, then paxd.yaml, then legacy paxd JSONC."""
         self._verbose_print(f"Fetching package metadata for: {package_name}")
         
-        # First try the traditional paxd file
-        package_url = f"{repo_url}/packages/{package_name}/paxd"
-        self._verbose_print(f"Trying paxd file at: {package_url}")
-        
-        try:
-            package_response = requests.get(package_url, headers=self.headers, allow_redirects=True)  # type: ignore
-            self._verbose_print(f"GET {package_url}: {package_response.status_code}")
-            
-            if package_response.status_code == 200:
-                self._verbose_print("Found paxd file, parsing as JSONC")
-                package_data = parse_jsonc(package_response.text)
-                self._verbose_print("Successfully parsed paxd file")
-                return package_data, "paxd"
-        except Exception as e:
-            self._verbose_print(f"Failed to fetch or parse paxd file: {e}")
-        
-        # If paxd file not found or failed, try paxd.yaml
-        yaml_url = f"{repo_url}/packages/{package_name}/paxd.yaml"
-        self._verbose_print(f"Trying paxd.yaml file at: {yaml_url}")
-        
+        # First try the preferred package.yaml file
+        yaml_url = f"{repo_url}/packages/{package_name}/package.yaml"
+        self._verbose_print(f"Trying package.yaml file at: {yaml_url}")
+
         try:
             yaml_response = requests.get(yaml_url, headers=self.headers, allow_redirects=True)  # type: ignore
             self._verbose_print(f"GET {yaml_url}: {yaml_response.status_code}")
+
+            if yaml_response.status_code == 200:
+                self._verbose_print("Found package.yaml file, parsing as YAML")
+                yaml_data = yaml.safe_load(yaml_response.text)
+                if not yaml_data:
+                    raise ValueError("YAML file appears to be empty or invalid")
+                
+                # Convert YAML to paxd manifest format using compiler code
+                self._verbose_print("Converting YAML to paxd manifest format")
+                package_data = compile_paxd_manifest(yaml_data)
+                self._verbose_print("Successfully converted YAML to paxd format")
+                return package_data, "package.yaml"
+        except Exception as e:
+            self._verbose_print(f"Failed to fetch or parse package.yaml file: {e}")
+        
+        # If package.yaml not found or failed, try paxd.yaml
+        yaml_url2 = f"{repo_url}/packages/{package_name}/paxd.yaml"
+        self._verbose_print(f"Trying paxd.yaml file at: {yaml_url2}")
+        
+        try:
+            yaml_response = requests.get(yaml_url2, headers=self.headers, allow_redirects=True)  # type: ignore
+            self._verbose_print(f"GET {yaml_url2}: {yaml_response.status_code}")
             
             if yaml_response.status_code == 200:
                 self._verbose_print("Found paxd.yaml file, parsing as YAML")
@@ -546,31 +555,24 @@ class PaxD:
         except Exception as e:
             self._verbose_print(f"Failed to fetch or parse paxd.yaml file: {e}")
 
-        yaml_url2 = f"{repo_url}/packages/{package_name}/package.yaml"
-        self._verbose_print(f"Trying package.yaml file at: {yaml_url2}")
-
+        # Finally, try the legacy paxd JSONC file
+        package_url = f"{repo_url}/packages/{package_name}/paxd"
+        self._verbose_print(f"Trying legacy paxd file at: {package_url}")
+        
         try:
-            yaml_response = requests.get(yaml_url2, headers=self.headers, allow_redirects=True)  # type: ignore
-            self._verbose_print(f"GET {yaml_url2}: {yaml_response.status_code}")
-
-            if yaml_response.status_code == 200:
-                self._verbose_print("Found package.yaml file, parsing as YAML")
-                yaml_data = yaml.safe_load(yaml_response.text)
-                if not yaml_data:
-                    raise ValueError("YAML file appears to be empty or invalid")
-                
-                # Convert YAML to paxd manifest format using compiler code
-                self._verbose_print("Converting YAML to paxd manifest format")
-                package_data = compile_paxd_manifest(yaml_data)
-                self._verbose_print("Successfully converted YAML to paxd format")
-                return package_data, "package.yaml"
+            package_response = requests.get(package_url, headers=self.headers, allow_redirects=True)  # type: ignore
+            self._verbose_print(f"GET {package_url}: {package_response.status_code}")
+            
+            if package_response.status_code == 200:
+                self._verbose_print("Found paxd file, parsing as JSONC")
+                package_data = parse_jsonc(package_response.text)
+                self._verbose_print("Successfully parsed paxd file")
+                return package_data, "paxd"
         except Exception as e:
-            self._verbose_print(f"Failed to fetch or parse package.yaml file: {e}")
-
-        # If neither are found, try package.yaml
+            self._verbose_print(f"Failed to fetch or parse paxd file: {e}")
         
         # If all 3 files failed, check if it's a 404 and provide a friendly error
-        self._verbose_print("paxd, package.yaml and paxd.yaml files failed, checking error type")
+        self._verbose_print("package.yaml, paxd.yaml and paxd files failed, checking error type")
         package_response = requests.get(package_url, headers=self.headers, allow_redirects=True)  # type: ignore
         
         if package_response.status_code == 404:
