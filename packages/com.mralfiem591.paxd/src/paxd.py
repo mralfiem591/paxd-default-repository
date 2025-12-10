@@ -263,7 +263,7 @@ def compile_paxd_manifest(yaml_data: dict) -> dict:
             manifest["install"]["depend"] = deps
     
     # Handle checksums
-    if "checksum" in install_config:
+    if "checksums" in install_config:
         manifest["install"]["checksum"] = install_config["checksums"]
     
     # Handle optional install settings

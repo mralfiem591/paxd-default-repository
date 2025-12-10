@@ -61,7 +61,7 @@ def hash_package_files(package_dir):
     return checksums
 
 def update_package_yaml(yaml_path, checksums):
-    """Update the checksum section in the package YAML file."""
+    """Update the checksums section in the package YAML file."""
     try:
         # Read existing YAML
         with open(yaml_path, 'r', encoding='utf-8') as f:
@@ -71,14 +71,14 @@ def update_package_yaml(yaml_path, checksums):
         if 'install' not in data:
             data['install'] = {}
         
-        # Update checksum section
+        # Update checksums section
         if checksums:
-            data['install']['checksum'] = checksums
-            print(f"    Updated checksum section with {len(checksums)} entries")
+            data['install']['checksums'] = checksums
+            print(f"    Updated checksums section with {len(checksums)} entries")
         else:
-            # Remove checksum section if no files were found
-            data['install'].pop('checksum', None)
-            print(f"    Removed checksum section (no files found)")
+            # Remove checksums section if no files were found
+            data['install'].pop('checksums', None)
+            print(f"    Removed checksums section (no files found)")
         
         # Write updated YAML
         with open(yaml_path, 'w', encoding='utf-8') as f:
