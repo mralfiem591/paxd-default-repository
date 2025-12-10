@@ -3159,6 +3159,7 @@ def main():
                 print(f"{Fore.YELLOW}Reinstalling PaxD itself requires manual uninstallation and reinstallation.")
                 print(f"{Fore.YELLOW}Please uninstall PaxD manually, then download and install the latest version from the PaxD repository.")
                 return
+            paxd.uninstall(args.package_name)
             paxd.install(args.package_name, user_requested=True)
         elif args.command == "credit":
             paxd._verbose_print("Showing credits")
