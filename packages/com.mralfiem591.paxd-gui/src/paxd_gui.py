@@ -956,12 +956,23 @@ class PaxDGUI:
         self.setup_gui()
         self.load_packages()
         
+        # If __file__ endswith paxd_gui.py and not paxd.py, show an error and exit, prompting to run with "paxd gui" instead of "paxd-gui"
+        if __file__.endswith('paxd_gui.py') and not __file__.endswith('paxd.py'):
+            messagebox.showerror(
+                "Incorrect Launch Method",
+                "It seems you have launched the PaxD GUI incorrectly.\n\n"
+                "Please run the GUI using the command:\n\n    paxd gui\n\n"
+                "This ensures that some features, one of which is allowing GUI uninstallation, are correctly handled.\n\n"
+                "The application will now exit."
+            )
+            self.root.destroy()
+            return
+        
         # If a .FIRSTRUN file exists, show welcome message
-        firstrun_path1 = os.path.join(f"{os.path.dirname(__file__)}-gui", '.FIRSTRUN')
-        firstrun_path2 = os.path.join(os.path.dirname(__file__), '.FIRSTRUN')
+        firstrun_path = os.path.join(f"{os.path.dirname(__file__)}-gui", '.FIRSTRUN')
         
         try:
-            if os.path.exists(firstrun_path1) or os.path.exists(firstrun_path2):
+            if os.path.exists(firstrun_path):
                 messagebox.showinfo(
                     "Welcome to PaxD GUI!",
                     "Thank you for installing PaxD GUI!\n\n"
@@ -971,12 +982,13 @@ class PaxDGUI:
                 )
                 # Remove the .FIRSTRUN file after showing the message
                 try:
-                    if os.path.exists(firstrun_path1):
-                        os.remove(firstrun_path1)
-                    if os.path.exists(firstrun_path2):
-                        os.remove(firstrun_path2)
+                    if os.path.exists(firstrun_path):
+                        os.remove(firstrun_path)
                 except Exception:
                     pass  # Ignore file removal errors
+                
+                # Re-refresh packages to fix error where list is empty
+                self.refresh_packages()
         except Exception:
             pass  # Ignore any errors with firstrun check
     
