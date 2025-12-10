@@ -16,6 +16,9 @@ install:
   files:
     - hasher.py
 
+  checksums:
+    hasher.py: sha256:071a5ec7f4af4ff91432b6ffe83fb7bdf8b86d32e58631163afe8a597422c8e4
+
   firstrun: false
   updaterun: false
   main_executable: hasher.py
