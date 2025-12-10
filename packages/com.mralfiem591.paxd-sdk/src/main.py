@@ -4,7 +4,7 @@ import os
 
 # Part 1: utilities that can be accessed by other packages based specifically on the SDK (eg. version)
 class SDKDetails:
-    Version = "1.2.2"
+    Version = "1.2.3"
 
     @staticmethod
     def AssertVersion(min_version: str) -> bool:
@@ -40,7 +40,7 @@ class Package:
         package_name = package_name.replace('/', '').replace('\\', '').replace('..', '').replace('&', '').replace(';', '').replace('|', '')
         
         # Install a package by calling PaxD
-        os.system(f"start cmd /c paxd install --skip-checksum {package_name}")
+        os.system(f"start cmd /c paxd install {package_name}")
 
     @staticmethod
     def Uninstall(package_name: str):
@@ -58,7 +58,7 @@ class Package:
         
         
         # Update a package by calling PaxD
-        os.system(f"start cmd /c paxd update -f --skip-checksum {package_name}")
+        os.system(f"start cmd /c paxd update {package_name}")
 
     @staticmethod
     def IsInstalled(package_name: str) -> bool:
