@@ -13,7 +13,6 @@ import os
 import hashlib
 import yaml
 import sys
-from pathlib import Path
 
 def calculate_file_hash(file_path):
     """Calculate SHA256 hash for a file using the same method as PaxD."""
