@@ -30,5 +30,5 @@ install:
   command_alias: paxdp
   supports_fastxd: true
   checksum:
-    LICENSE: sha256:63c5eb34eec5700c8732813cb1cf05115e107e9fc1d4b99f071bd69566a5066c
-    main.py: sha256:408234a799d06d0bb55b17ad1356212440c14ddc4f69a0680c9db8a6f9188162
+    LICENSE: sha256:2ce014606d70c07902ca2505b7371ad29c7f854e3e45063fc750af340d2abde0
+    main.py: sha256:203965454cfef0b8a6a864638178815cab21e9976eeb7d97629821f069dc468d

@@ -21,5 +21,5 @@ install:
   main_executable: test.py
   command_alias: paxd-test
   checksum:
-    LICENSE: sha256:c856d6c33a97f74f274e7d7bee176b0515f34631d34642ec95a0156df614e207
-    test.py: sha256:9c5fad03db2c08b35ac0733189ed822462ce5608f051d86490e6de4d1cd2bfb9
+    LICENSE: sha256:f5382f6ba1a0e00d6eeed6e1ce4430b552a3e694b61a529526c29ccaeacea11f
+    test.py: sha256:33337c1ac14705b152d3818f274dcaf839f31ce5ff78633b5056f91e2ac1b889

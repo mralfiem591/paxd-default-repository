@@ -24,5 +24,5 @@ install:
   command_alias: paxd-imageview
   supports_fastxd: true
   checksum:
-    imageview.py: sha256:11e974422891570093f4438c404bfc3c13e03aaa788418a8c93a0d8b0bcc0dbb
-    LICENSE: sha256:c856d6c33a97f74f274e7d7bee176b0515f34631d34642ec95a0156df614e207
+    LICENSE: sha256:f5382f6ba1a0e00d6eeed6e1ce4430b552a3e694b61a529526c29ccaeacea11f
+    imageview.py: sha256:5e17457039f95a7f781716700178fd04675f9e29a3c965ceb06fb8dfd6e7767f
