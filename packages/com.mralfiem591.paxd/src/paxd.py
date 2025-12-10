@@ -943,26 +943,47 @@ class PaxD:
             
             # Small delay to ensure file write is completely flushed
             import time
-            time.sleep(0.1)
+            time.sleep(0.2)
             
             # Check if this file has a checksum at package_data[install][checksum], if so, verify it, if not delete it for safety (unless skip_checksum is True)
             expected_checksum = package_data.get("install", {}).get("checksum", {}).get(file)
+            self._verbose_print(f"Looking for checksum for file '{file}'")
+            self._verbose_print(f"package_data install section: {package_data.get('install', {})}")
+            self._verbose_print(f"checksum section: {package_data.get('install', {}).get('checksum', {})}")
+            self._verbose_print(f"Expected checksum for '{file}': {expected_checksum}")
+            
             if expected_checksum and not skip_checksum:
                 self._verbose_print(f"Verifying checksum for {file}: expected {expected_checksum}")
                 # Also calculate checksum of the raw downloaded data for debugging
                 raw_checksum = f"sha256:{hashlib.sha256(file_data).hexdigest()}"
                 self._verbose_print(f"Raw downloaded data checksum: {raw_checksum}")
                 self._verbose_print(f"Downloaded data length: {len(file_data)} bytes")
+                self._verbose_print(f"File written to: {install_path}")
+                self._verbose_print(f"FIle exists after write: {os.path.exists(install_path)}")
+                if os.path.exists(install_path):
+                    self._verbose_print(f"File size on disk: {os.path.getsize(install_path)} bytes")
+                
                 # Verify the checksum using the same method as hasher.py
+                self._verbose_print(f"Starting checksum calculation with 4096-byte chunks")
                 sha256 = hashlib.sha256()
+                chunk_count = 0
+                total_bytes = 0
                 with open(install_path, "rb") as f:
                     while True:
                         chunk: bytes = f.read(4096)
                         if not chunk:
                             break
                         sha256.update(chunk)
+                        chunk_count += 1
+                        total_bytes += len(chunk)
+                        self._verbose_print(f"DEBUG: Chunk {chunk_count}: {len(chunk)} bytes")
+                
                 calculated_checksum = f"sha256:{sha256.hexdigest()}"
+                self._verbose_print(f"Processed {chunk_count} chunks, {total_bytes} total bytes")
                 self._verbose_print(f"Calculated checksum: {calculated_checksum}")
+                self._verbose_print(f"Expected checksum:   {expected_checksum}")
+                self._verbose_print(f"Checksums match: {calculated_checksum == expected_checksum}")
+                
                 if calculated_checksum == expected_checksum:
                     self._verbose_print("Checksum verification passed")
                     print(f"Checksum verified for {install_path}")
@@ -1462,18 +1483,42 @@ class PaxD:
             
             # Verify checksum if provided
             expected_checksum = package_data.get("install", {}).get("checksum", {}).get(file)
+            self._verbose_print(f"DEBUG: Looking for checksum for file '{file}' during update")
+            self._verbose_print(f"DEBUG: package_data install section: {package_data.get('install', {})}")
+            self._verbose_print(f"DEBUG: checksum section: {package_data.get('install', {}).get('checksum', {})}")
+            self._verbose_print(f"DEBUG: Expected checksum for '{file}': {expected_checksum}")
+            
             if expected_checksum and not skip_checksum:
+                self._verbose_print(f"Starting checksum verification for update of {file}")
                 # Also calculate checksum of the raw downloaded data for debugging
                 raw_checksum = f"sha256:{hashlib.sha256(file_data).hexdigest()}"
+                self._verbose_print(f"DEBUG: Raw downloaded data checksum: {raw_checksum}")
+                self._verbose_print(f"DEBUG: Downloaded data length: {len(file_data)} bytes")
+                self._verbose_print(f"DEBUG: File written to: {install_path}")
+                self._verbose_print(f"DEBUG: File exists after write: {os.path.exists(install_path)}")
+                if os.path.exists(install_path):
+                    self._verbose_print(f"DEBUG: File size on disk: {os.path.getsize(install_path)} bytes")
+                
                 # Verify the checksum using the same method as hasher.py
+                self._verbose_print(f"DEBUG: Starting checksum calculation with 4096-byte chunks for update")
                 sha256 = hashlib.sha256()
+                chunk_count = 0
+                total_bytes = 0
                 with open(install_path, "rb") as f:
                     while True:
                         chunk: bytes = f.read(4096)
                         if not chunk:
                             break
                         sha256.update(chunk)
+                        chunk_count += 1
+                        total_bytes += len(chunk)
+                        self._verbose_print(f"DEBUG: Update chunk {chunk_count}: {len(chunk)} bytes")
+                
                 calculated_checksum = f"sha256:{sha256.hexdigest()}"
+                self._verbose_print(f"DEBUG: Update processed {chunk_count} chunks, {total_bytes} total bytes")
+                self._verbose_print(f"DEBUG: Update calculated checksum: {calculated_checksum}")
+                self._verbose_print(f"DEBUG: Update expected checksum:   {expected_checksum}")
+                self._verbose_print(f"DEBUG: Update checksums match: {calculated_checksum == expected_checksum}")
                 
                 if calculated_checksum == expected_checksum:
                     print(f"Checksum verified for {file}")
