@@ -1,7 +1,6 @@
 .vscode
 favicon.ico
 generate_package_docs.py
-hasher.py
 log_watcher.py
 favicon.ico
 repoasset/favicon.ico
