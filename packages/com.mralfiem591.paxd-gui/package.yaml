@@ -26,4 +26,4 @@ install:
   command_alias: paxd-gui
   supports_fastxd: false
   checksum:
-    paxd_gui.py: sha256:10fcf3bd78f814ae044225915277c128064ae2299a991d545e3c9d2f4e09c534
+    paxd_gui.py: sha256:d35f9ae69dc74a7fff9842533f98f22bf5bb426fcc727b9c1bc4d3df8b56286f
