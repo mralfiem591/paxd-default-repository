@@ -3576,8 +3576,8 @@ def main():
             paxd.check_protocol_status()
         elif args.command == "extension":
             if args.extension_command == "install":
-                paxd._verbose_print(f"Installing extension: {args.extension_file}")
-                ext_manager.install_extension(args.extension_file)
+                paxd._verbose_print(f"Installing extension: {args.zip_path}")
+                ext_manager.install_extension(args.zip_path)
             elif args.extension_command == "uninstall":
                 paxd._verbose_print(f"Uninstalling extension: {args.extension_name}")
                 ext_manager.uninstall_extension(args.extension_name)
