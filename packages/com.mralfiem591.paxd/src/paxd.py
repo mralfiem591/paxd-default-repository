@@ -2004,6 +2004,9 @@ class PaxD:
         self._verbose_timing_start(f"info {package_name}")
         self._verbose_print(f"Getting info for package: {package_name}")
         
+        # Extension trigger for pre-info
+        self.trigger_system.execute_trigger("pre_info", package=package_name, fullsize=fullsize)
+        
         # Read and resolve repository URL
         self._verbose_print("Reading and resolving repository URL for info")
         repo_url = self._read_repository_url()
@@ -3595,6 +3598,9 @@ def main():
     
     # Execute commands based on parsed arguments
     try:
+        # Extension trigger for application startup
+        paxd.trigger_system.execute_trigger("app_start", command=args.command, verbose=args.verbose)
+        
         paxd._verbose_print(f"Executing command: {args.command}")
         if args.command == "install":
             paxd._verbose_print(f"Installing package: {args.package_name}, skip_checksum={args.skip_checksum}")
@@ -3847,6 +3853,9 @@ def main():
     latest_version = paxd.get_latest_version()
     if latest_version and latest_version != paxd.paxd_version and args.command not in ["update", "update-all"]:
         print(f"{Fore.YELLOW}New PaxD version available: {Fore.RED}{paxd.paxd_version}{Fore.YELLOW} -> {Fore.GREEN}{latest_version}\n{Fore.YELLOW}Get it with '{Fore.LIGHTYELLOW_EX}paxd update paxd{Fore.YELLOW}'.")
+
+    # Extension trigger for application exit
+    paxd.trigger_system.execute_trigger("app_exit", command=args.command, success=True)
 
 try:
     main()
