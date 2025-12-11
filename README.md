@@ -6,9 +6,6 @@
 ![PaxD Ready Badge](repoasset/paxdready.png)
 
 > [!IMPORTANT]
-> The issue regarding checksums that was noticed earlier today (10/12/2025) should now be fixed. This was first noticed at ~11:30 AM, a status alert was issued to clients at ~1:15 PM, and a fix was released at 6:52 PM. The status message has since been removed. Thanks for your patience as we fixed this issue.
-
-> [!IMPORTANT]
 > We know we are a bit early, but **PaxD 26.0.0 HAS BEEN RELEASED!!!** 🎉🎉 This is by far the biggest update PaxD has recieved, and we plan to continue work. You will see the roadmap fill up shortly!
 
 The official default repository for PaxD packages, and home to the official PaxD package.
