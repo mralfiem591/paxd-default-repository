@@ -147,7 +147,7 @@ def update_stats(stats_file, action_type, package):
 
 # Extension metadata - REQUIRED for all PaxD extensions
 EXTENSION_INFO = {
-    "name": "example-extension-activity-logger",
+    "name": "com.mralfiem591.example.activity-logger",
     "version": "1.0.0",
     "description": "Logs all PaxD operations and provides activity statistics. Used as an example extension.",
     "author": "mralfiem591",

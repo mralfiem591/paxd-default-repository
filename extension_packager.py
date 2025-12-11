@@ -97,7 +97,7 @@ def replace_placeholders_in_content(content: str, zip_name: str) -> str:
     """
     # Get zip name without .zip extension
     zip_name_base = zip_name
-    if not zip_name_base.lower().endswith('.zip'):
+    if not zip_name_base.lower().endswith('.zip'): # NOTE: this part is supposed to add the .zip, as thats the intended use of the placeholder! please dont change it!
         zip_name_base += '.zip'
     
     # Replace placeholders
@@ -120,8 +120,10 @@ def create_extension_zip(folder_path: str, output_path: Optional[str] = None) ->
     # Determine output path
     if output_path is None:
         extension_name = extension_info.get('name', folder_path_obj.name)
-        # Sanitize extension name for filename
-        safe_name = "".join(c for c in extension_name if c.isalnum() or c in (' ', '-', '_')).strip()
+        # Sanitize extension name for filename - replace dots with hyphens to preserve structure
+        safe_name = extension_name.replace('.', '-')
+        # Remove any other invalid filename characters
+        safe_name = "".join(c for c in safe_name if c.isalnum() or c in (' ', '-', '_')).strip()
         safe_name = safe_name.replace(' ', '_')
         output_path_obj = folder_path_obj.parent / f"{safe_name}.zip"
     else:
