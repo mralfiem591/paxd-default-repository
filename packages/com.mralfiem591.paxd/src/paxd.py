@@ -401,7 +401,7 @@ class TriggerSystem:
                 self._verbose_print(f"Executing trigger: {trigger_name} with {len(self.triggers[trigger_name])} callbacks")
             for callback in self.triggers[trigger_name]:
                 try:
-                    callback(*args, **kwargs)
+                    callback(trigger_name, *args, **kwargs)
                 except Exception as e:
                     if self._verbose_print:
                         self._verbose_print(f"Extension callback failed for {trigger_name}: {e}")
