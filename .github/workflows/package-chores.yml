@@ -31,8 +31,9 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Update package hashes
+      - name: Repull and Update package hashes
         run: |
+          git pull
           cd packages
           python hasher.py
           cd ..
@@ -47,7 +48,6 @@ jobs:
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git pull
           git add packages/
           git commit -m "chore: update package checksums"
           git push
@@ -62,8 +62,10 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Generate search index
-        run: python generate_searchindex.py
+      - name: Repull and Generate search index
+        run: |
+          git pull
+          python generate_searchindex.py
 
       - name: Check for search index changes
         id: git-check-index
@@ -75,7 +77,6 @@ jobs:
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git pull
           git add searchindex.csv
           git commit -m "chore: update search index"
           git push
