@@ -93,12 +93,12 @@ def replace_placeholders_in_content(content: str, zip_name: str) -> str:
     """
     Replace placeholders in file content.
     Currently supports:
-    - [ZIP_NAME] -> zip file name without extension
+    - [ZIP_NAME] -> zip file name with extension
     """
     # Get zip name without .zip extension
     zip_name_base = zip_name
-    if zip_name_base.lower().endswith('.zip'):
-        zip_name_base = zip_name_base[:-4]
+    if not zip_name_base.lower().endswith('.zip'):
+        zip_name_base += '.zip'
     
     # Replace placeholders
     content = content.replace('[ZIP_NAME]', zip_name_base)
