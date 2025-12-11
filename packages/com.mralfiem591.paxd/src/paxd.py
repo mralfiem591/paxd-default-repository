@@ -3266,11 +3266,11 @@ def main():
         elif args.command == "gui":
             paxd._verbose_print("Launching PaxD GUI")
             try:
-                subprocess.run(['paxd-gui'], check=True, shell=True)
+                subprocess.run(['paxd-gui', 'ran-via-paxd'], check=True, shell=True)
             # Catch specific exception for if the command paxd-gui isnt found
             except subprocess.CalledProcessError:
                 paxd.install("com.mralfiem591.paxd-gui", user_requested=True)
-                subprocess.run(['paxd-gui'], check=True, shell=True)
+                subprocess.run(['paxd-gui', 'ran-via-paxd'], check=True, shell=True)
             finally:
                 # Handle uninstall requests from the GUI
                 paxd._verbose_print("Checking for uninstall requests from GUI")
