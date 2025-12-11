@@ -163,5 +163,5 @@ EXTENSION_INFO = {
         "listall.start",
         "listall.end"
     ],
-    "source_url": "https://github.com/mralfiem591/paxd/raw/refs/heads/extensions/example-extension-activity-logger.zip"
+    "source_url": "https://github.com/mralfiem591/paxd/raw/refs/heads/extensions/[ZIP_NAME]"
 }
