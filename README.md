@@ -51,40 +51,40 @@ This is the main extension file that must contain:
 
 ```python
 #!/usr/bin/env python3
-\"\"\"
+"""
 Example PaxD Extension
-\"\"\"
+"""
 
 import os
 import datetime
 
 def on_trigger(trigger_name, *args, **kwargs):
-    \"\"\"
+    """
     Handle extension triggers from PaxD.
     
     Args:
         trigger_name (str): The name of the trigger being fired
         *args: Positional arguments passed with the trigger
         **kwargs: Keyword arguments passed with the trigger
-    \"\"\"
-    if trigger_name == \"post_install\":
-        package = kwargs.get(\"package\", \"unknown\")
-        print(f\"📦 Extension: Package {package} was just installed!\")
+    """
+    if trigger_name == "post_install":
+        package = kwargs.get("package", "unknown")
+        print(f"📦 Extension: Package {package} was just installed!")
     
-    elif trigger_name == \"pre_search\":
-        term = kwargs.get(\"term\", \"unknown\")
-        print(f\"🔍 Extension: About to search for '{term}'...\")
+    elif trigger_name == "pre_search":
+        term = kwargs.get("term", "unknown")
+        print(f"🔍 Extension: About to search for '{term}'...")
 
 # Extension metadata - REQUIRED for all PaxD extensions
 EXTENSION_INFO = {
-    \"name\": \"example-extension\",
-    \"version\": \"1.0.0\", 
-    \"description\": \"An example PaxD extension\",
-    \"author\": \"Your Name\",
-    \"source_url\": \"https://example.com/extensions/example-extension.zip\",  # Optional
-    \"triggers\": [
-        \"post_install\",
-        \"pre_search\"
+    "name": "example-extension",
+    "version": "1.0.0", 
+    "description": "An example PaxD extension",
+    "author": "Your Name",
+    "source_url": "https://example.com/extensions/example-extension.zip",  # Optional
+    "triggers": [
+        "post_install",
+        "pre_search"
     ]
 }
 ```
@@ -96,7 +96,7 @@ The `EXTENSION_INFO` dictionary must contain:
 | Field | Required | Type | Description |
 |-------|----------|------|-------------|
 | `name` | ✅ | string | Extension identifier (use lowercase with hyphens) |
-| `version` | ✅ | string | Version string (e.g., \"1.0.0\") |
+| `version` | ✅ | string | Version string (e.g., "1.0.0") |
 | `description` | ✅ | string | Brief description of the extension |
 | `author` | ✅ | string | Extension author name |
 | `triggers` | ✅ | list | List of trigger names to register for |
@@ -191,64 +191,64 @@ Create `extension.py`:
 
 ```python
 #!/usr/bin/env python3
-\"\"\"
+"""
 My Awesome PaxD Extension
 
 This extension provides notifications and logging for PaxD operations.
-\"\"\"
+"""
 
 import os
 import datetime
 import json
 
 def on_trigger(trigger_name, *args, **kwargs):
-    \"\"\"Handle all PaxD triggers\"\"\"
+    """Handle all PaxD triggers"""
     
     # Get extension data directory
-    data_dir = os.path.join(os.path.expandvars(r\"%LOCALAPPDATA%\"), \"PaxD\", \"extensions\", \"my-awesome-extension\")
+    data_dir = os.path.join(os.path.expandvars(r"%LOCALAPPDATA%"), "PaxD", "extensions", "my-awesome-extension")
     os.makedirs(data_dir, exist_ok=True)
     
     # Log all activities
-    log_file = os.path.join(data_dir, \"activity.log\")
+    log_file = os.path.join(data_dir, "activity.log")
     timestamp = datetime.datetime.now().isoformat()
     
     log_entry = {
-        \"timestamp\": timestamp,
-        \"trigger\": trigger_name,
-        \"args\": list(args),
-        \"kwargs\": dict(kwargs)
+        "timestamp": timestamp,
+        "trigger": trigger_name,
+        "args": list(args),
+        "kwargs": dict(kwargs)
     }
     
     try:
         with open(log_file, 'a', encoding='utf-8') as f:
-            f.write(json.dumps(log_entry) + '\\n')
+            f.write(json.dumps(log_entry) + 'n')
     except Exception as e:
-        print(f\"Extension logging error: {e}\")
+        print(f"Extension logging error: {e}")
     
     # Handle specific triggers
-    if trigger_name == \"post_install\":
-        package = kwargs.get(\"package\", \"unknown\")
-        print(f\"🎉 Extension: Successfully installed {package}!\")
+    if trigger_name == "post_install":
+        package = kwargs.get("package", "unknown")
+        print(f"🎉 Extension: Successfully installed {package}!")
     
-    elif trigger_name == \"checksum_failed\":
-        package = kwargs.get(\"package\", \"unknown\")
-        attempt = kwargs.get(\"attempt\", 0)
-        print(f\"⚠️ Extension: Checksum failed for {package} (attempt {attempt})\")
+    elif trigger_name == "checksum_failed":
+        package = kwargs.get("package", "unknown")
+        attempt = kwargs.get("attempt", 0)
+        print(f"⚠️ Extension: Checksum failed for {package} (attempt {attempt})")
 
 # Extension metadata
 EXTENSION_INFO = {
-    \"name\": \"my-awesome-extension\",
-    \"version\": \"1.0.0\",
-    \"description\": \"Provides notifications and activity logging for PaxD operations\",
-    \"author\": \"Your Name\",
-    \"source_url\": \"https://github.com/yourname/my-awesome-extension/releases/latest/download/my-awesome-extension.zip\",
-    \"triggers\": [
-        \"post_install\",
-        \"post_uninstall\",
-        \"post_search\",
-        \"checksum_failed\",
-        \"app_start\",
-        \"app_exit\"
+    "name": "my-awesome-extension",
+    "version": "1.0.0",
+    "description": "Provides notifications and activity logging for PaxD operations",
+    "author": "Your Name",
+    "source_url": "https://github.com/yourname/my-awesome-extension/releases/latest/download/my-awesome-extension.zip",
+    "triggers": [
+        "post_install",
+        "post_uninstall",
+        "post_search",
+        "checksum_failed",
+        "app_start",
+        "app_exit"
     ]
 }
 ```
@@ -279,7 +279,7 @@ paxd extension install my-awesome-extension.zip
 ## Configuration
 
 The extension stores logs in:
-`%LOCALAPPDATA%\\PaxD\\extensions\\my-awesome-extension\\activity.log`
+`%LOCALAPPDATA%PaxDextensionsmy-awesome-extensionactivity.log`
 ```
 
 ## Extension Packaging
@@ -363,16 +363,16 @@ paxd extension uninstall my-extension
 
 ```python
 def on_trigger(trigger_name, *args, **kwargs):
-    if trigger_name == \"post_install\":
-        package = kwargs.get(\"package\", \"unknown\")
-        print(f\"📦 Installed: {package}\")
+    if trigger_name == "post_install":
+        package = kwargs.get("package", "unknown")
+        print(f"📦 Installed: {package}")
 
 EXTENSION_INFO = {
-    \"name\": \"activity-logger\",
-    \"version\": \"1.0.0\",
-    \"description\": \"Logs package activities\", 
-    \"author\": \"PaxD Team\",
-    \"triggers\": [\"post_install\", \"post_uninstall\"]
+    "name": "activity-logger",
+    "version": "1.0.0",
+    "description": "Logs package activities", 
+    "author": "PaxD Team",
+    "triggers": ["post_install", "post_uninstall"]
 }
 ```
 
@@ -383,7 +383,7 @@ import json
 import os
 
 def on_trigger(trigger_name, *args, **kwargs):
-    stats_file = os.path.join(os.path.expandvars(r\"%LOCALAPPDATA%\"), \"PaxD\", \"extensions\", \"stats\", \"package_stats.json\")
+    stats_file = os.path.join(os.path.expandvars(r"%LOCALAPPDATA%"), "PaxD", "extensions", "stats", "package_stats.json")
     os.makedirs(os.path.dirname(stats_file), exist_ok=True)
     
     # Load existing stats
@@ -391,29 +391,29 @@ def on_trigger(trigger_name, *args, **kwargs):
         with open(stats_file, 'r') as f:
             stats = json.load(f)
     except FileNotFoundError:
-        stats = {\"installs\": 0, \"updates\": 0, \"uninstalls\": 0}
+        stats = {"installs": 0, "updates": 0, "uninstalls": 0}
     
     # Update stats based on trigger
-    if trigger_name == \"post_install\":
-        stats[\"installs\"] += 1
-    elif trigger_name == \"post_update\":
-        stats[\"updates\"] += 1
-    elif trigger_name == \"post_uninstall\":
-        stats[\"uninstalls\"] += 1
+    if trigger_name == "post_install":
+        stats["installs"] += 1
+    elif trigger_name == "post_update":
+        stats["updates"] += 1
+    elif trigger_name == "post_uninstall":
+        stats["uninstalls"] += 1
     
     # Save updated stats
     with open(stats_file, 'w') as f:
         json.dump(stats, f, indent=2)
     
-    if trigger_name == \"app_exit\":
-        print(f\"📊 Session stats: {stats['installs']} installs, {stats['updates']} updates, {stats['uninstalls']} uninstalls\")
+    if trigger_name == "app_exit":
+        print(f"📊 Session stats: {stats['installs']} installs, {stats['updates']} updates, {stats['uninstalls']} uninstalls")
 
 EXTENSION_INFO = {
-    \"name\": \"package-stats\",
-    \"version\": \"1.0.0\", 
-    \"description\": \"Track package management statistics\",
-    \"author\": \"Community\",
-    \"triggers\": [\"post_install\", \"post_update\", \"post_uninstall\", \"app_exit\"]
+    "name": "package-stats",
+    "version": "1.0.0", 
+    "description": "Track package management statistics",
+    "author": "Community",
+    "triggers": ["post_install", "post_update", "post_uninstall", "app_exit"]
 }
 ```
 
@@ -421,28 +421,28 @@ EXTENSION_INFO = {
 
 ```python
 def on_trigger(trigger_name, *args, **kwargs):
-    if trigger_name == \"post_install\":
-        package = kwargs.get(\"package\", \"unknown\")
-        version = kwargs.get(\"version\", \"unknown\")
+    if trigger_name == "post_install":
+        package = kwargs.get("package", "unknown")
+        version = kwargs.get("version", "unknown")
         # Show system notification (Windows)
         try:
             import win10toast
             toaster = win10toast.ToastNotifier()
-            toaster.show_toast(\"PaxD\", f\"Successfully installed {package} v{version}\", duration=3)
+            toaster.show_toast("PaxD", f"Successfully installed {package} v{version}", duration=3)
         except ImportError:
-            print(f\"✅ Notification: {package} v{version} installed!\")
+            print(f"✅ Notification: {package} v{version} installed!")
     
-    elif trigger_name == \"checksum_failed\":
-        package = kwargs.get(\"package\", \"unknown\")
-        attempt = kwargs.get(\"attempt\", 0)
-        print(f\"❌ Warning: Checksum verification failed for {package} (attempt {attempt})\")
+    elif trigger_name == "checksum_failed":
+        package = kwargs.get("package", "unknown")
+        attempt = kwargs.get("attempt", 0)
+        print(f"❌ Warning: Checksum verification failed for {package} (attempt {attempt})")
 
 EXTENSION_INFO = {
-    \"name\": \"notifications\",
-    \"version\": \"1.0.0\",
-    \"description\": \"Shows system notifications for PaxD operations\",
-    \"author\": \"Community\", 
-    \"triggers\": [\"post_install\", \"post_update\", \"checksum_failed\", \"app_cancelled\"]
+    "name": "Notifications",
+    "version": "1.0.0",
+    "description": "Shows system notifications for PaxD operations",
+    "author": "Community", 
+    "triggers": ["post_install", "post_update", "checksum_failed", "app_cancelled"]
 }
 ```
 
@@ -474,11 +474,11 @@ EXTENSION_INFO = {
 
 ```python
 #!/usr/bin/env python3
-\"\"\"
+"""
 Extension Template
 
 Always include a clear docstring describing your extension's purpose.
-\"\"\"
+"""
 
 # Standard library imports only (no external dependencies)
 import os
@@ -486,39 +486,39 @@ import json
 import datetime
 
 def on_trigger(trigger_name, *args, **kwargs):
-    \"\"\"
+    """
     Main trigger handler.
     
     Keep this function clean and delegate to helper functions for complex logic.
-    \"\"\"
+    """
     try:
-        if trigger_name == \"post_install\":
+        if trigger_name == "post_install":
             handle_install(kwargs)
-        elif trigger_name == \"pre_search\":
+        elif trigger_name == "pre_search":
             handle_search(kwargs)
         # Add more trigger handlers as needed
     except Exception as e:
-        print(f\"Extension error in {trigger_name}: {e}\")
+        print(f"Extension error in {trigger_name}: {e}")
 
 def handle_install(context):
-    \"\"\"Handle post-install trigger\"\"\"
-    package = context.get(\"package\", \"unknown\")
+    """Handle post-install trigger"""
+    package = context.get("package", "unknown")
     # Implementation here
 
 def handle_search(context):
-    \"\"\"Handle pre-search trigger\"\"\"
-    term = context.get(\"term\", \"\")
+    """Handle pre-search trigger"""
+    term = context.get("term", "")
     # Implementation here
 
 # Always place EXTENSION_INFO at the end
 EXTENSION_INFO = {
-    \"name\": \"template-extension\",
-    \"version\": \"1.0.0\",
-    \"description\": \"Template for creating PaxD extensions\",
-    \"author\": \"Your Name\",
-    \"triggers\": [
-        \"post_install\",
-        \"pre_search\"
+    "name": "template-extension",
+    "version": "1.0.0",
+    "description": "Template for creating PaxD extensions",
+    "author": "Your Name",
+    "triggers": [
+        "post_install",
+        "pre_search"
     ]
 }
 ```
@@ -552,7 +552,7 @@ EXTENSION_INFO = {
 **Symptoms**: Extension can't write files or access directories
 
 **Solutions**:
-1. Use `os.path.expandvars(r\"%LOCALAPPDATA%\")` for user data directory
+1. Use `os.path.expandvars(r"%LOCALAPPDATA%")` for user data directory
 2. Create directories with `os.makedirs(path, exist_ok=True)`
 3. Handle permission errors gracefully with try-except blocks
 4. Don't write to PaxD installation directory
