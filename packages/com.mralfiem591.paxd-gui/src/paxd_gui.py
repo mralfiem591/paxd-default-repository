@@ -956,6 +956,18 @@ class PaxDGUI:
         self.setup_gui()
         self.load_packages()
         
+        # If not ran with argument 'ran-via-paxd', show error and exit
+        if sys.argv[1] != 'ran-via-paxd':
+            messagebox.showerror(
+                "Incorrect Launch Method",
+                "PaxD GUI must be launched via the PaxD command line tool.\n\n"
+                "Please run the following command in your terminal or command prompt:\n\n"
+                "    paxd gui\n\n"
+                "This is required for some features to work correctly."
+            )
+            self.root.destroy()
+            exit(1)
+        
         # If a .FIRSTRUN file exists, show welcome message
         firstrun_path = os.path.join(f"{os.path.dirname(__file__)}-gui", '.FIRSTRUN')
         
