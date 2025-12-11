@@ -486,6 +486,136 @@ class ExtensionManager:
             print(f"Failed to uninstall extension: {e}")
             return False
     
+    from typing import Optional
+    def update_extension(self, extension_name: str, zip_path: Optional[str] = None) -> bool:
+        """Update an extension from a zip file or its source URL"""
+        try:
+            extension_dir = os.path.join(self.extensions_dir, extension_name)
+            
+            if not os.path.exists(extension_dir):
+                print(f"Extension '{extension_name}' is not installed")
+                return False
+            
+            # If no zip path provided, try to get source_url from extension info
+            if zip_path is None:
+                extension_file = os.path.join(extension_dir, "extension.py")
+                if os.path.exists(extension_file):
+                    try:
+                        with open(extension_file, 'r', encoding='utf-8') as f:
+                            content = f.read()
+                        
+                        # Execute to get EXTENSION_INFO
+                        namespace = {}
+                        exec(content, namespace)
+                        
+                        if 'EXTENSION_INFO' in namespace:
+                            info = namespace['EXTENSION_INFO']
+                            source_url = info.get('source_url')
+                            
+                            if source_url:
+                                print(f"Downloading extension update from: {source_url}")
+                                
+                                # Download the zip file to temp location
+                                import tempfile
+                                import requests
+                                
+                                with tempfile.NamedTemporaryFile(delete=False, suffix='.zip') as tmp_file:
+                                    response = requests.get(source_url)
+                                    response.raise_for_status()
+                                    tmp_file.write(response.content)
+                                    temp_zip_path = tmp_file.name
+                                
+                                try:
+                                    # Update using the downloaded zip
+                                    return self._update_extension_from_zip(extension_name, temp_zip_path)
+                                finally:
+                                    # Clean up temp file
+                                    if os.path.exists(temp_zip_path):
+                                        os.unlink(temp_zip_path)
+                            else:
+                                print(f"Extension '{extension_name}' has no source_url defined")
+                                print("Please provide a zip file path to update manually")
+                                return False
+                        else:
+                            print(f"Extension '{extension_name}' has invalid extension info")
+                            return False
+                            
+                    except Exception as e:
+                        print(f"Failed to read extension info: {e}")
+                        return False
+                else:
+                    print(f"Extension '{extension_name}' is missing extension.py file")
+                    return False
+            else:
+                # Update from provided zip file
+                return self._update_extension_from_zip(extension_name, zip_path)
+                
+        except Exception as e:
+            print(f"Failed to update extension: {e}")
+            return False
+    
+    def _update_extension_from_zip(self, extension_name: str, zip_path: str) -> bool:
+        """Update an extension from a specific zip file"""
+        try:
+            if not os.path.exists(zip_path):
+                print(f"Extension zip file not found: {zip_path}")
+                return False
+            
+            if not zip_path.lower().endswith('.zip'):
+                print(f"Extension file must be a .zip file: {zip_path}")
+                return False
+            
+            extension_dir = os.path.join(self.extensions_dir, extension_name)
+            
+            # Backup old version info for comparison
+            old_version = "unknown"
+            extension_file = os.path.join(extension_dir, "extension.py")
+            if os.path.exists(extension_file):
+                try:
+                    with open(extension_file, 'r', encoding='utf-8') as f:
+                        content = f.read()
+                    namespace = {}
+                    exec(content, namespace)
+                    if 'EXTENSION_INFO' in namespace:
+                        old_version = namespace['EXTENSION_INFO'].get('version', 'unknown')
+                except Exception:
+                    pass
+            
+            # Remove old version
+            if os.path.exists(extension_dir):
+                shutil.rmtree(extension_dir)
+            
+            # Extract new version
+            os.makedirs(extension_dir, exist_ok=True)
+            
+            with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+                zip_ref.extractall(extension_dir)
+            
+            self._verbose_print(f"Extracted updated extension to: {extension_dir}")
+            
+            # Load the updated extension
+            self.load_extension(extension_name)
+            
+            # Try to get new version info
+            new_version = "unknown"
+            if os.path.exists(extension_file):
+                try:
+                    with open(extension_file, 'r', encoding='utf-8') as f:
+                        content = f.read()
+                    namespace = {}
+                    exec(content, namespace)
+                    if 'EXTENSION_INFO' in namespace:
+                        new_version = namespace['EXTENSION_INFO'].get('version', 'unknown')
+                except Exception:
+                    pass
+            
+            print(f"Successfully updated extension: {extension_name} (v{old_version} → v{new_version})")
+            return True
+            
+        except Exception as e:
+            print(f"Failed to update extension from zip: {e}")
+            return False
+    
     def list_extensions(self):
         """List all installed extensions"""
         if not os.path.exists(self.extensions_dir):
@@ -674,6 +804,39 @@ class PaxD:
             if hasattr(self, '_timing_start'):
                 elapsed = time.time() - self._timing_start
                 self._verbose_print(f"Completed operation: {operation} (took {elapsed:.3f}s)", Fore.GREEN)
+
+    def _check_if_extension(self, name: str) -> bool:
+        """Check if a given name matches an installed extension"""
+        try:
+            extensions_dir = os.path.join(os.path.dirname(__file__), "extensions")
+            if not os.path.exists(extensions_dir):
+                return False
+            
+            # Check for exact extension directory match
+            if os.path.isdir(os.path.join(extensions_dir, name)):
+                return True
+            
+            # Check extension names in EXTENSION_INFO
+            for ext_dir in os.listdir(extensions_dir):
+                ext_path = os.path.join(extensions_dir, ext_dir)
+                if os.path.isdir(ext_path):
+                    ext_file = os.path.join(ext_path, "extension.py")
+                    if os.path.exists(ext_file):
+                        try:
+                            with open(ext_file, 'r', encoding='utf-8') as f:
+                                content = f.read()
+                            namespace = {}
+                            exec(content, namespace)
+                            if 'EXTENSION_INFO' in namespace:
+                                ext_info = namespace['EXTENSION_INFO']
+                                ext_name = ext_info.get('name', '')
+                                if ext_name == name or ext_name.replace('-', '_') == name:
+                                    return True
+                        except Exception:
+                            continue
+            return False
+        except Exception:
+            return False
 
     def get_latest_version(self):
         """Fetch the latest version of PaxD from the repository."""
@@ -3198,6 +3361,21 @@ def create_argument_parser():
         help='Name of the extension to uninstall'
     )
     
+    # Extension update command
+    ext_update_parser = extension_subparsers.add_parser(
+        'update',
+        help='Update an extension',
+        description='Update a PaxD extension from a zip file or its source URL'
+    )
+    ext_update_parser.add_argument(
+        'extension_name',
+        help='Name of the extension to update'
+    )
+    ext_update_parser.add_argument(
+        '--zip-path',
+        help='Path to the new extension zip file (optional if source_url is defined in extension)'
+    )
+    
     # Extension list command
     extension_subparsers.add_parser(
         'list',
@@ -3423,11 +3601,21 @@ def main():
             paxd.install(args.package_name, user_requested=True, skip_checksum=args.skip_checksum)
         elif args.command == "uninstall":
             paxd._verbose_print(f"Uninstalling package: {args.package_name}")
-            paxd.uninstall(args.package_name)
+            # Check if it's an extension before trying package uninstall
+            if paxd._check_if_extension(args.package_name):
+                print(f"'{args.package_name}' appears to be an extension, not a package.")
+                print(f"To uninstall extensions, use: paxd extension uninstall {args.package_name}")
+            else:
+                paxd.uninstall(args.package_name)
         elif args.command == "update":
             force_flag = args.force if hasattr(args, 'force') else False
             paxd._verbose_print(f"Updating package: {args.package_name}, force={force_flag}, skip_checksum={args.skip_checksum}")
-            paxd.update(args.package_name, force=force_flag, skip_checksum=args.skip_checksum)
+            # Check if it's an extension before trying package update
+            if paxd._check_if_extension(args.package_name):
+                print(f"'{args.package_name}' appears to be an extension, not a package.")
+                print(f"To update extensions, use: paxd extension update {args.package_name}")
+            else:
+                paxd.update(args.package_name, force=force_flag, skip_checksum=args.skip_checksum)
         elif args.command == "update-all":
             paxd._verbose_print("Updating all packages")
             paxd.update_all()
@@ -3632,6 +3820,10 @@ def main():
             elif args.extension_command == "uninstall":
                 paxd._verbose_print(f"Uninstalling extension: {args.extension_name}")
                 ext_manager.uninstall_extension(args.extension_name)
+            elif args.extension_command == "update":
+                zip_path = getattr(args, 'zip_path', None)
+                paxd._verbose_print(f"Updating extension: {args.extension_name}, zip_path={zip_path}")
+                ext_manager.update_extension(args.extension_name, zip_path)
             elif args.extension_command == "list":
                 paxd._verbose_print("Listing installed extensions")
                 ext_manager.list_extensions()
