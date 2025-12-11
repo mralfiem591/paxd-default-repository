@@ -1436,6 +1436,10 @@ class PaxD:
         self._verbose_timing_start(f"uninstall {package_name}")
         self._verbose_print(f"Uninstalling package: {package_name}")
         
+        if package_name.lower() == ".metapackages" or package_name.lower() == "extensions":
+            print(f"{Fore.RED}X Cannot uninstall reserved package name: {Fore.YELLOW}{package_name}")
+            return
+        
         # Trigger pre-uninstall extensions
         trigger_system.execute_trigger("pre_uninstall", package=package_name)
         
@@ -1970,6 +1974,8 @@ class PaxD:
         
         packages = []
         for item in os.listdir(local_app_data):
+            if item == ".metapackages" or item == "extensions":
+                continue
             package_path = os.path.join(local_app_data, item)
             if os.path.isdir(package_path):
                 version_file = os.path.join(package_path, ".VERSION")
@@ -2765,7 +2771,7 @@ class PaxD:
         installed_packages = []
         for item in os.listdir(local_app_data):
             package_path = os.path.join(local_app_data, item)
-            if os.path.isdir(package_path) and item != ".metapackages":
+            if os.path.isdir(package_path) and item != ".metapackages" and item != "extensions":
                 installed_packages.append(item)
         
         if not installed_packages:
