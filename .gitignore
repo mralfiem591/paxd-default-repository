@@ -4,7 +4,6 @@ generate_package_docs.py
 log_watcher.py
 favicon.ico
 repoasset/favicon.ico
-vulnerability_issue_creator.py
 .env
 __pycache__/
 **.pyc
