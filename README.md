@@ -417,6 +417,9 @@ EXTENSION_INFO = {
 }
 ```
 
+> [!TIP]
+> You could even expand this extension by making a visualiser package to go alongside it! Feel free to get creative with your extensions, and try new things and ideas.
+
 ### 3. Notification Extension
 
 ```python
