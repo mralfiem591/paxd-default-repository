@@ -3212,13 +3212,9 @@ def main():
     # Initialize colorama for colored output
     init(autoreset=True) # type: ignore
     
-    # Initialize extension system
+    # Initialize extension trigger system
     global trigger_system, ext_manager
     trigger_system = TriggerSystem()
-    
-    # Set up extension manager with PaxD's base directory
-    paxd_base_dir = os.path.join(os.path.expandvars(r"%LOCALAPPDATA%"), "PaxD")
-    ext_manager = ExtensionManager(paxd_base_dir, trigger_system)
     
     if os.name != "nt" or not WINDOWS_AVAILABLE:
         print(f"{Fore.RED}PaxD is a Windows only tool.")
@@ -3253,6 +3249,10 @@ def main():
 
     # Create PaxD instance with verbose flag
     paxd = PaxD(verbose=args.verbose if hasattr(args, 'verbose') else False)
+    
+    # Set up extension manager with PaxD's verbose function
+    paxd_base_dir = os.path.join(os.path.expandvars(r"%LOCALAPPDATA%"), "PaxD")
+    ext_manager = ExtensionManager(paxd_base_dir, trigger_system, paxd._verbose_print)
 
     # Check for status messages
     try:
