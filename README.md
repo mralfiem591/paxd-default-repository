@@ -2,6 +2,8 @@
 
 [![Package Chores](https://github.com/mralfiem591/paxd/actions/workflows/package-chores.yml/badge.svg)](https://github.com/mralfiem591/paxd/actions/workflows/package-chores.yml)
 
+[View issues detected in packages](ISSUE_REPORT.txt)
+
 ![PaxD Logo](repoasset/logo.png)
 ![PaxD Ready Badge](repoasset/paxdready.png)
 
