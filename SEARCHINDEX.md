@@ -23,13 +23,14 @@ The `searchindex.csv` file must be placed at the root of your PaxD repository an
 | `version` | Current package version | `1.6.7` |
 | `alias` | Primary command alias | `paxd` |
 | `aliases` | All aliases (pipe-separated) | `paxd\|paxdinstaller\|paxdmanager` |
+| `is-metapackage` | (Optional) `true` if metapackage, else `false` or empty | `true` |
 
 ### Example CSV
 
 ```csv
-package_id,package_name,description,author,version,alias,aliases
-com.mralfiem591.paxd,PaxD,The main command line tool for using PaxD.,mralfiem591,1.6.7,paxd,paxd|paxdinstaller|paxdmanager
-com.mralfiem591.paxd-sdk,PaxD SDK,The main SDK for PaxD.,mralfiem591,1.2.2,,paxd-sdk|paxdsdk
+package_id,package_name,description,author,version,alias,aliases,is-metapackage
+com.mralfiem591.paxd,PaxD,The main command line tool for using PaxD.,mralfiem591,1.6.7,paxd,paxd|paxdinstaller|paxdmanager,false
+com.mralfiem591.paxd-sdk,PaxD SDK,The main SDK for PaxD.,mralfiem591,1.2.4,,paxd-sdk|paxdsdk,false
 ```
 
 ## Generating the Search Index
