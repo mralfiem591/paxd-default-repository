@@ -18,6 +18,7 @@ on:
       - "packages/**/paxd.yaml" # Package manifest files (triggers search index update)
       - "packages/**/package.yaml" # Package manifest files (triggers search index update)
       - "resolution" # Resolution file (triggers search index update)
+      - ".github/workflows/package-chores.yml" # This workflow file (to apply changes to it)
   
   workflow_dispatch:
 
