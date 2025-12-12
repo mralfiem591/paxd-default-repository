@@ -163,5 +163,5 @@ EXTENSION_INFO = {
         "listall.start",
         "listall.end"
     ],
-    "source_url": "https://github.com/mralfiem591/paxd/raw/refs/heads/extensions/[ZIP_NAME]"
+    "source_url": "https://github.com/mralfiem591/paxd/raw/refs/heads/extensions/build/[ZIP_NAME]"
 }
