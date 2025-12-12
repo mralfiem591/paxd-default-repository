@@ -6,6 +6,9 @@
 ![PaxD Ready Badge](repoasset/paxdready.png)
 
 > [!IMPORTANT]
+> This repository isnt meant to be cloned unless you are contributing! It is supposed to be used for PaxD to be able to retrieve its packages via its system.
+
+> [!IMPORTANT]
 > We know we are a bit early, but **PaxD 26.0.0 HAS BEEN RELEASED!!!** 🎉🎉 This is by far the biggest update PaxD has recieved, and we plan to continue work. You will see the roadmap fill up shortly!
 
 The official default repository for PaxD packages, and home to the official PaxD package.
