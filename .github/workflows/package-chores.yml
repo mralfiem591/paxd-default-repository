@@ -19,6 +19,7 @@ on:
       - "packages/**/package.yaml" # Package manifest files (triggers search index update)
       - "resolution" # Resolution file (triggers search index update)
       - ".github/workflows/package-chores.yml" # This workflow file (to apply changes to it)
+      - "issue_detector.py" # Issue detector script (triggers issue report update incase its changed, to immediately apply for quick fixes)
   
   workflow_dispatch:
 
@@ -55,7 +56,6 @@ jobs:
 
   update-search-index:
     runs-on: self-hosted
-    needs: update-checksums
 
     steps:
       - name: Checkout repository
@@ -80,4 +80,32 @@ jobs:
           git config --local user.name "github-actions[bot]"
           git add searchindex.csv
           git commit -m "chore: update search index"
+          git push
+
+  generate_issue_report:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Repull and Generate ISSUE_REPORT.txt
+        run: |
+          git pull
+          python issue_detector.py
+
+      - name: Check for issue report changes
+        id: git-check-issues
+        run: |
+          git diff --exit-code -- ISSUE_REPORT.txt || echo "changed=true" >> $GITHUB_OUTPUT
+      
+      - name: Commit and push issue report changes (if any)
+        if: steps.git-check-issues.outputs.changed == 'true'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add ISSUE_REPORT.txt
+          git commit -m "chore: update issue report"
           git push
