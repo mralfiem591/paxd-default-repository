@@ -83,7 +83,7 @@ jobs:
           git commit -m "chore: update search index"
           git push
 
-  generate_issue_report:
+  generate-issue-report:
     runs-on: self-hosted
     needs: update-search-index # Run after search index updates to ensure no 2 writes happen at once
 
