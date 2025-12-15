@@ -1,7 +1,4 @@
 PaxD Package Issue Report
 ==================================================
-Generated: 15/12/2025 21:52:02
-NOTE: The above time will only change if the report content changes, to avoid unnecessary commits.
-
 STATUS: ALL PACKAGES OK
 No issues detected in any packages.
