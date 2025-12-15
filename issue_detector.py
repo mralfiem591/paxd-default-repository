@@ -193,8 +193,6 @@ report_file = "ISSUE_REPORT.txt"
 with open(report_file, 'w', encoding='utf-8') as f:
     f.write("PaxD Package Issue Report\n")
     f.write("=" * 50 + "\n")
-    f.write(f"Generated: {datetime.datetime.now().strftime('%d/%m/%Y %H:%M:%S')}\n")
-    f.write("NOTE: The above time will only change if the report content changes, to avoid unnecessary commits.\n\n")
     
     if issues:
         f.write(f"ISSUES DETECTED ({len(issues)} packages affected):\n")
